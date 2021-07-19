@@ -57,3 +57,17 @@ check_ES_IDs <- unique(exp_sample_IDs$src_subject_id)
 exp_sample <- all_data[which(all_data$src_subject_id %in% exp_sample_full$src_subject_id), ]
 length(unique(exp_sample$src_subject_id))
 write.csv(exp_sample, file = "experimental_sample.csv")
+
+# Note - at this stage we cleaned up some of the unecessary variables manually and loaded them back in. At some stage I'll fix this so it's all in the code
+MB_final <- read_csv("C:/Users/michelle/Google Drive/Professional/Students/0_Monash Students/Chrysa Tsiapas/model_building_aces_final.csv")
+MB_final_table <- as.data.table(MB_final)
+# Split model building dataset into 3 random subsamples:
+MB_final$subsample <- sample(factor(rep(1:3, length.out=nrow(MB_final)), 
+                                 labels=paste0("subsample", 1:3)))
+MB_subsample1 <- MB_final[which(MB_final$subsample=="subsample1"), ]
+MB_subsample2 <- MB_final[which(MB_final$subsample=="subsample2"), ]
+MB_subsample3 <- MB_final[which(MB_final$subsample=="subsample3"), ]
+
+write.csv(MB_subsample1, file = "MB_subsample1.csv")
+write.csv(MB_subsample2, file = "MB_subsample2.csv")
+write.csv(MB_subsample3, file = "MB_subsample3.csv")
