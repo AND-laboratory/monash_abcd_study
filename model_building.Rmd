@@ -92,6 +92,7 @@ famhx_ss_parent_alc_p_rec ~~ famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_r
 
 
 "
+# !! Above: haven't added all the covariances for all measures yet
 
 fit_model1_pml <- cfa(model1_nocov, data = MB_subsample1, estimator = "PML", 
                       missing = "available.cases", verbose = T,  
