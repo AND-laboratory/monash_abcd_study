@@ -1,0 +1,104 @@
+---
+title: "Monash Adversity and Mental Health ABCD project"
+author: "Michelle Byrne"
+date: "7/20/2021"
+output: html_document
+---
+
+## Set Working Directory
+```{r Set Directory, message=FALSE, warning=FALSE, include=FALSE}
+getwd()
+
+#You should set this to wherever you keep the data for this project 
+workdir='C:/Users/michelle/Google Drive/Professional/Students/0_Monash Students/Chrysa Tsiapas/' 
+```
+
+## Loading Libraries
+
+```{r libraries, include = F}
+library(tidyverse)
+library(lavaan)
+library(semPlot)
+library(reshape2)
+library(dplyr)
+library(Hmisc)
+library(corrplot)
+library(lmtest)
+library(nlsem)
+```
+
+## Load model building datasets (3)
+```{r load MB}
+MB_subsample1 <- read_csv(file.path(workdir,"MB_subsample1.csv"))
+MB_subsample2 <- read_csv(file.path(workdir,"MB_subsample2.csv"))
+MB_subsample3 <- read_csv(file.path(workdir,"MB_subsample3.csv"))
+str(MB_subsample1) # might need to change the binary vars to factors? Check what lavaan needs
+```
+
+## Initial model with subsample 1
+```{r efa}
+#Note - The models in the NEXT chunk after this one (cfa) might be considered CFA if we're trying to fit all indicators onto one predefined adversity var. We may need to set up an EFA beforehand a bit differently, as in this chunk.
+# See: https://vankesteren.github.io/efast/efa_lavaan 
+# And: https://stats.stackexchange.com/questions/190190/can-lavaan-sem-cfa-be-used-to-do-factor-analysis-like-factanal-efa
+# And: https://solomonkurz.netlify.app/post/2021-05-11-yes-you-can-fit-an-exploratory-factor-analysis-with-lavaan/
+# OR possibly with the psych package first, just to do plain factor analysis (so don't constrain/pre-decide the number of factors?)
+
+# Here first is set up for EFA with just one factor
+f1 <- '
+efa("efa")*f1 =~ 
+demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
+'
+
+efa_f1 <- 
+  cfa(model = f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      ordered = TRUE)
+      # could (should?) also use PML for estimator
+
+summary(efa_f1, fit.measures = TRUE)
+```                   
+
+```{r cfa}
+# Define model 1 - all indicators under one single adversity factor, no covariances
+model1_nocov <- "
+#All adversity vars Model 1
+
+adversity =~ 
+demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + 	famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + 	fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
+"
+
+# Define model 1 - all indicators under one single adversity factor, WITH covariances
+model1_cov <- "
+#All adversity vars Model 1
+
+adversity =~ 
+demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + 	famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + 	fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
+
+#Covariances for questionnaires/measures
+ksads_ptsd_raw_761_p ~~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + ksads_ptsd_raw_766_p
+ksads_ptsd_raw_763_p ~~ ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p +  ksads_ptsd_raw_766_p
+ksads_ptsd_raw_767_p ~~ ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + ksads_ptsd_raw_766_p
+ksads_ptsd_raw_768_p ~~ ksads_ptsd_raw_769_p + ksads_ptsd_raw_766_p
+ksads_ptsd_raw_769_p ~~ ksads_ptsd_raw_766_p
+
+
+famhx_ss_parent_alc_p_rec ~~ famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec +    
+                             famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + 
+                             famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + 
+                             famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec +
+                             famhx_ss_parent_scd_p_rec
+
+
+"
+
+fit_model1_pml <- cfa(model1_nocov, data = MB_subsample1, estimator = "PML", 
+                      missing = "available.cases", verbose = T,  
+                     ordered = TRUE)
+
+# or should ordered only be the binary ones? Eg.,
+#                   ordered = c("x1","x2","x3","x4",
+#                                "x6","z1","z2"))
+```
+
