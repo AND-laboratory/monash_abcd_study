@@ -35,9 +35,198 @@ MB_subsample3 <- read_csv(file.path(workdir,"MB_subsample3.csv"))
 str(MB_subsample1) # might need to change the binary vars to factors? Check what lavaan needs
 ```
 
+## Simple correlation matrix of all indices (by subsample)
+```{r correlations}
+sub1_num <- (select(MB_subsample1, 4:86))
+subsample1_corr <- rcorr(as.matrix(sub1_num))
+S1_cor_plot <- corrplot(subsample1_corr$r, method = "number", type = "upper", order = "original", tl.col = "black", tl.srt = 45, tl.cex = .7, number.cex = .7, diag = FALSE)
+subsample1_corr$r
+subsample1_corr$P
+
+write.csv(subsample1_corr$r, file = "MB_subsample1_rs.csv")
+write.csv(subsample1_corr$P, file = "MB_subsample1_ps.csv")
+```
+
+
 ## Initial model with subsample 1
+            
+
+```{r cfa}
+# Define model 1 - all indicators under one single adversity factor, no covariances. Do things load on nicely to one predefined factor?
+model1_nocov <- "
+#All adversity vars Model 1
+
+adversity =~ 
+demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + 	famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + 	fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
+"
+
+model1_test <- "
+#All adversity vars Model 1
+
+test =~ 
+demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + 	famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec 
+"
+
+fit_test <- cfa(model = model1_test, 
+                  data = MB_subsample1,
+                  estimator = "ML"
+                  )
+
+fit_model1_nocov <- cfa(model = model1_nocov, 
+                  data = MB_subsample1,
+                  estimator = "WLSMV",
+                  ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
+                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
+                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
+                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
+                  "famhx_ss_parent_scd_p_rec","ple_died_p_bad","ple_injured_p_bad","ple_crime_p_bad","ple_friend_p_bad",
+                  "ple_friend_injur_p_bad","ple_financial_p_bad","ple_sud_p_bad","ple_ill_p_bad","ple_injur_p_bad","ple_argue_p_bad",
+                  "ple_job_p_bad","ple_away_p_bad","ple_arrest_p_bad","ple_friend_died_p_bad","ple_mh_p_bad","ple_sib_p_bad",
+                  "ple_victim_p_bad","ple_separ_p_bad","ple_law_p_bad","ple_school_p_bad","ple_move_p_bad","ple_jail_p_bad",
+                  "ple_step_p_bad","ple_new_job_p_bad","ple_new_sib_p_bad","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
+                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
+                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
+                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
+                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+                  )
+summary(fit_model1_nocov)
+# try again with missing = "ML", estimator = "MLR" - but can't indicate any ordered this way.
+
+
+# Define model 1 - all indicators under one single adversity factor, WITH covariances. If nocov model didn't work, does adding measurement tool covariances fix it?
+model1_cov <- "
+#All adversity vars Model 1
+
+adversity =~ 
+demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + 	famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + 	fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
+
+#Covariances for questionnaires/measures
+ksads_ptsd_raw_761_p ~~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + ksads_ptsd_raw_766_p
+ksads_ptsd_raw_763_p ~~ ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p +  ksads_ptsd_raw_766_p
+ksads_ptsd_raw_767_p ~~ ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + ksads_ptsd_raw_766_p
+ksads_ptsd_raw_768_p ~~ ksads_ptsd_raw_769_p + ksads_ptsd_raw_766_p
+ksads_ptsd_raw_769_p ~~ ksads_ptsd_raw_766_p
+
+
+famhx_ss_parent_alc_p_rec ~~ famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec
+
+famhx_ss_parent_dg_p_rec ~~ famhx_ss_parent_dprs_p_rec + famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec
+
+famhx_ss_parent_dprs_p_rec ~~ famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec
+
+famhx_ss_parent_ma_p_rec ~~ famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec
+
+famhx_ss_parent_vs_p_rec ~~ famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec
+
+famhx_ss_parent_trb_p_rec ~~ famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec
+famhx_ss_parent_nrv_p_rec ~~ famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec
+famhx_ss_parent_prf_p_rec ~~ famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec
+famhx_ss_parent_hspd_p_rec ~~ famhx_ss_parent_scd_p_rec
+
+
+fes_p_ss_fc_z ~~ fes_y_ss_fc_z
+
+
+crpbi_y_ss_parent_rev_z ~~ crpbi_y_ss_caregiver_rev_z
+
+
+ple_died_p_bad ~~ ple_injured_p_bad + ple_crime_p_bad + ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_injured_p_bad ~~ ple_crime_p_bad + ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_crime_p_bad ~~ ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_friend_p_bad ~~ ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_friend_injur_p_bad ~~ ple_financial_p_bad + ple_sud_p_bad + ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_financial_p_bad ~~ ple_sud_p_bad + ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_sud_p_bad ~~ ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_ill_p_bad ~~ ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_injur_p_bad ~~ ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_argue_p_bad ~~ ple_job_p_bad + ple_away_p_bad + ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_job_p_bad ~~ ple_away_p_bad + ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_away_p_bad ~~ ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_arrest_p_bad ~~ ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_friend_died_p_bad ~~ ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_mh_p_bad ~~ ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_sib_p_bad ~~ ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_victim_p_bad ~~ ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+
+ple_separ_p_bad ~~ ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+ple_law_p_bad ~~ ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+ple_school_p_bad ~~ ple_move_p_bad + ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+ple_move_p_bad ~~ ple_jail_p_bad + ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+ple_jail_p_bad ~~ ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad
+ple_step_p_bad ~~ ple_new_job_p_bad + ple_new_sib_p_bad
+ple_new_job_p_bad ~~ ple_new_sib_p_bad
+
+
+ple_died_y_bad ~~ ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_injured_y_bad ~~ ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_crime_y_bad ~~ ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_friend_y_bad ~~ ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_friend_injur_y_bad ~~ ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_financial_y_bad ~~ ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_sud_y_bad ~~ ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_ill_y_bad ~~ ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_injur_y_bad ~~ ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_argue_y_bad ~~ ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_job_y_bad ~~ ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_away_y_bad ~~ ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_arrest_y_bad ~~ ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_friend_died_y_bad ~~ ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_mh_y_bad ~~ ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_sib_y_bad ~~ ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_victim_y_bad ~~ ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+
+ple_separ_y_bad ~~ ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+ple_law_y_bad ~~ ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+ple_school_y_bad ~~ ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+ple_move_y_bad ~~ ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+ple_jail_y_bad ~~ ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+ple_step_y_bad ~~ ple_new_job_y_bad + ple_new_sib_y_bad
+ple_new_job_y_bad ~~ ple_new_sib_y_bad
+
+
+nsc_p_ss_mean_3_items_rev_z ~~ neighborhood_crime_y_rev_z
+
+
+demo_comb_income_v2_rec_rev_z ~~ demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
+
+"
+```
+
 ```{r efa}
-#Note - The models in the NEXT chunk after this one (cfa) might be considered CFA if we're trying to fit all indicators onto one predefined adversity var. We may need to set up an EFA beforehand a bit differently, as in this chunk.
+# Note - The models in the previous chunk before this one (cfa) might be considered CFA if we're trying to fit all indicators onto one predefined adversity var. We may need to set up an EFA beforehand (or if things don't clearly load onto one factor) a bit differently, as in this chunk.
 # See: https://vankesteren.github.io/efast/efa_lavaan 
 # And: https://stats.stackexchange.com/questions/190190/can-lavaan-sem-cfa-be-used-to-do-factor-analysis-like-factanal-efa
 # And: https://solomonkurz.netlify.app/post/2021-05-11-yes-you-can-fit-an-exploratory-factor-analysis-with-lavaan/
@@ -58,48 +247,6 @@ efa_f1 <-
       # could (should?) also use PML for estimator
 
 summary(efa_f1, fit.measures = TRUE)
-```                   
 
-```{r cfa}
-# Define model 1 - all indicators under one single adversity factor, no covariances
-model1_nocov <- "
-#All adversity vars Model 1
-
-adversity =~ 
-demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + 	famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + 	fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
-"
-
-# Define model 1 - all indicators under one single adversity factor, WITH covariances
-model1_cov <- "
-#All adversity vars Model 1
-
-adversity =~ 
-demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + 	famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + 	fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
-
-#Covariances for questionnaires/measures
-ksads_ptsd_raw_761_p ~~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + ksads_ptsd_raw_766_p
-ksads_ptsd_raw_763_p ~~ ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p +  ksads_ptsd_raw_766_p
-ksads_ptsd_raw_767_p ~~ ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + ksads_ptsd_raw_766_p
-ksads_ptsd_raw_768_p ~~ ksads_ptsd_raw_769_p + ksads_ptsd_raw_766_p
-ksads_ptsd_raw_769_p ~~ ksads_ptsd_raw_766_p
-
-
-famhx_ss_parent_alc_p_rec ~~ famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec +    
-                             famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + 
-                             famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + 
-                             famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec +
-                             famhx_ss_parent_scd_p_rec
-
-
-"
-# !! Above: haven't added all the covariances for all measures yet
-
-fit_model1_pml <- cfa(model1_nocov, data = MB_subsample1, estimator = "PML", 
-                      missing = "available.cases", verbose = T,  
-                     ordered = TRUE)
-
-# or should ordered only be the binary ones? Eg.,
-#                   ordered = c("x1","x2","x3","x4",
-#                                "x6","z1","z2"))
-```
-
+# Repeat with 2 factor, 3 factor, 4 factor etc EFA models - look for NS chi-squared values and identify which model it is (and what are the obvious factors?)
+```   
