@@ -25,6 +25,8 @@ library(Hmisc)
 library(corrplot)
 library(lmtest)
 library(nlsem)
+library(psych)
+library(GPArotation)
 ```
 
 ## Load model building datasets (3)
@@ -53,6 +55,7 @@ write.csv(subsample1_corr$P, file = "MB_subsample1_ps.csv")
 
 ```{r cfa}
 # Define model 1 - all indicators under one single adversity factor, no covariances. Do things load on nicely to one predefined factor?
+# First with WLSMV, missing pairwise:
 model1_nocov <- "
 #All adversity vars Model 1
 
@@ -60,21 +63,10 @@ adversity =~
 demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + 	famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + 	fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
 "
 
-model1_test <- "
-#All adversity vars Model 1
-
-test =~ 
-demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + 	famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec 
-"
-
-fit_test <- cfa(model = model1_test, 
-                  data = MB_subsample1,
-                  estimator = "ML"
-                  )
-
 fit_model1_nocov <- cfa(model = model1_nocov, 
                   data = MB_subsample1,
                   estimator = "WLSMV",
+                  missing = "pairwise",
                   ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
                   "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
                   "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
@@ -91,7 +83,42 @@ fit_model1_nocov <- cfa(model = model1_nocov,
                   "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
                   )
 summary(fit_model1_nocov)
-# try again with missing = "ML", estimator = "MLR" - but can't indicate any ordered this way.
+
+# estimator = MLR, missing = FIML, mimic = Mplus
+fit_model1_nocov_MLR <- cfa(model = model1_nocov,
+                  data = MB_subsample1,
+                  missing = "FIML",
+                  estimator = "MLR",
+                  mimic = "Mplus"
+                  )
+summary(fit_model1_nocov_MLR)
+
+# estimator = "PML", missing = "available.cases" below (and verbose = T , maybe to get standardized output)
+# NOTE THIS MODEL BELOW FAILED WITH MESSAGE: 
+# NaNs producedError in pbivnorm::pbivnorm(x = upper.x, y = upper.y, rho = rho) : 
+#  'rho' must be a valid correlation (-1 <= rho <= 1)
+fit_model1_nocov_PML <- cfa(model = model1_nocov, 
+                  data = MB_subsample1,
+                  estimator = "PML",
+                  missing = "available.cases",
+                  verbose = T,
+                  ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
+                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
+                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
+                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
+                  "famhx_ss_parent_scd_p_rec","ple_died_p_bad","ple_injured_p_bad","ple_crime_p_bad","ple_friend_p_bad",
+                  "ple_friend_injur_p_bad","ple_financial_p_bad","ple_sud_p_bad","ple_ill_p_bad","ple_injur_p_bad","ple_argue_p_bad",
+                  "ple_job_p_bad","ple_away_p_bad","ple_arrest_p_bad","ple_friend_died_p_bad","ple_mh_p_bad","ple_sib_p_bad",
+                  "ple_victim_p_bad","ple_separ_p_bad","ple_law_p_bad","ple_school_p_bad","ple_move_p_bad","ple_jail_p_bad",
+                  "ple_step_p_bad","ple_new_job_p_bad","ple_new_sib_p_bad","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
+                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
+                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
+                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
+                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+                  )
+summary(fit_model1_nocov_PML)
+
 
 
 # Define model 1 - all indicators under one single adversity factor, WITH covariances. If nocov model didn't work, does adding measurement tool covariances fix it?
@@ -217,12 +244,35 @@ ple_step_y_bad ~~ ple_new_job_y_bad + ple_new_sib_y_bad
 ple_new_job_y_bad ~~ ple_new_sib_y_bad
 
 
-nsc_p_ss_mean_3_items_rev_z ~~ neighborhood_crime_y_rev_z
+demo_fam_exp1_v2_rec ~~ demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
 
-
-demo_comb_income_v2_rec_rev_z ~~ demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
-
+demo_fam_exp2_v2_rec ~~ demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
+demo_fam_exp3_v2_rec ~~ demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
+demo_fam_exp4_v2_rec ~~ demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
+demo_fam_exp5_v2_rec ~~ demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
+demo_fam_exp6_v2_rec ~~ demo_fam_exp7_v2_rec
 "
+
+fit_model1_cov <- cfa(model = model1_cov, 
+                  data = MB_subsample1,
+                  estimator = "WLSMV",
+                  missing = "pairwise",
+                  ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
+                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
+                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
+                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
+                  "famhx_ss_parent_scd_p_rec","ple_died_p_bad","ple_injured_p_bad","ple_crime_p_bad","ple_friend_p_bad",
+                  "ple_friend_injur_p_bad","ple_financial_p_bad","ple_sud_p_bad","ple_ill_p_bad","ple_injur_p_bad","ple_argue_p_bad",
+                  "ple_job_p_bad","ple_away_p_bad","ple_arrest_p_bad","ple_friend_died_p_bad","ple_mh_p_bad","ple_sib_p_bad",
+                  "ple_victim_p_bad","ple_separ_p_bad","ple_law_p_bad","ple_school_p_bad","ple_move_p_bad","ple_jail_p_bad",
+                  "ple_step_p_bad","ple_new_job_p_bad","ple_new_sib_p_bad","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
+                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
+                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
+                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
+                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+                  )
+summary(fit_model1_cov)
 ```
 
 ```{r efa}
@@ -243,10 +293,361 @@ efa_f1 <-
       data = MB_subsample1,
       rotation = "oblimin",
       estimator = "WLSMV",
-      ordered = TRUE)
-      # could (should?) also use PML for estimator
+      missing = "pairwise",
+      ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
+                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
+                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
+                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
+                  "famhx_ss_parent_scd_p_rec","ple_died_p_bad","ple_injured_p_bad","ple_crime_p_bad","ple_friend_p_bad",
+                  "ple_friend_injur_p_bad","ple_financial_p_bad","ple_sud_p_bad","ple_ill_p_bad","ple_injur_p_bad","ple_argue_p_bad",
+                  "ple_job_p_bad","ple_away_p_bad","ple_arrest_p_bad","ple_friend_died_p_bad","ple_mh_p_bad","ple_sib_p_bad",
+                  "ple_victim_p_bad","ple_separ_p_bad","ple_law_p_bad","ple_school_p_bad","ple_move_p_bad","ple_jail_p_bad",
+                  "ple_step_p_bad","ple_new_job_p_bad","ple_new_sib_p_bad","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
+                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
+                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
+                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
+                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+# NaNs producedError in eigen(A, symmetric = TRUE, only.values = TRUE) : 
+#  infinite or missing values in 'x'
 
 summary(efa_f1, fit.measures = TRUE)
 
 # Repeat with 2 factor, 3 factor, 4 factor etc EFA models - look for NS chi-squared values and identify which model it is (and what are the obvious factors?)
+
+f2 <- '
+efa("efa")*f1 +
+efa("efa")*f2 =~ 
+demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
+'
+
+efa_f2 <- 
+  cfa(model = f2,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      missing = "pairwise",
+      ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
+                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
+                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
+                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
+                  "famhx_ss_parent_scd_p_rec","ple_died_p_bad","ple_injured_p_bad","ple_crime_p_bad","ple_friend_p_bad",
+                  "ple_friend_injur_p_bad","ple_financial_p_bad","ple_sud_p_bad","ple_ill_p_bad","ple_injur_p_bad","ple_argue_p_bad",
+                  "ple_job_p_bad","ple_away_p_bad","ple_arrest_p_bad","ple_friend_died_p_bad","ple_mh_p_bad","ple_sib_p_bad",
+                  "ple_victim_p_bad","ple_separ_p_bad","ple_law_p_bad","ple_school_p_bad","ple_move_p_bad","ple_jail_p_bad",
+                  "ple_step_p_bad","ple_new_job_p_bad","ple_new_sib_p_bad","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
+                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
+                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
+                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
+                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+
+f3 <- '
+efa("efa")*f1 +
+efa("efa")*f2 +
+efa("efa")*f3 =~ 
+demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
+'
+
+efa_f3 <- 
+  cfa(model = f3,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      missing = "pairwise",
+      ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
+                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
+                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
+                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
+                  "famhx_ss_parent_scd_p_rec","ple_died_p_bad","ple_injured_p_bad","ple_crime_p_bad","ple_friend_p_bad",
+                  "ple_friend_injur_p_bad","ple_financial_p_bad","ple_sud_p_bad","ple_ill_p_bad","ple_injur_p_bad","ple_argue_p_bad",
+                  "ple_job_p_bad","ple_away_p_bad","ple_arrest_p_bad","ple_friend_died_p_bad","ple_mh_p_bad","ple_sib_p_bad",
+                  "ple_victim_p_bad","ple_separ_p_bad","ple_law_p_bad","ple_school_p_bad","ple_move_p_bad","ple_jail_p_bad",
+                  "ple_step_p_bad","ple_new_job_p_bad","ple_new_sib_p_bad","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
+                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
+                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
+                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
+                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+
+f4 <- '
+efa("efa")*f1 +
+efa("efa")*f2 +
+efa("efa")*f3 +
+efa("efa")*f4 =~ 
+demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
+'
+
+efa_f4 <- 
+  cfa(model = f4,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      missing = "pairwise",
+      ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
+                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
+                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
+                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
+                  "famhx_ss_parent_scd_p_rec","ple_died_p_bad","ple_injured_p_bad","ple_crime_p_bad","ple_friend_p_bad",
+                  "ple_friend_injur_p_bad","ple_financial_p_bad","ple_sud_p_bad","ple_ill_p_bad","ple_injur_p_bad","ple_argue_p_bad",
+                  "ple_job_p_bad","ple_away_p_bad","ple_arrest_p_bad","ple_friend_died_p_bad","ple_mh_p_bad","ple_sib_p_bad",
+                  "ple_victim_p_bad","ple_separ_p_bad","ple_law_p_bad","ple_school_p_bad","ple_move_p_bad","ple_jail_p_bad",
+                  "ple_step_p_bad","ple_new_job_p_bad","ple_new_sib_p_bad","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
+                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
+                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
+                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
+                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+
+f5 <- '
+efa("efa")*f1 +
+efa("efa")*f2 +
+efa("efa")*f3 +
+efa("efa")*f4 +
+efa("efa")*f5 =~ 
+demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
+'
+
+efa_f5 <- 
+  cfa(model = f5,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      missing = "pairwise",
+      ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
+                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
+                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
+                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
+                  "famhx_ss_parent_scd_p_rec","ple_died_p_bad","ple_injured_p_bad","ple_crime_p_bad","ple_friend_p_bad",
+                  "ple_friend_injur_p_bad","ple_financial_p_bad","ple_sud_p_bad","ple_ill_p_bad","ple_injur_p_bad","ple_argue_p_bad",
+                  "ple_job_p_bad","ple_away_p_bad","ple_arrest_p_bad","ple_friend_died_p_bad","ple_mh_p_bad","ple_sib_p_bad",
+                  "ple_victim_p_bad","ple_separ_p_bad","ple_law_p_bad","ple_school_p_bad","ple_move_p_bad","ple_jail_p_bad",
+                  "ple_step_p_bad","ple_new_job_p_bad","ple_new_sib_p_bad","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
+                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
+                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
+                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
+                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+
+f6 <- '
+efa("efa")*f1 +
+efa("efa")*f2 +
+efa("efa")*f3 +
+efa("efa")*f4 +
+efa("efa")*f5 +
+efa("efa")*f6 =~ 
+demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
+'
+
+efa_f6 <- 
+  cfa(model = f6,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      missing = "pairwise",
+      ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
+                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
+                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
+                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
+                  "famhx_ss_parent_scd_p_rec","ple_died_p_bad","ple_injured_p_bad","ple_crime_p_bad","ple_friend_p_bad",
+                  "ple_friend_injur_p_bad","ple_financial_p_bad","ple_sud_p_bad","ple_ill_p_bad","ple_injur_p_bad","ple_argue_p_bad",
+                  "ple_job_p_bad","ple_away_p_bad","ple_arrest_p_bad","ple_friend_died_p_bad","ple_mh_p_bad","ple_sib_p_bad",
+                  "ple_victim_p_bad","ple_separ_p_bad","ple_law_p_bad","ple_school_p_bad","ple_move_p_bad","ple_jail_p_bad",
+                  "ple_step_p_bad","ple_new_job_p_bad","ple_new_sib_p_bad","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
+                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
+                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
+                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
+                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+
+f7 <- '
+efa("efa")*f1 +
+efa("efa")*f2 +
+efa("efa")*f3 +
+efa("efa")*f4 +
+efa("efa")*f5 +
+efa("efa")*f6 +
+efa("efa")*f7 =~ 
+demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
+'
+
+efa_f7 <- 
+  cfa(model = f7,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      missing = "pairwise",
+      ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
+                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
+                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
+                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
+                  "famhx_ss_parent_scd_p_rec","ple_died_p_bad","ple_injured_p_bad","ple_crime_p_bad","ple_friend_p_bad",
+                  "ple_friend_injur_p_bad","ple_financial_p_bad","ple_sud_p_bad","ple_ill_p_bad","ple_injur_p_bad","ple_argue_p_bad",
+                  "ple_job_p_bad","ple_away_p_bad","ple_arrest_p_bad","ple_friend_died_p_bad","ple_mh_p_bad","ple_sib_p_bad",
+                  "ple_victim_p_bad","ple_separ_p_bad","ple_law_p_bad","ple_school_p_bad","ple_move_p_bad","ple_jail_p_bad",
+                  "ple_step_p_bad","ple_new_job_p_bad","ple_new_sib_p_bad","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
+                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
+                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
+                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
+                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+
+f8 <- '
+efa("efa")*f1 +
+efa("efa")*f2 +
+efa("efa")*f3 +
+efa("efa")*f4 +
+efa("efa")*f5 +
+efa("efa")*f6 +
+efa("efa")*f7 +
+efa("efa")*f8 =~ 
+demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
+'
+
+efa_f8 <- 
+  cfa(model = f8,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      missing = "pairwise",
+      ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
+                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
+                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
+                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
+                  "famhx_ss_parent_scd_p_rec","ple_died_p_bad","ple_injured_p_bad","ple_crime_p_bad","ple_friend_p_bad",
+                  "ple_friend_injur_p_bad","ple_financial_p_bad","ple_sud_p_bad","ple_ill_p_bad","ple_injur_p_bad","ple_argue_p_bad",
+                  "ple_job_p_bad","ple_away_p_bad","ple_arrest_p_bad","ple_friend_died_p_bad","ple_mh_p_bad","ple_sib_p_bad",
+                  "ple_victim_p_bad","ple_separ_p_bad","ple_law_p_bad","ple_school_p_bad","ple_move_p_bad","ple_jail_p_bad",
+                  "ple_step_p_bad","ple_new_job_p_bad","ple_new_sib_p_bad","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
+                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
+                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
+                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
+                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+
+f9 <- '
+efa("efa")*f1 +
+efa("efa")*f2 +
+efa("efa")*f3 +
+efa("efa")*f4 +
+efa("efa")*f5 +
+efa("efa")*f6 +
+efa("efa")*f7 +
+efa("efa")*f8 +
+efa("efa")*f9 =~ 
+demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
+'
+
+efa_f9 <- 
+  cfa(model = f9,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      missing = "pairwise",
+      ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
+                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
+                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
+                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
+                  "famhx_ss_parent_scd_p_rec","ple_died_p_bad","ple_injured_p_bad","ple_crime_p_bad","ple_friend_p_bad",
+                  "ple_friend_injur_p_bad","ple_financial_p_bad","ple_sud_p_bad","ple_ill_p_bad","ple_injur_p_bad","ple_argue_p_bad",
+                  "ple_job_p_bad","ple_away_p_bad","ple_arrest_p_bad","ple_friend_died_p_bad","ple_mh_p_bad","ple_sib_p_bad",
+                  "ple_victim_p_bad","ple_separ_p_bad","ple_law_p_bad","ple_school_p_bad","ple_move_p_bad","ple_jail_p_bad",
+                  "ple_step_p_bad","ple_new_job_p_bad","ple_new_sib_p_bad","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
+                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
+                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
+                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
+                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+
+f10 <- '
+efa("efa")*f1 +
+efa("efa")*f2 +
+efa("efa")*f3 +
+efa("efa")*f4 +
+efa("efa")*f5 +
+efa("efa")*f6 +
+efa("efa")*f7 +
+efa("efa")*f8 +
+efa("efa")*f9 +
+efa("efa")*f10 =~ 
+demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
+'
+
+efa_f10 <- 
+  cfa(model = f10,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      missing = "pairwise",
+      ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
+                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
+                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
+                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
+                  "famhx_ss_parent_scd_p_rec","ple_died_p_bad","ple_injured_p_bad","ple_crime_p_bad","ple_friend_p_bad",
+                  "ple_friend_injur_p_bad","ple_financial_p_bad","ple_sud_p_bad","ple_ill_p_bad","ple_injur_p_bad","ple_argue_p_bad",
+                  "ple_job_p_bad","ple_away_p_bad","ple_arrest_p_bad","ple_friend_died_p_bad","ple_mh_p_bad","ple_sib_p_bad",
+                  "ple_victim_p_bad","ple_separ_p_bad","ple_law_p_bad","ple_school_p_bad","ple_move_p_bad","ple_jail_p_bad",
+                  "ple_step_p_bad","ple_new_job_p_bad","ple_new_sib_p_bad","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
+                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
+                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
+                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
+                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+# NaNs producedError in eigen(A, symmetric = TRUE, only.values = TRUE) : 
+#  infinite or missing values in 'x'
+# Whyyyyyyyy
+
 ```   
+
+
+```{r psych fa}
+#missing	
+#if scores are TRUE, and missing=TRUE, then impute missing values using either the median or the mean
+
+#impute	
+#"median" or "mean" values are used to replace missing values
+MB_S1_trim <- select(MB_subsample1, -c("X1","src_subject_id","eventname","subsample"))
+
+fa_1 <- fa(MB_S1_trim, nfactors=1, rotate = "oblimin")
+fa_1
+
+fa_2 <- fa(MB_S1_trim, nfactors=2, rotate = "oblimin")
+fa_2
+
+fa_3 <- fa(MB_S1_trim, nfactors=3, rotate = "oblimin")
+fa_3
+
+fa_4 <- fa(MB_S1_trim, nfactors=4, rotate = "oblimin")
+fa_4
+
+fa_5 <- fa(MB_S1_trim, nfactors=5, rotate = "oblimin")
+fa_5
+
+fa_6 <- fa(MB_S1_trim, nfactors=6, rotate = "oblimin")
+fa_6
+
+fa_7 <- fa(MB_S1_trim, nfactors=7, rotate = "oblimin")
+fa_7
+
+fa_8 <- fa(MB_S1_trim, nfactors=8, rotate = "oblimin")
+fa_8
+
+fa_9 <- fa(MB_S1_trim, nfactors=9, rotate = "oblimin")
+fa_9
+
+fa_10 <- fa(MB_S1_trim, nfactors=10, rotate = "oblimin")
+fa_10
+
+
+```
+
