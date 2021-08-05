@@ -1,0 +1,1964 @@
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1655 
+
+ 
+                                            | MB_subsample1_new$famhx_ss_parent_dg_p_rec 
+MB_subsample1_new$famhx_ss_parent_alc_p_rec |         0 |         1 | Row Total | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          0 |      1027 |       370 |      1397 | 
+                                            |   963.128 |   433.872 |           | 
+                                            |     4.236 |     9.403 |           | 
+                                            |     0.735 |     0.265 |     0.844 | 
+                                            |     0.900 |     0.720 |           | 
+                                            |     0.621 |     0.224 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          1 |       114 |       144 |       258 | 
+                                            |   177.872 |    80.128 |           | 
+                                            |    22.936 |    50.914 |           | 
+                                            |     0.442 |     0.558 |     0.156 | 
+                                            |     0.100 |     0.280 |           | 
+                                            |     0.069 |     0.087 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                               Column Total |      1141 |       514 |      1655 | 
+                                            |     0.689 |     0.311 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  87.48807     d.f. =  1     p =  8.47897e-21 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  86.12369     d.f. =  1     p =  1.690259e-20 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_alc_p_rec, MB_subsample1_new$famhx_ss_parent_dprs_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1674 
+
+ 
+                                            | MB_subsample1_new$famhx_ss_parent_dprs_p_rec 
+MB_subsample1_new$famhx_ss_parent_alc_p_rec |         0 |         1 | Row Total | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          0 |      1330 |        90 |      1420 | 
+                                            |  1261.374 |   158.626 |           | 
+                                            |     3.734 |    29.690 |           | 
+                                            |     0.937 |     0.063 |     0.848 | 
+                                            |     0.894 |     0.481 |           | 
+                                            |     0.795 |     0.054 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          1 |       157 |        97 |       254 | 
+                                            |   225.626 |    28.374 |           | 
+                                            |    20.873 |   165.981 |           | 
+                                            |     0.618 |     0.382 |     0.152 | 
+                                            |     0.106 |     0.519 |           | 
+                                            |     0.094 |     0.058 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                               Column Total |      1487 |       187 |      1674 | 
+                                            |     0.888 |     0.112 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  220.2773     d.f. =  1     p =  7.868748e-50 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  217.0791     d.f. =  1     p =  3.922089e-49 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_alc_p_rec, MB_subsample1_new$famhx_ss_parent_ma_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1657 
+
+ 
+                                            | MB_subsample1_new$famhx_ss_parent_ma_p_rec 
+MB_subsample1_new$famhx_ss_parent_alc_p_rec |         0 |         1 | Row Total | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          0 |      1364 |        47 |      1411 | 
+                                            |  1341.174 |    69.826 |           | 
+                                            |     0.388 |     7.462 |           | 
+                                            |     0.967 |     0.033 |     0.852 | 
+                                            |     0.866 |     0.573 |           | 
+                                            |     0.823 |     0.028 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          1 |       211 |        35 |       246 | 
+                                            |   233.826 |    12.174 |           | 
+                                            |     2.228 |    42.800 |           | 
+                                            |     0.858 |     0.142 |     0.148 | 
+                                            |     0.134 |     0.427 |           | 
+                                            |     0.127 |     0.021 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                               Column Total |      1575 |        82 |      1657 | 
+                                            |     0.951 |     0.049 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  52.87835     d.f. =  1     p =  3.548589e-13 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  50.58716     d.f. =  1     p =  1.139883e-12 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_alc_p_rec, MB_subsample1_new$famhx_ss_parent_vs_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1659 
+
+ 
+                                            | MB_subsample1_new$famhx_ss_parent_vs_p_rec 
+MB_subsample1_new$famhx_ss_parent_alc_p_rec |         0 |         1 | Row Total | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          0 |      1395 |        18 |      1413 | 
+                                            |  1387.448 |    25.552 |           | 
+                                            |     0.041 |     2.232 |           | 
+                                            |     0.987 |     0.013 |     0.852 | 
+                                            |     0.856 |     0.600 |           | 
+                                            |     0.841 |     0.011 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          1 |       234 |        12 |       246 | 
+                                            |   241.552 |     4.448 |           | 
+                                            |     0.236 |    12.819 |           | 
+                                            |     0.951 |     0.049 |     0.148 | 
+                                            |     0.144 |     0.400 |           | 
+                                            |     0.141 |     0.007 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                               Column Total |      1629 |        30 |      1659 | 
+                                            |     0.982 |     0.018 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  15.32817     d.f. =  1     p =  9.035907e-05 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  13.36556     d.f. =  1     p =  0.0002562875 
+
+ 
+Warning messages:
+1: In chisq.test(t, correct = TRUE, ...) :
+  Chi-squared approximation may be incorrect
+2: In chisq.test(t, correct = FALSE, ...) :
+  Chi-squared approximation may be incorrect
+> CrossTable(MB_subsample1_new$famhx_ss_parent_alc_p_rec, MB_subsample1_new$famhx_ss_parent_nrv_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1652 
+
+ 
+                                            | MB_subsample1_new$famhx_ss_parent_nrv_p_rec 
+MB_subsample1_new$famhx_ss_parent_alc_p_rec |         0 |         1 | Row Total | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          0 |      1269 |       138 |      1407 | 
+                                            |  1238.364 |   168.636 |           | 
+                                            |     0.758 |     5.565 |           | 
+                                            |     0.902 |     0.098 |     0.852 | 
+                                            |     0.873 |     0.697 |           | 
+                                            |     0.768 |     0.084 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          1 |       185 |        60 |       245 | 
+                                            |   215.636 |    29.364 |           | 
+                                            |     4.352 |    31.962 |           | 
+                                            |     0.755 |     0.245 |     0.148 | 
+                                            |     0.127 |     0.303 |           | 
+                                            |     0.112 |     0.036 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                               Column Total |      1454 |       198 |      1652 | 
+                                            |     0.880 |     0.120 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  42.63762     d.f. =  1     p =  6.588012e-11 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  41.25721     d.f. =  1     p =  1.334588e-10 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_alc_p_rec, MB_subsample1_new$famhx_ss_parent_prf_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1654 
+
+ 
+                                            | MB_subsample1_new$famhx_ss_parent_prf_p_rec 
+MB_subsample1_new$famhx_ss_parent_alc_p_rec |         0 |         1 | Row Total | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          0 |       931 |       470 |      1401 | 
+                                            |   863.978 |   537.022 |           | 
+                                            |     5.199 |     8.364 |           | 
+                                            |     0.665 |     0.335 |     0.847 | 
+                                            |     0.913 |     0.741 |           | 
+                                            |     0.563 |     0.284 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          1 |        89 |       164 |       253 | 
+                                            |   156.022 |    96.978 |           | 
+                                            |    28.790 |    46.319 |           | 
+                                            |     0.352 |     0.648 |     0.153 | 
+                                            |     0.087 |     0.259 |           | 
+                                            |     0.054 |     0.099 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                               Column Total |      1020 |       634 |      1654 | 
+                                            |     0.617 |     0.383 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  88.67275     d.f. =  1     p =  4.658393e-21 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  87.35464     d.f. =  1     p =  9.070724e-21 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_alc_p_rec, MB_subsample1_new$famhx_ss_parent_hspd_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1653 
+
+ 
+                                            | MB_subsample1_new$famhx_ss_parent_hspd_p_rec 
+MB_subsample1_new$famhx_ss_parent_alc_p_rec |         0 |         1 | Row Total | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          0 |      1319 |        85 |      1404 | 
+                                            |  1271.499 |   132.501 |           | 
+                                            |     1.775 |    17.029 |           | 
+                                            |     0.939 |     0.061 |     0.849 | 
+                                            |     0.881 |     0.545 |           | 
+                                            |     0.798 |     0.051 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          1 |       178 |        71 |       249 | 
+                                            |   225.501 |    23.499 |           | 
+                                            |    10.006 |    96.018 |           | 
+                                            |     0.715 |     0.285 |     0.151 | 
+                                            |     0.119 |     0.455 |           | 
+                                            |     0.108 |     0.043 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                               Column Total |      1497 |       156 |      1653 | 
+                                            |     0.906 |     0.094 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  124.8273     d.f. =  1     p =  5.552301e-29 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  122.2132     d.f. =  1     p =  2.073163e-28 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_alc_p_rec, MB_subsample1_new$famhx_ss_parent_scd_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1650 
+
+ 
+                                            | MB_subsample1_new$famhx_ss_parent_scd_p_rec 
+MB_subsample1_new$famhx_ss_parent_alc_p_rec |         0 |         1 | Row Total | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          0 |      1353 |        51 |      1404 | 
+                                            |  1324.015 |    79.985 |           | 
+                                            |     0.635 |    10.504 |           | 
+                                            |     0.964 |     0.036 |     0.851 | 
+                                            |     0.870 |     0.543 |           | 
+                                            |     0.820 |     0.031 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          1 |       203 |        43 |       246 | 
+                                            |   231.985 |    14.015 |           | 
+                                            |     3.622 |    59.949 |           | 
+                                            |     0.825 |     0.175 |     0.149 | 
+                                            |     0.130 |     0.457 |           | 
+                                            |     0.123 |     0.026 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                               Column Total |      1556 |        94 |      1650 | 
+                                            |     0.943 |     0.057 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  74.70891     d.f. =  1     p =  5.454937e-18 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  72.15368     d.f. =  1     p =  1.990742e-17 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_dg_p_rec, MB_subsample1_new$famhx_ss_parent_dprs_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1644 
+
+ 
+                                           | MB_subsample1_new$famhx_ss_parent_dprs_p_rec 
+MB_subsample1_new$famhx_ss_parent_dg_p_rec |         0 |         1 | Row Total | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         0 |      1069 |        71 |      1140 | 
+                                           |  1011.022 |   128.978 |           | 
+                                           |     3.325 |    26.062 |           | 
+                                           |     0.938 |     0.062 |     0.693 | 
+                                           |     0.733 |     0.382 |           | 
+                                           |     0.650 |     0.043 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         1 |       389 |       115 |       504 | 
+                                           |   446.978 |    57.022 |           | 
+                                           |     7.520 |    58.950 |           | 
+                                           |     0.772 |     0.228 |     0.307 | 
+                                           |     0.267 |     0.618 |           | 
+                                           |     0.237 |     0.070 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                              Column Total |      1458 |       186 |      1644 | 
+                                           |     0.887 |     0.113 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  95.85783     d.f. =  1     p =  1.234371e-22 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  94.21161     d.f. =  1     p =  2.835328e-22 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_dg_p_rec, MB_subsample1_new$famhx_ss_parent_ma_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1636 
+
+ 
+                                           | MB_subsample1_new$famhx_ss_parent_ma_p_rec 
+MB_subsample1_new$famhx_ss_parent_dg_p_rec |         0 |         1 | Row Total | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         0 |      1117 |        19 |      1136 | 
+                                           |  1078.367 |    57.633 |           | 
+                                           |     1.384 |    25.897 |           | 
+                                           |     0.983 |     0.017 |     0.694 | 
+                                           |     0.719 |     0.229 |           | 
+                                           |     0.683 |     0.012 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         1 |       436 |        64 |       500 | 
+                                           |   474.633 |    25.367 |           | 
+                                           |     3.145 |    58.838 |           | 
+                                           |     0.872 |     0.128 |     0.306 | 
+                                           |     0.281 |     0.771 |           | 
+                                           |     0.267 |     0.039 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                              Column Total |      1553 |        83 |      1636 | 
+                                           |     0.949 |     0.051 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  89.26363     d.f. =  1     p =  3.455539e-21 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  86.96804     d.f. =  1     p =  1.102889e-20 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_dg_p_rec, MB_subsample1_new$famhx_ss_parent_vs_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1641 
+
+ 
+                                           | MB_subsample1_new$famhx_ss_parent_vs_p_rec 
+MB_subsample1_new$famhx_ss_parent_dg_p_rec |         0 |         1 | Row Total | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         0 |      1125 |        11 |      1136 | 
+                                           |  1113.848 |    22.152 |           | 
+                                           |     0.112 |     5.615 |           | 
+                                           |     0.990 |     0.010 |     0.692 | 
+                                           |     0.699 |     0.344 |           | 
+                                           |     0.686 |     0.007 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         1 |       484 |        21 |       505 | 
+                                           |   495.152 |     9.848 |           | 
+                                           |     0.251 |    12.630 |           | 
+                                           |     0.958 |     0.042 |     0.308 | 
+                                           |     0.301 |     0.656 |           | 
+                                           |     0.295 |     0.013 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                              Column Total |      1609 |        32 |      1641 | 
+                                           |     0.980 |     0.020 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  18.60726     d.f. =  1     p =  1.606075e-05 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  16.9762     d.f. =  1     p =  3.785128e-05 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_dg_p_rec, MB_subsample1_new$famhx_ss_parent_nrv_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1627 
+
+ 
+                                           | MB_subsample1_new$famhx_ss_parent_nrv_p_rec 
+MB_subsample1_new$famhx_ss_parent_dg_p_rec |         0 |         1 | Row Total | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         0 |      1083 |        43 |      1126 | 
+                                           |   986.202 |   139.798 |           | 
+                                           |     9.501 |    67.025 |           | 
+                                           |     0.962 |     0.038 |     0.692 | 
+                                           |     0.760 |     0.213 |           | 
+                                           |     0.666 |     0.026 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         1 |       342 |       159 |       501 | 
+                                           |   438.798 |    62.202 |           | 
+                                           |    21.354 |   150.638 |           | 
+                                           |     0.683 |     0.317 |     0.308 | 
+                                           |     0.240 |     0.787 |           | 
+                                           |     0.210 |     0.098 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                              Column Total |      1425 |       202 |      1627 | 
+                                           |     0.876 |     0.124 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  248.5173     d.f. =  1     p =  5.466109e-56 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  245.9566     d.f. =  1     p =  1.97682e-55 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_dg_p_rec, MB_subsample1_new$famhx_ss_parent_prf_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1641 
+
+ 
+                                           | MB_subsample1_new$famhx_ss_parent_prf_p_rec 
+MB_subsample1_new$famhx_ss_parent_dg_p_rec |         0 |         1 | Row Total | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         0 |       889 |       232 |      1121 | 
+                                           |   687.219 |   433.781 |           | 
+                                           |    59.247 |    93.862 |           | 
+                                           |     0.793 |     0.207 |     0.683 | 
+                                           |     0.884 |     0.365 |           | 
+                                           |     0.542 |     0.141 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         1 |       117 |       403 |       520 | 
+                                           |   318.781 |   201.219 |           | 
+                                           |   127.723 |   202.345 |           | 
+                                           |     0.225 |     0.775 |     0.317 | 
+                                           |     0.116 |     0.635 |           | 
+                                           |     0.071 |     0.246 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                              Column Total |      1006 |       635 |      1641 | 
+                                           |     0.613 |     0.387 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  483.1774     d.f. =  1     p =  4.348631e-107 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  480.7858     d.f. =  1     p =  1.441298e-106 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_dg_p_rec, MB_subsample1_new$famhx_ss_parent_hspd_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1635 
+
+ 
+                                           | MB_subsample1_new$famhx_ss_parent_hspd_p_rec 
+MB_subsample1_new$famhx_ss_parent_dg_p_rec |         0 |         1 | Row Total | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         0 |      1097 |        35 |      1132 | 
+                                           |  1023.993 |   108.007 |           | 
+                                           |     5.205 |    49.349 |           | 
+                                           |     0.969 |     0.031 |     0.692 | 
+                                           |     0.742 |     0.224 |           | 
+                                           |     0.671 |     0.021 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         1 |       382 |       121 |       503 | 
+                                           |   455.007 |    47.993 |           | 
+                                           |    11.714 |   111.060 |           | 
+                                           |     0.759 |     0.241 |     0.308 | 
+                                           |     0.258 |     0.776 |           | 
+                                           |     0.234 |     0.074 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                              Column Total |      1479 |       156 |      1635 | 
+                                           |     0.905 |     0.095 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  177.3287     d.f. =  1     p =  1.856471e-40 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  174.9081     d.f. =  1     p =  6.26998e-40 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_dg_p_rec, MB_subsample1_new$famhx_ss_parent_scd_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1626 
+
+ 
+                                           | MB_subsample1_new$famhx_ss_parent_scd_p_rec 
+MB_subsample1_new$famhx_ss_parent_dg_p_rec |         0 |         1 | Row Total | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         0 |      1121 |        11 |      1132 | 
+                                           |  1064.470 |    67.530 |           | 
+                                           |     3.002 |    47.322 |           | 
+                                           |     0.990 |     0.010 |     0.696 | 
+                                           |     0.733 |     0.113 |           | 
+                                           |     0.689 |     0.007 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         1 |       408 |        86 |       494 | 
+                                           |   464.530 |    29.470 |           | 
+                                           |     6.879 |   108.438 |           | 
+                                           |     0.826 |     0.174 |     0.304 | 
+                                           |     0.267 |     0.887 |           | 
+                                           |     0.251 |     0.053 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                              Column Total |      1529 |        97 |      1626 | 
+                                           |     0.940 |     0.060 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  165.6415     d.f. =  1     p =  6.624967e-38 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  162.7243     d.f. =  1     p =  2.873792e-37 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_dprs_p_rec, MB_subsample1_new$famhx_ss_parent_ma_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1645 
+
+ 
+                                             | MB_subsample1_new$famhx_ss_parent_ma_p_rec 
+MB_subsample1_new$famhx_ss_parent_dprs_p_rec |         0 |         1 | Row Total | 
+---------------------------------------------|-----------|-----------|-----------|
+                                           0 |      1428 |        40 |      1468 | 
+                                             |  1396.608 |    71.392 |           | 
+                                             |     0.706 |    13.804 |           | 
+                                             |     0.973 |     0.027 |     0.892 | 
+                                             |     0.912 |     0.500 |           | 
+                                             |     0.868 |     0.024 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+                                           1 |       137 |        40 |       177 | 
+                                             |   168.392 |     8.608 |           | 
+                                             |     5.852 |   114.484 |           | 
+                                             |     0.774 |     0.226 |     0.108 | 
+                                             |     0.088 |     0.500 |           | 
+                                             |     0.083 |     0.024 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+                                Column Total |      1565 |        80 |      1645 | 
+                                             |     0.951 |     0.049 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  134.845     d.f. =  1     p =  3.569839e-31 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  130.5837     d.f. =  1     p =  3.053862e-30 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_dprs_p_rec, MB_subsample1_new$famhx_ss_parent_vs_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1654 
+
+ 
+                                             | MB_subsample1_new$famhx_ss_parent_vs_p_rec 
+MB_subsample1_new$famhx_ss_parent_dprs_p_rec |         0 |         1 | Row Total | 
+---------------------------------------------|-----------|-----------|-----------|
+                                           0 |      1455 |        17 |      1472 | 
+                                             |  1443.521 |    28.479 |           | 
+                                             |     0.091 |     4.627 |           | 
+                                             |     0.988 |     0.012 |     0.890 | 
+                                             |     0.897 |     0.531 |           | 
+                                             |     0.880 |     0.010 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+                                           1 |       167 |        15 |       182 | 
+                                             |   178.479 |     3.521 |           | 
+                                             |     0.738 |    37.421 |           | 
+                                             |     0.918 |     0.082 |     0.110 | 
+                                             |     0.103 |     0.469 |           | 
+                                             |     0.101 |     0.009 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+                                Column Total |      1622 |        32 |      1654 | 
+                                             |     0.981 |     0.019 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  42.87681     d.f. =  1     p =  5.829774e-11 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  39.22287     d.f. =  1     p =  3.780861e-10 
+
+ 
+Warning messages:
+1: In chisq.test(t, correct = TRUE, ...) :
+  Chi-squared approximation may be incorrect
+2: In chisq.test(t, correct = FALSE, ...) :
+  Chi-squared approximation may be incorrect
+
+
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1644 
+
+ 
+                                             | MB_subsample1_new$famhx_ss_parent_nrv_p_rec 
+MB_subsample1_new$famhx_ss_parent_dprs_p_rec |         0 |         1 | Row Total | 
+---------------------------------------------|-----------|-----------|-----------|
+                                           0 |      1320 |       145 |      1465 | 
+                                             |  1291.232 |   173.768 |           | 
+                                             |     0.641 |     4.763 |           | 
+                                             |     0.901 |     0.099 |     0.891 | 
+                                             |     0.911 |     0.744 |           | 
+                                             |     0.803 |     0.088 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+                                           1 |       129 |        50 |       179 | 
+                                             |   157.768 |    21.232 |           | 
+                                             |     5.246 |    38.980 |           | 
+                                             |     0.721 |     0.279 |     0.109 | 
+                                             |     0.089 |     0.256 |           | 
+                                             |     0.078 |     0.030 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+                                Column Total |      1449 |       195 |      1644 | 
+                                             |     0.881 |     0.119 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  49.62935     d.f. =  1     p =  1.857142e-12 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  47.9192     d.f. =  1     p =  4.441503e-12 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_dprs_p_rec, MB_subsample1_new$famhx_ss_parent_prf_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1648 
+
+ 
+                                             | MB_subsample1_new$famhx_ss_parent_prf_p_rec 
+MB_subsample1_new$famhx_ss_parent_dprs_p_rec |         0 |         1 | Row Total | 
+---------------------------------------------|-----------|-----------|-----------|
+                                           0 |       958 |       500 |      1458 | 
+                                             |   901.518 |   556.482 |           | 
+                                             |     3.539 |     5.733 |           | 
+                                             |     0.657 |     0.343 |     0.885 | 
+                                             |     0.940 |     0.795 |           | 
+                                             |     0.581 |     0.303 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+                                           1 |        61 |       129 |       190 | 
+                                             |   117.482 |    72.518 |           | 
+                                             |    27.155 |    43.992 |           | 
+                                             |     0.321 |     0.679 |     0.115 | 
+                                             |     0.060 |     0.205 |           | 
+                                             |     0.037 |     0.078 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+                                Column Total |      1019 |       629 |      1648 | 
+                                             |     0.618 |     0.382 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  80.41789     d.f. =  1     p =  3.030394e-19 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  79.00041     d.f. =  1     p =  6.209717e-19 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_dprs_p_rec, MB_subsample1_new$famhx_ss_parent_hspd_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1644 
+
+ 
+                                             | MB_subsample1_new$famhx_ss_parent_hspd_p_rec 
+MB_subsample1_new$famhx_ss_parent_dprs_p_rec |         0 |         1 | Row Total | 
+---------------------------------------------|-----------|-----------|-----------|
+                                           0 |      1378 |        87 |      1465 | 
+                                             |  1332.223 |   132.777 |           | 
+                                             |     1.573 |    15.782 |           | 
+                                             |     0.941 |     0.059 |     0.891 | 
+                                             |     0.922 |     0.584 |           | 
+                                             |     0.838 |     0.053 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+                                           1 |       117 |        62 |       179 | 
+                                             |   162.777 |    16.223 |           | 
+                                             |    12.874 |   129.167 |           | 
+                                             |     0.654 |     0.346 |     0.109 | 
+                                             |     0.078 |     0.416 |           | 
+                                             |     0.071 |     0.038 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+                                Column Total |      1495 |       149 |      1644 | 
+                                             |     0.909 |     0.091 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  159.396     d.f. =  1     p =  1.53324e-36 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  155.933     d.f. =  1     p =  8.75598e-36 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_dprs_p_rec, MB_subsample1_new$famhx_ss_parent_scd_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1641 
+
+ 
+                                             | MB_subsample1_new$famhx_ss_parent_scd_p_rec 
+MB_subsample1_new$famhx_ss_parent_dprs_p_rec |         0 |         1 | Row Total | 
+---------------------------------------------|-----------|-----------|-----------|
+                                           0 |      1412 |        50 |      1462 | 
+                                             |  1380.926 |    81.074 |           | 
+                                             |     0.699 |    11.910 |           | 
+                                             |     0.966 |     0.034 |     0.891 | 
+                                             |     0.911 |     0.549 |           | 
+                                             |     0.860 |     0.030 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+                                           1 |       138 |        41 |       179 | 
+                                             |   169.074 |     9.926 |           | 
+                                             |     5.711 |    97.275 |           | 
+                                             |     0.771 |     0.229 |     0.109 | 
+                                             |     0.089 |     0.451 |           | 
+                                             |     0.084 |     0.025 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+                                Column Total |      1550 |        91 |      1641 | 
+                                             |     0.945 |     0.055 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  115.595     d.f. =  1     p =  5.829732e-27 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  111.9049     d.f. =  1     p =  3.748596e-26 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_ma_p_rec, MB_subsample1_new$famhx_ss_parent_vs_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1656 
+
+ 
+                                           | MB_subsample1_new$famhx_ss_parent_vs_p_rec 
+MB_subsample1_new$famhx_ss_parent_ma_p_rec |         0 |         1 | Row Total | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         0 |      1558 |        17 |      1575 | 
+                                           |  1545.516 |    29.484 |           | 
+                                           |     0.101 |     5.286 |           | 
+                                           |     0.989 |     0.011 |     0.951 | 
+                                           |     0.959 |     0.548 |           | 
+                                           |     0.941 |     0.010 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         1 |        67 |        14 |        81 | 
+                                           |    79.484 |     1.516 |           | 
+                                           |     1.961 |   102.778 |           | 
+                                           |     0.827 |     0.173 |     0.049 | 
+                                           |     0.041 |     0.452 |           | 
+                                           |     0.040 |     0.008 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                              Column Total |      1625 |        31 |      1656 | 
+                                           |     0.981 |     0.019 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  110.1252     d.f. =  1     p =  9.19932e-26 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  101.4803     d.f. =  1     p =  7.217634e-24 
+
+ 
+Warning messages:
+1: In chisq.test(t, correct = TRUE, ...) :
+  Chi-squared approximation may be incorrect
+2: In chisq.test(t, correct = FALSE, ...) :
+  Chi-squared approximation may be incorrect
+> CrossTable(MB_subsample1_new$famhx_ss_parent_ma_p_rec, MB_subsample1_new$famhx_ss_parent_nrv_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1636 
+
+ 
+                                           | MB_subsample1_new$famhx_ss_parent_nrv_p_rec 
+MB_subsample1_new$famhx_ss_parent_ma_p_rec |         0 |         1 | Row Total | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         0 |      1403 |       152 |      1555 | 
+                                           |  1373.457 |   181.543 |           | 
+                                           |     0.635 |     4.808 |           | 
+                                           |     0.902 |     0.098 |     0.950 | 
+                                           |     0.971 |     0.796 |           | 
+                                           |     0.858 |     0.093 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         1 |        42 |        39 |        81 | 
+                                           |    71.543 |     9.457 |           | 
+                                           |    12.200 |    92.297 |           | 
+                                           |     0.519 |     0.481 |     0.050 | 
+                                           |     0.029 |     0.204 |           | 
+                                           |     0.026 |     0.024 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                              Column Total |      1445 |       191 |      1636 | 
+                                           |     0.883 |     0.117 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  109.9396     d.f. =  1     p =  1.010221e-25 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  106.2498     d.f. =  1     p =  6.500228e-25 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_ma_p_rec, MB_subsample1_new$famhx_ss_parent_prf_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1634 
+
+ 
+                                           | MB_subsample1_new$famhx_ss_parent_prf_p_rec 
+MB_subsample1_new$famhx_ss_parent_ma_p_rec |         0 |         1 | Row Total | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         0 |      1002 |       550 |      1552 | 
+                                           |   962.164 |   589.836 |           | 
+                                           |     1.649 |     2.690 |           | 
+                                           |     0.646 |     0.354 |     0.950 | 
+                                           |     0.989 |     0.886 |           | 
+                                           |     0.613 |     0.337 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         1 |        11 |        71 |        82 | 
+                                           |    50.836 |    31.164 |           | 
+                                           |    31.216 |    50.921 |           | 
+                                           |     0.134 |     0.866 |     0.050 | 
+                                           |     0.011 |     0.114 |           | 
+                                           |     0.007 |     0.043 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                              Column Total |      1013 |       621 |      1634 | 
+                                           |     0.620 |     0.380 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  86.47701     d.f. =  1     p =  1.413712e-20 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  84.31981     d.f. =  1     p =  4.208773e-20 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_ma_p_rec, MB_subsample1_new$famhx_ss_parent_hspd_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1637 
+
+ 
+                                           | MB_subsample1_new$famhx_ss_parent_hspd_p_rec 
+MB_subsample1_new$famhx_ss_parent_ma_p_rec |         0 |         1 | Row Total | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         0 |      1450 |       108 |      1558 | 
+                                           |  1413.335 |   144.665 |           | 
+                                           |     0.951 |     9.292 |           | 
+                                           |     0.931 |     0.069 |     0.952 | 
+                                           |     0.976 |     0.711 |           | 
+                                           |     0.886 |     0.066 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         1 |        35 |        44 |        79 | 
+                                           |    71.665 |     7.335 |           | 
+                                           |    18.758 |   183.262 |           | 
+                                           |     0.443 |     0.557 |     0.048 | 
+                                           |     0.024 |     0.289 |           | 
+                                           |     0.021 |     0.027 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                              Column Total |      1485 |       152 |      1637 | 
+                                           |     0.907 |     0.093 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  212.2639     d.f. =  1     p =  4.405205e-48 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  206.514     d.f. =  1     p =  7.914805e-47 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_ma_p_rec, MB_subsample1_new$famhx_ss_parent_scd_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1639 
+
+ 
+                                           | MB_subsample1_new$famhx_ss_parent_scd_p_rec 
+MB_subsample1_new$famhx_ss_parent_ma_p_rec |         0 |         1 | Row Total | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         0 |      1493 |        70 |      1563 | 
+                                           |  1473.359 |    89.641 |           | 
+                                           |     0.262 |     4.304 |           | 
+                                           |     0.955 |     0.045 |     0.954 | 
+                                           |     0.966 |     0.745 |           | 
+                                           |     0.911 |     0.043 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         1 |        52 |        24 |        76 | 
+                                           |    71.641 |     4.359 |           | 
+                                           |     5.385 |    88.507 |           | 
+                                           |     0.684 |     0.316 |     0.046 | 
+                                           |     0.034 |     0.255 |           | 
+                                           |     0.032 |     0.015 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                              Column Total |      1545 |        94 |      1639 | 
+                                           |     0.943 |     0.057 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  98.45686     d.f. =  1     p =  3.321836e-23 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  93.5079     d.f. =  1     p =  4.045825e-22 
+
+ 
+Warning messages:
+1: In chisq.test(t, correct = TRUE, ...) :
+  Chi-squared approximation may be incorrect
+2: In chisq.test(t, correct = FALSE, ...) :
+  Chi-squared approximation may be incorrect
+> CrossTable(MB_subsample1_new$famhx_ss_parent_vs_p_rec, MB_subsample1_new$famhx_ss_parent_nrv_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1644 
+
+ 
+                                           | MB_subsample1_new$famhx_ss_parent_nrv_p_rec 
+MB_subsample1_new$famhx_ss_parent_vs_p_rec |         0 |         1 | Row Total | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         0 |      1436 |       178 |      1614 | 
+                                           |  1423.540 |   190.460 |           | 
+                                           |     0.109 |     0.815 |           | 
+                                           |     0.890 |     0.110 |     0.982 | 
+                                           |     0.990 |     0.918 |           | 
+                                           |     0.873 |     0.108 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         1 |        14 |        16 |        30 | 
+                                           |    26.460 |     3.540 |           | 
+                                           |     5.867 |    43.854 |           | 
+                                           |     0.467 |     0.533 |     0.018 | 
+                                           |     0.010 |     0.082 |           | 
+                                           |     0.009 |     0.010 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                              Column Total |      1450 |       194 |      1644 | 
+                                           |     0.882 |     0.118 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  50.64503     d.f. =  1     p =  1.106764e-12 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  46.66193     d.f. =  1     p =  8.435198e-12 
+
+ 
+Warning messages:
+1: In chisq.test(t, correct = TRUE, ...) :
+  Chi-squared approximation may be incorrect
+2: In chisq.test(t, correct = FALSE, ...) :
+  Chi-squared approximation may be incorrect
+> CrossTable(MB_subsample1_new$famhx_ss_parent_vs_p_rec, MB_subsample1_new$famhx_ss_parent_prf_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1640 
+
+ 
+                                           | MB_subsample1_new$famhx_ss_parent_prf_p_rec 
+MB_subsample1_new$famhx_ss_parent_vs_p_rec |         0 |         1 | Row Total | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         0 |      1013 |       594 |      1607 | 
+                                           |   999.476 |   607.524 |           | 
+                                           |     0.183 |     0.301 |           | 
+                                           |     0.630 |     0.370 |     0.980 | 
+                                           |     0.993 |     0.958 |           | 
+                                           |     0.618 |     0.362 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         1 |         7 |        26 |        33 | 
+                                           |    20.524 |    12.476 |           | 
+                                           |     8.912 |    14.661 |           | 
+                                           |     0.212 |     0.788 |     0.020 | 
+                                           |     0.007 |     0.042 |           | 
+                                           |     0.004 |     0.016 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                              Column Total |      1020 |       620 |      1640 | 
+                                           |     0.622 |     0.378 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  24.05721     d.f. =  1     p =  9.351546e-07 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  22.31129     d.f. =  1     p =  2.318396e-06 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_vs_p_rec, MB_subsample1_new$famhx_ss_parent_hspd_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1646 
+
+ 
+                                           | MB_subsample1_new$famhx_ss_parent_hspd_p_rec 
+MB_subsample1_new$famhx_ss_parent_vs_p_rec |         0 |         1 | Row Total | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         0 |      1480 |       136 |      1616 | 
+                                           |  1469.716 |   146.284 |           | 
+                                           |     0.072 |     0.723 |           | 
+                                           |     0.916 |     0.084 |     0.982 | 
+                                           |     0.989 |     0.913 |           | 
+                                           |     0.899 |     0.083 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         1 |        17 |        13 |        30 | 
+                                           |    27.284 |     2.716 |           | 
+                                           |     3.876 |    38.947 |           | 
+                                           |     0.567 |     0.433 |     0.018 | 
+                                           |     0.011 |     0.087 |           | 
+                                           |     0.010 |     0.008 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                              Column Total |      1497 |       149 |      1646 | 
+                                           |     0.909 |     0.091 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  43.61847     d.f. =  1     p =  3.990544e-11 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  39.48032     d.f. =  1     p =  3.313831e-10 
+
+ 
+Warning messages:
+1: In chisq.test(t, correct = TRUE, ...) :
+  Chi-squared approximation may be incorrect
+2: In chisq.test(t, correct = FALSE, ...) :
+  Chi-squared approximation may be incorrect
+
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1648 
+
+ 
+                                           | MB_subsample1_new$famhx_ss_parent_scd_p_rec 
+MB_subsample1_new$famhx_ss_parent_vs_p_rec |         0 |         1 | Row Total | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         0 |      1538 |        81 |      1619 | 
+                                           |  1531.566 |    87.434 |           | 
+                                           |     0.027 |     0.473 |           | 
+                                           |     0.950 |     0.050 |     0.982 | 
+                                           |     0.987 |     0.910 |           | 
+                                           |     0.933 |     0.049 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                                         1 |        21 |         8 |        29 | 
+                                           |    27.434 |     1.566 |           | 
+                                           |     1.509 |    26.431 |           | 
+                                           |     0.724 |     0.276 |     0.018 | 
+                                           |     0.013 |     0.090 |           | 
+                                           |     0.013 |     0.005 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+                              Column Total |      1559 |        89 |      1648 | 
+                                           |     0.946 |     0.054 |           | 
+-------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  28.44027     d.f. =  1     p =  9.663405e-08 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  24.19163     d.f. =  1     p =  8.721047e-07 
+
+ 
+Warning messages:
+1: In chisq.test(t, correct = TRUE, ...) :
+  Chi-squared approximation may be incorrect
+2: In chisq.test(t, correct = FALSE, ...) :
+  Chi-squared approximation may be incorrect
+> CrossTable(MB_subsample1_new$famhx_ss_parent_nrv_p_rec, MB_subsample1_new$famhx_ss_parent_prf_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1638 
+
+ 
+                                            | MB_subsample1_new$famhx_ss_parent_prf_p_rec 
+MB_subsample1_new$famhx_ss_parent_nrv_p_rec |         0 |         1 | Row Total | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          0 |       986 |       451 |      1437 | 
+                                            |   892.203 |   544.797 |           | 
+                                            |     9.861 |    16.149 |           | 
+                                            |     0.686 |     0.314 |     0.877 | 
+                                            |     0.970 |     0.726 |           | 
+                                            |     0.602 |     0.275 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          1 |        31 |       170 |       201 | 
+                                            |   124.797 |    76.203 |           | 
+                                            |    70.497 |   115.452 |           | 
+                                            |     0.154 |     0.846 |     0.123 | 
+                                            |     0.030 |     0.274 |           | 
+                                            |     0.019 |     0.104 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                               Column Total |      1017 |       621 |      1638 | 
+                                            |     0.621 |     0.379 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  211.9588     d.f. =  1     p =  5.13475e-48 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  209.7051     d.f. =  1     p =  1.592992e-47 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_nrv_p_rec, MB_subsample1_new$famhx_ss_parent_hspd_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1636 
+
+ 
+                                            | MB_subsample1_new$famhx_ss_parent_hspd_p_rec 
+MB_subsample1_new$famhx_ss_parent_nrv_p_rec |         0 |         1 | Row Total | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          0 |      1354 |        87 |      1441 | 
+                                            |  1309.760 |   131.240 |           | 
+                                            |     1.494 |    14.913 |           | 
+                                            |     0.940 |     0.060 |     0.881 | 
+                                            |     0.911 |     0.584 |           | 
+                                            |     0.828 |     0.053 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          1 |       133 |        62 |       195 | 
+                                            |   177.240 |    17.760 |           | 
+                                            |    11.043 |   110.204 |           | 
+                                            |     0.682 |     0.318 |     0.119 | 
+                                            |     0.089 |     0.416 |           | 
+                                            |     0.081 |     0.038 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                               Column Total |      1487 |       149 |      1636 | 
+                                            |     0.909 |     0.091 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  137.6539     d.f. =  1     p =  8.675096e-32 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  134.56     d.f. =  1     p =  4.120771e-31 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_nrv_p_rec, MB_subsample1_new$famhx_ss_parent_scd_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1634 
+
+ 
+                                            | MB_subsample1_new$famhx_ss_parent_scd_p_rec 
+MB_subsample1_new$famhx_ss_parent_nrv_p_rec |         0 |         1 | Row Total | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          0 |      1398 |        47 |      1445 | 
+                                            |  1367.179 |    77.821 |           | 
+                                            |     0.695 |    12.207 |           | 
+                                            |     0.967 |     0.033 |     0.884 | 
+                                            |     0.904 |     0.534 |           | 
+                                            |     0.856 |     0.029 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          1 |       148 |        41 |       189 | 
+                                            |   178.821 |    10.179 |           | 
+                                            |     5.312 |    93.327 |           | 
+                                            |     0.783 |     0.217 |     0.116 | 
+                                            |     0.096 |     0.466 |           | 
+                                            |     0.091 |     0.025 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                               Column Total |      1546 |        88 |      1634 | 
+                                            |     0.946 |     0.054 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  111.5414     d.f. =  1     p =  4.50298e-26 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  107.9518     d.f. =  1     p =  2.753942e-25 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_prf_p_rec, MB_subsample1_new$famhx_ss_parent_hspd_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1643 
+
+ 
+                                            | MB_subsample1_new$famhx_ss_parent_hspd_p_rec 
+MB_subsample1_new$famhx_ss_parent_prf_p_rec |         0 |         1 | Row Total | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          0 |      1003 |        16 |      1019 | 
+                                            |   920.387 |    98.613 |           | 
+                                            |     7.415 |    69.209 |           | 
+                                            |     0.984 |     0.016 |     0.620 | 
+                                            |     0.676 |     0.101 |           | 
+                                            |     0.610 |     0.010 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          1 |       481 |       143 |       624 | 
+                                            |   563.613 |    60.387 |           | 
+                                            |    12.109 |   113.019 |           | 
+                                            |     0.771 |     0.229 |     0.380 | 
+                                            |     0.324 |     0.899 |           | 
+                                            |     0.293 |     0.087 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                               Column Total |      1484 |       159 |      1643 | 
+                                            |     0.903 |     0.097 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  201.7524     d.f. =  1     p =  8.658289e-46 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  199.3176     d.f. =  1     p =  2.942675e-45 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_prf_p_rec, MB_subsample1_new$famhx_ss_parent_scd_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1624 
+
+ 
+                                            | MB_subsample1_new$famhx_ss_parent_scd_p_rec 
+MB_subsample1_new$famhx_ss_parent_prf_p_rec |         0 |         1 | Row Total | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          0 |      1009 |         9 |      1018 | 
+                                            |   957.823 |    60.177 |           | 
+                                            |     2.734 |    43.523 |           | 
+                                            |     0.991 |     0.009 |     0.627 | 
+                                            |     0.660 |     0.094 |           | 
+                                            |     0.621 |     0.006 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                                          1 |       519 |        87 |       606 | 
+                                            |   570.177 |    35.823 |           | 
+                                            |     4.594 |    73.114 |           | 
+                                            |     0.856 |     0.144 |     0.373 | 
+                                            |     0.340 |     0.906 |           | 
+                                            |     0.320 |     0.054 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+                               Column Total |      1528 |        96 |      1624 | 
+                                            |     0.941 |     0.059 |           | 
+--------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  123.9648     d.f. =  1     p =  8.574994e-29 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  121.5544     d.f. =  1     p =  2.889672e-28 
+
+ 
+> CrossTable(MB_subsample1_new$famhx_ss_parent_hspd_p_rec, MB_subsample1_new$famhx_ss_parent_scd_p_rec, 
++            expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
++            chisq=TRUE, missing.include=FALSE,
++            format=c("SAS","SPSS"), dnn = NULL)
+
+ 
+   Cell Contents
+|-------------------------|
+|                       N |
+|              Expected N |
+| Chi-square contribution |
+|           N / Row Total |
+|           N / Col Total |
+|         N / Table Total |
+|-------------------------|
+
+ 
+Total Observations in Table:  1635 
+
+ 
+                                             | MB_subsample1_new$famhx_ss_parent_scd_p_rec 
+MB_subsample1_new$famhx_ss_parent_hspd_p_rec |         0 |         1 | Row Total | 
+---------------------------------------------|-----------|-----------|-----------|
+                                           0 |      1453 |        40 |      1493 | 
+                                             |  1408.077 |    84.923 |           | 
+                                             |     1.433 |    23.764 |           | 
+                                             |     0.973 |     0.027 |     0.913 | 
+                                             |     0.942 |     0.430 |           | 
+                                             |     0.889 |     0.024 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+                                           1 |        89 |        53 |       142 | 
+                                             |   133.923 |     8.077 |           | 
+                                             |    15.069 |   249.852 |           | 
+                                             |     0.627 |     0.373 |     0.087 | 
+                                             |     0.058 |     0.570 |           | 
+                                             |     0.054 |     0.032 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+                                Column Total |      1542 |        93 |      1635 | 
+                                             |     0.943 |     0.057 |           | 
+---------------------------------------------|-----------|-----------|-----------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  290.1176     d.f. =  1     p =  4.687433e-65 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  283.6954     d.f. =  1     p =  1.175766e-63 
