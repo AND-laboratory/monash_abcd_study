@@ -50,6 +50,356 @@ write.csv(subsample1_corr$P, file = "MB_subsample1_ps.csv")
 
 # Note - eventually need to insert Chrysa's cross tabs / chi-squared code here for the binary variables
 
+# 2-Way Cross Tabulation - Life EVents Scale (parent/youth) - MB_subsample1_new
+library(gmodels)
+
+CrossTable(MB_subsample1_new$ple_died_p_bad, MB_subsample1_new$ple_died_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_injured_p_bad, MB_subsample1_new$ple_injured_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)           
+
+CrossTable(MB_subsample1_new$ple_crime_p_bad, MB_subsample1_new$ple_crime_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_friend_p_bad, MB_subsample1_new$ple_friend_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_friend_injur_p_bad, MB_subsample1_new$ple_friend_injur_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_financial_p_bad, MB_subsample1_new$ple_financial_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_sud_p_bad, MB_subsample1_new$ple_sud_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_ill_p_bad, MB_subsample1_new$ple_ill_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_injur_p_bad, MB_subsample1_new$ple_injur_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_argue_p_bad, MB_subsample1_new$ple_argue_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_job_p_bad, MB_subsample1_new$ple_job_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_away_p_bad, MB_subsample1_new$ple_away_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_arrest_p_bad, MB_subsample1_new$ple_arrest_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_friend_died_p_bad, MB_subsample1_new$ple_friend_died_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_mh_p_bad, MB_subsample1_new$ple_mh_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_sib_p_bad, MB_subsample1_new$ple_sib_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_victim_p_bad, MB_subsample1_new$ple_victim_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_separ_p_bad, MB_subsample1_new$ple_separ_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_law_p_bad, MB_subsample1_new$ple_law_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_school_p_bad, MB_subsample1_new$ple_school_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_move_p_bad, MB_subsample1_new$ple_move_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_jail_p_bad, MB_subsample1_new$ple_jail_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_step_p_bad, MB_subsample1_new$ple_step_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_new_job_p_bad, MB_subsample1_new$ple_new_job_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_new_sib_p_bad, MB_subsample1_new$ple_new_sib_y_bad, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+## 2-Way Cross Tabulation - arrest/jail/law/trouble holding job,fights,police items - MB_subsample1_new
+
+CrossTable(MB_subsample1_new$ple_arrest_y_bad, 
+           MB_subsample1_new$ple_law_y_bad,  
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_arrest_y_bad, 
+           MB_subsample1_new$ple_jail_y_bad,  
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_arrest_y_bad, 
+           MB_subsample1_new$famhx_ss_parent_trb_p_rec,  
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_law_y_bad, 
+           MB_subsample1_new$ple_jail_y_bad,  
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_law_y_bad, 
+           MB_subsample1_new$famhx_ss_parent_trb_p_rec,  
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$ple_jail_y_bad, 
+           MB_subsample1_new$famhx_ss_parent_trb_p_rec,  
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+
+## 2-Way Cross Tabulation - parent mental illness & substance abuse items (Family History) - MB_subsample1_new
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_alc_p_rec, MB_subsample1_new$famhx_ss_parent_dg_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_alc_p_rec, MB_subsample1_new$famhx_ss_parent_dprs_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_alc_p_rec, MB_subsample1_new$famhx_ss_parent_ma_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_alc_p_rec, MB_subsample1_new$famhx_ss_parent_vs_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_alc_p_rec, MB_subsample1_new$famhx_ss_parent_nrv_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_alc_p_rec, MB_subsample1_new$famhx_ss_parent_prf_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_alc_p_rec, MB_subsample1_new$famhx_ss_parent_hspd_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_alc_p_rec, MB_subsample1_new$famhx_ss_parent_scd_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_dg_p_rec, MB_subsample1_new$famhx_ss_parent_dprs_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_dg_p_rec, MB_subsample1_new$famhx_ss_parent_ma_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_dg_p_rec, MB_subsample1_new$famhx_ss_parent_vs_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_dg_p_rec, MB_subsample1_new$famhx_ss_parent_nrv_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_dg_p_rec, MB_subsample1_new$famhx_ss_parent_prf_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_dg_p_rec, MB_subsample1_new$famhx_ss_parent_hspd_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_dg_p_rec, MB_subsample1_new$famhx_ss_parent_scd_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_dprs_p_rec, MB_subsample1_new$famhx_ss_parent_ma_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_dprs_p_rec, MB_subsample1_new$famhx_ss_parent_vs_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_dprs_p_rec, MB_subsample1_new$famhx_ss_parent_nrv_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_dprs_p_rec, MB_subsample1_new$famhx_ss_parent_prf_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_dprs_p_rec, MB_subsample1_new$famhx_ss_parent_hspd_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_dprs_p_rec, MB_subsample1_new$famhx_ss_parent_scd_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_ma_p_rec, MB_subsample1_new$famhx_ss_parent_vs_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_ma_p_rec, MB_subsample1_new$famhx_ss_parent_nrv_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_ma_p_rec, MB_subsample1_new$famhx_ss_parent_prf_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_ma_p_rec, MB_subsample1_new$famhx_ss_parent_hspd_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_ma_p_rec, MB_subsample1_new$famhx_ss_parent_scd_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_vs_p_rec, MB_subsample1_new$famhx_ss_parent_nrv_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_vs_p_rec, MB_subsample1_new$famhx_ss_parent_prf_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_vs_p_rec, MB_subsample1_new$famhx_ss_parent_hspd_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_vs_p_rec, MB_subsample1_new$famhx_ss_parent_scd_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_nrv_p_rec, MB_subsample1_new$famhx_ss_parent_prf_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_nrv_p_rec, MB_subsample1_new$famhx_ss_parent_hspd_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_nrv_p_rec, MB_subsample1_new$famhx_ss_parent_scd_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_prf_p_rec, MB_subsample1_new$famhx_ss_parent_hspd_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_prf_p_rec, MB_subsample1_new$famhx_ss_parent_scd_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+CrossTable(MB_subsample1_new$famhx_ss_parent_hspd_p_rec, MB_subsample1_new$famhx_ss_parent_scd_p_rec, 
+           expected=TRUE, prop.r=TRUE, prop.c=TRUE, prop.t=TRUE, prop.chisq=TRUE, 
+           chisq=TRUE, missing.include=FALSE,
+           format=c("SAS","SPSS"), dnn = NULL)
+
+
 # LIST OF ALL VARIABLES HERE. NOTE THAT THE MODELS BELOW ALREADY ~~REMOVED ALL PARENT REPORT LIFE EVENTS~~, BUT THEY ARE LISTED HERE:
 #
 # demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + 	famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_p_bad + ple_injured_p_bad + ple_crime_p_bad + 	ple_friend_p_bad + ple_friend_injur_p_bad + ple_financial_p_bad + ple_sud_p_bad + 	ple_ill_p_bad + ple_injur_p_bad + ple_argue_p_bad + ple_job_p_bad + ple_away_p_bad + 	ple_arrest_p_bad + ple_friend_died_p_bad + ple_mh_p_bad + ple_sib_p_bad + ple_victim_p_bad + ple_separ_p_bad + ple_law_p_bad + ple_school_p_bad + ple_move_p_bad + ple_jail_p_bad + 	ple_step_p_bad + ple_new_job_p_bad + ple_new_sib_p_bad + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + 	fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
