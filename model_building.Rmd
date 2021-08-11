@@ -409,14 +409,14 @@ CrossTable(MB_subsample1_new$famhx_ss_parent_hspd_p_rec, MB_subsample1_new$famhx
 
 
 
-```{r efa lavaan}
+```{r efa lavaan adversity factor}
 # First we set up an EFA to see really how many factors there should be. We hope that one day we can fit all indicators onto one predefined adversity var in a CFA (later in code). But first we need to do these EFAs.
 # See: https://vankesteren.github.io/efast/efa_lavaan 
 # And: https://stats.stackexchange.com/questions/190190/can-lavaan-sem-cfa-be-used-to-do-factor-analysis-like-factanal-efa
 # And: https://solomonkurz.netlify.app/post/2021-05-11-yes-you-can-fit-an-exploratory-factor-analysis-with-lavaan/
 # OR possibly with the psych package first, just to do plain factor analysis (so don't constrain/pre-decide the number of factors?)
 
-# UPDATE: None of the lavaan EFAs below work because of something to do with missing values. Moved on to psych FA below.
+# UPDATE: None of the lavaan EFAs below work with WLSMV because of something to do with missing values. They work with MLR and non-ordered but are not identified.
 
 # Here first is set up for EFA with just one factor
 f1 <- '
@@ -429,7 +429,7 @@ efa_f1 <-
       data = MB_subsample1,
       rotation = "oblimin",
       estimator = "WLSMV",
-      missing = "pairwise",
+      mimic = "Mplus",
       ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
                   "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
                   "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
@@ -460,19 +460,10 @@ efa_f2 <-
   cfa(model = f2,
       data = MB_subsample1,
       rotation = "oblimin",
-      estimator = "WLSMV",
-      missing = "pairwise",
-      ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
-                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
-                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
-                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
-                  "famhx_ss_parent_scd_p_rec","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
-                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
-                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
-                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
-                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
-                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      estimator = "MLR",
+      mimic = "Mplus",
       )
+summary(efa_f2, fit.measures = TRUE)
 
 f3 <- '
 efa("efa")*f1 +
@@ -798,6 +789,7 @@ fit_model1_nocov <- cfa(model = model1_nocov,
                   data = MB_subsample1,
                   estimator = "WLSMV",
                   missing = "pairwise",
+                  mimic = "Mplus",
                   ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
                   "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
                   "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
@@ -951,4 +943,268 @@ fit_model1_cov <- cfa(model = model1_cov,
 summary(fit_model1_cov)
 ```
 
+
+## We can't seem to get all these indicators loaded onto one super (adversity) factor, so in this next part we will try five separate factor analyses, one for each domain of ACES: "Abuse", "Household challenges", "Neglect", "Stressful events", and "Social environment"
+
+```{r efa lavaan domain factors}
+
+# ----- ABUSE -----
+# Physical abuse: "ksads_ptsd_raw_761_p", "ksads_ptsd_raw_763_p", 
+# Sexual abuse: "ksads_ptsd_raw_767_p", "ksads_ptsd_raw_768_p", "ksads_ptsd_raw_769_p"
+
+abuse_f1 <- '
+efa("efa")*abuse_f1 =~ 
+ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p 
+'
+efa_abuse_f1 <- 
+  cfa(model = abuse_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+summary(efa_abuse_f1, fit.measures = TRUE)
+
+efa_abuse_f1_mlr <- 
+  cfa(model = abuse_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "MLR",
+      mimic = "Mplus",
+      )
+summary(efa_abuse_f1_mlr, fit.measures = TRUE)
+# Both methods for f1 warning
+#    The variance-covariance matrix of the estimated parameters (vcov)
+#    does not appear to be positive definite! The smallest eigenvalue
+#    (= -8.822038e-20) is smaller than zero. This may be a symptom that
+#    the model is not identified.
+    
+abuse_f2 <- '
+efa("efa")*abuse_f1 +
+efa("efa")*abuse_f2 =~ 
+ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p 
+'
+efa_abuse_f2 <- 
+  cfa(model = abuse_f2,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+summary(efa_abuse_f2, fit.measures = TRUE)
+
+# Increasing factors doesn't fix the identification problem
+
+
+# ----- HOUSEHOLD CHALLENGES -----
+# Home violence exposure: "ksads_ptsd_raw_766_p"
+# Household substance abuse: "famhx_ss_parent_alc_p_rec", "famhx_ss_parent_dg_p_rec""
+# Parent Mental illness in household: "famhx_ss_parent_dprs_p_rec", "famhx_ss_parent_ma_p_rec", "famhx_ss_parent_vs_p_rec", "famhx_ss_parent_trb_p_rec", "famhx_ss_parent_nrv_p_rec", "famhx_ss_parent_prf_p_rec", "famhx_ss_parent_hspd_p_rec", "famhx_ss_parent_scd_p_rec", "asr_scr_totprob_t_z"
+# Family conflict: "fes_p_ss_fc_z", "fes_y_ss_fc_z"
+# Family income: "demo_comb_income_v2_rec_rev_Z"
+# Economic hardship: "demo_fam_exp2_v2_rec", "demo_fam_exp3_v2_rec", "demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec", "demo_fam_exp6_v2_rec", "demo_fam_exp7_v2_rec"
+
+household_f1 <- '
+efa("efa")*household_f1 =~ 
+ksads_ptsd_raw_766_p + famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
+'
+efa_household_f1 <- 
+  cfa(model = household_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_766_p", "famhx_ss_parent_alc_p_rec", "famhx_ss_parent_dg_p_rec", "famhx_ss_parent_dprs_p_rec", "famhx_ss_parent_ma_p_rec", "famhx_ss_parent_vs_p_rec", "famhx_ss_parent_trb_p_rec", "famhx_ss_parent_nrv_p_rec", "famhx_ss_parent_prf_p_rec", "famhx_ss_parent_hspd_p_rec", "famhx_ss_parent_scd_p_rec", "demo_fam_exp2_v2_rec", "demo_fam_exp3_v2_rec", "demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec", "demo_fam_exp6_v2_rec", "demo_fam_exp7_v2_rec")
+      )
+summary(efa_household_f1, fit.measures = TRUE)
+# NaNs producedError in eigen(A, symmetric = TRUE, only.values = TRUE) : 
+#  infinite or missing values in 'x'
+
+efa_household_f1_mlr <- 
+  cfa(model = household_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "MLR",
+      missing = "ML",
+      mimic = "Mplus",
+      )
+summary(efa_household_f1_mlr, fit.measures = TRUE)
+
+# ----- NEGLECT -----
+# Emotional neglect: "crpbi_y_ss_parent_rev_z", "crpbi_y_ss_caregiver_rev_z"
+# Physical neglect: "pmq_y_ss_mean_rev_z"
+
+neglect_f1 <- '
+efa("efa")*neglect_f1 =~ 
+crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z
+'
+efa_neglect_f1_mlr <- 
+  cfa(model = neglect_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "MLR",
+      missing = "ML",
+      mimic = "Mplus",
+      )
+summary(efa_neglect_f1_mlr, fit.measures = TRUE)
+# 1 factor ran but chi-sq is significant.
+
+neglect_f2 <- '
+efa("efa")*neglect_f1 +
+efa("efa")*neglect_f2 =~ 
+crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z
+'
+efa_neglect_f2_mlr <- 
+  cfa(model = neglect_f2,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "MLR",
+      missing = "ML",
+      mimic = "Mplus",
+      )
+summary(efa_neglect_f2_mlr, fit.measures = TRUE)
+# The variance-covariance matrix of the estimated parameters (vcov)
+#    does not appear to be positive definite! The smallest eigenvalue
+#    (= -1.004072e-04) is smaller than zero. This may be a symptom that
+#    the model is not identified.
+
+
+
+# ----- STRESSFUL EVENTS -----
+# Stressors: '"ple_died_y_bad", "ple_injured_y_bad", "ple_crime_y_bad", "ple_friend_y_bad", "ple_friend_injur_y_bad", "ple_financial_y_bad", "ple_sud_y_bad", "ple_ill_y_bad", "ple_injur_y_bad", "ple_argue_y_bad", "ple_job_y_bad", "ple_away_y_bad", "ple_arrest_y_bad", "ple_friend_died_y_bad", "ple_mh_y_bad", "ple_sib_y_bad", "ple_victim_y_bad", "ple_separ_y_bad", "ple_law_y_bad", "ple_school_y_bad", "ple_move_y_bad", "ple_jail_y_bad", "ple_step_y_bad", "ple_new_job_y_bad", "ple_new_sib_y_bad"
+
+stress_f1 <- '
+efa("efa")*stress_f1 =~ 
+ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+'
+efa_stress_f1 <- 
+  cfa(model = stress_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ple_died_y_bad", "ple_injured_y_bad", "ple_crime_y_bad", "ple_friend_y_bad", "ple_friend_injur_y_bad", "ple_financial_y_bad", "ple_sud_y_bad", "ple_ill_y_bad", "ple_injur_y_bad", "ple_argue_y_bad", "ple_job_y_bad", "ple_away_y_bad", "ple_arrest_y_bad", "ple_friend_died_y_bad", "ple_mh_y_bad", "ple_sib_y_bad", "ple_victim_y_bad", "ple_separ_y_bad", "ple_law_y_bad", "ple_school_y_bad", "ple_move_y_bad", "ple_jail_y_bad", "ple_step_y_bad", "ple_new_job_y_bad", "ple_new_sib_y_bad")
+      )
+summary(efa_stress_f1, fit.measures = TRUE)
+
+# NaNs producedError in chol.default(tcrossprod(HEAD)) : 
+#  the leading minor of order 1 is not positive definite
+
+efa_stress_f1_mlr <- 
+  cfa(model = stress_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "MLR",
+      missing = "ML",
+      mimic = "Mplus",
+      )
+summary(efa_stress_f1_mlr, fit.measures = TRUE)
+
+# ----- SOCIAL ENVIRONMENT -----
+# School environment: "srpf_y_ss_ses_rev_Z"
+# Neighbourhood: "nsc_p_ss_mean_3_items_rev_Z", "neighborhood_crime_y_rev_Z"
+
+social_f1 <- '
+efa("efa")*social_f1 =~ 
+srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z
+'
+efa_social_f1_mlr <- 
+  cfa(model = social_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "MLR",
+      missing = "ML",
+      mimic = "Mplus",
+      )
+summary(efa_social_f1_mlr, fit.measures = TRUE)
+# Ran fine but chi-sq NS
+
+social_f2 <- '
+efa("efa")*social_f1 +
+efa("efa")*social_f2 =~ 
+srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z
+'
+efa_social_f2_mlr <- 
+  cfa(model = social_f2,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "MLR",
+      missing = "ML",
+      mimic = "Mplus",
+      )
+summary(efa_social_f2_mlr, fit.measures = TRUE)
+```
+
+## also do FA with psych package separately by domain:
+```{r efa psych FA domain factors}
+abuse_trim <- select(MB_subsample1, c("ksads_ptsd_raw_761_p", "ksads_ptsd_raw_763_p", "ksads_ptsd_raw_767_p", "ksads_ptsd_raw_768_p", "ksads_ptsd_raw_769_p")) 
+abuse_fa_1 <- fa(abuse_trim, nfactors=1, rotate = "oblimin")
+abuse_fa_1
+abuse_fa_2 <- fa(abuse_trim, nfactors=2, rotate = "oblimin")
+abuse_fa_2
+write.csv(abuse_fa_1$loadings, file = file.path(workdir,"/ABCD adversity paper analysis results/Model Building Subsample 1/domains/abuse_fa_1.csv"))
+write.csv(abuse_fa_2$loadings, file = file.path(workdir,"/ABCD adversity paper analysis results/Model Building Subsample 1/domains/abuse_fa_2.csv"))
+
+household_trim <- select(MB_subsample1, c("ksads_ptsd_raw_766_p", "famhx_ss_parent_alc_p_rec", "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec", "famhx_ss_parent_ma_p_rec", "famhx_ss_parent_vs_p_rec", "famhx_ss_parent_trb_p_rec", "famhx_ss_parent_nrv_p_rec", "famhx_ss_parent_prf_p_rec", "famhx_ss_parent_hspd_p_rec", "famhx_ss_parent_scd_p_rec", "asr_scr_totprob_t_z","fes_p_ss_fc_z", "fes_y_ss_fc_z","demo_comb_income_v2_rec_rev_Z","demo_fam_exp2_v2_rec", "demo_fam_exp3_v2_rec", "demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec", "demo_fam_exp6_v2_rec", "demo_fam_exp7_v2_rec")) 
+household_fa_1 <- fa(household_trim, nfactors=1, rotate = "oblimin")
+household_fa_1
+household_fa_2 <- fa(household_trim, nfactors=2, rotate = "oblimin")
+household_fa_2
+household_fa_3 <- fa(household_trim, nfactors=3, rotate = "oblimin")
+household_fa_3
+household_fa_4 <- fa(household_trim, nfactors=4, rotate = "oblimin")
+household_fa_4
+household_fa_5 <- fa(household_trim, nfactors=5, rotate = "oblimin")
+household_fa_5
+household_fa_6 <- fa(household_trim, nfactors=6, rotate = "oblimin")
+household_fa_6
+household_fa_7 <- fa(household_trim, nfactors=7, rotate = "oblimin")
+household_fa_7
+household_fa_8 <- fa(household_trim, nfactors=8, rotate = "oblimin")
+household_fa_8
+household_fa_9 <- fa(household_trim, nfactors=9, rotate = "oblimin")
+household_fa_9
+household_fa_10 <- fa(household_trim, nfactors=10, rotate = "oblimin")
+household_fa_10
+write.csv(household_fa_8$loadings, file = file.path(workdir,"/ABCD adversity paper analysis results/Model Building Subsample 1/domains/household_fa_8.csv"))
+
+neglect_trim <- select(MB_subsample1, c("crpbi_y_ss_parent_rev_z", "crpbi_y_ss_caregiver_rev_z", "pmq_y_ss_mean_rev_z")) 
+neglect_fa_1 <- fa(neglect_trim, nfactors=1, rotate = "oblimin")
+neglect_fa_1 # Note this is not identified, but loadings on all three are high.
+write.csv(neglect_fa_1$loadings, file = file.path(workdir,"/ABCD adversity paper analysis results/Model Building Subsample 1/domains/neglect_fa_1.csv"))
+
+stress_trim <- select(MB_subsample1, c("ple_died_y_bad", "ple_injured_y_bad", "ple_crime_y_bad", "ple_friend_y_bad", "ple_friend_injur_y_bad", "ple_financial_y_bad", "ple_sud_y_bad", "ple_ill_y_bad", "ple_injur_y_bad", "ple_argue_y_bad", "ple_job_y_bad", "ple_away_y_bad", "ple_arrest_y_bad", "ple_friend_died_y_bad", "ple_mh_y_bad", "ple_sib_y_bad", "ple_victim_y_bad", "ple_separ_y_bad", "ple_law_y_bad", "ple_school_y_bad", "ple_move_y_bad", "ple_jail_y_bad", "ple_step_y_bad", "ple_new_job_y_bad", "ple_new_sib_y_bad")) 
+stress_fa_1 <- fa(stress_trim, nfactors=1, rotate = "oblimin")
+stress_fa_1
+stress_fa_2 <- fa(stress_trim, nfactors=2, rotate = "oblimin")
+stress_fa_2
+stress_fa_3 <- fa(stress_trim, nfactors=3, rotate = "oblimin")
+stress_fa_3
+stress_fa_4 <- fa(stress_trim, nfactors=4, rotate = "oblimin")
+stress_fa_4
+stress_fa_5 <- fa(stress_trim, nfactors=5, rotate = "oblimin")
+stress_fa_5
+stress_fa_6 <- fa(stress_trim, nfactors=6, rotate = "oblimin")
+stress_fa_6
+stress_fa_7 <- fa(stress_trim, nfactors=7, rotate = "oblimin")
+stress_fa_7
+stress_fa_8 <- fa(stress_trim, nfactors=8, rotate = "oblimin")
+stress_fa_8
+stress_fa_9 <- fa(stress_trim, nfactors=9, rotate = "oblimin")
+stress_fa_9
+stress_fa_10 <- fa(stress_trim, nfactors=10, rotate = "oblimin")
+stress_fa_10
+stress_fa_11 <- fa(stress_trim, nfactors=11, rotate = "oblimin")
+stress_fa_11
+write.csv(stress_fa_11$loadings, file = file.path(workdir,"/ABCD adversity paper analysis results/Model Building Subsample 1/domains/stress_fa_11.csv"))
+
+social_trim <- select(MB_subsample1, c("srpf_y_ss_ses_rev_Z", "nsc_p_ss_mean_3_items_rev_Z", "neighborhood_crime_y_rev_Z")) 
+social_fa_1 <- fa(social_trim, nfactors=1, rotate = "oblimin")
+social_fa_1 # Note this is not identified, but loadings on all three are high.
+write.csv(social_fa_1$loadings, file = file.path(workdir,"/ABCD adversity paper analysis results/Model Building Subsample 1/domains/social_fa_1.csv"))
+```
 
