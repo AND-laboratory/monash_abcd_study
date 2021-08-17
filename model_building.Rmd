@@ -965,7 +965,7 @@ efa_abuse_f1 <-
       ordered = c("ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
                   "ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
       )
-summary(efa_abuse_f1, fit.measures = TRUE)
+summary(efa_abuse_f1, fit.measures = TRUE, standardized = TRUE)
 
 efa_abuse_f1_mlr <- 
   cfa(model = abuse_f1,
@@ -980,59 +980,12 @@ summary(efa_abuse_f1_mlr, fit.measures = TRUE)
 #    does not appear to be positive definite! The smallest eigenvalue
 #    (= -8.822038e-20) is smaller than zero. This may be a symptom that
 #    the model is not identified.
+
+# NS chi-sq 
+# option 1. loadings high enough to combine first 4 and keep 5th (769)
+# option 2. combine 2 phys abuse, 2 sexual abuse and 1 peer sexual abuse
     
-abuse_f2 <- '
-efa("efa")*abuse_f1 +
-efa("efa")*abuse_f2 =~ 
-ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p 
-'
-efa_abuse_f2 <- 
-  cfa(model = abuse_f2,
-      data = MB_subsample1,
-      rotation = "oblimin",
-      estimator = "WLSMV",
-      mimic = "Mplus",
-      ordered = c("ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
-                  "ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
-      )
-summary(efa_abuse_f2, fit.measures = TRUE)
 
-# Increasing factors doesn't fix the identification problem
-
-
-# ----- HOUSEHOLD CHALLENGES -----
-# Home violence exposure: "ksads_ptsd_raw_766_p"
-# Household substance abuse: "famhx_ss_parent_alc_p_rec", "famhx_ss_parent_dg_p_rec""
-# Parent Mental illness in household: "famhx_ss_parent_dprs_p_rec", "famhx_ss_parent_ma_p_rec", "famhx_ss_parent_vs_p_rec", "famhx_ss_parent_trb_p_rec", "famhx_ss_parent_nrv_p_rec", "famhx_ss_parent_prf_p_rec", "famhx_ss_parent_hspd_p_rec", "famhx_ss_parent_scd_p_rec", "asr_scr_totprob_t_z"
-# Family conflict: "fes_p_ss_fc_z", "fes_y_ss_fc_z"
-# Family income: "demo_comb_income_v2_rec_rev_Z"
-# Economic hardship: "demo_fam_exp2_v2_rec", "demo_fam_exp3_v2_rec", "demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec", "demo_fam_exp6_v2_rec", "demo_fam_exp7_v2_rec"
-
-household_f1 <- '
-efa("efa")*household_f1 =~ 
-ksads_ptsd_raw_766_p + famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
-'
-efa_household_f1 <- 
-  cfa(model = household_f1,
-      data = MB_subsample1,
-      rotation = "oblimin",
-      estimator = "WLSMV",
-      mimic = "Mplus",
-      ordered = c("ksads_ptsd_raw_766_p", "famhx_ss_parent_alc_p_rec", "famhx_ss_parent_dg_p_rec", "famhx_ss_parent_dprs_p_rec", "famhx_ss_parent_ma_p_rec", "famhx_ss_parent_vs_p_rec", "famhx_ss_parent_trb_p_rec", "famhx_ss_parent_nrv_p_rec", "famhx_ss_parent_prf_p_rec", "famhx_ss_parent_hspd_p_rec", "famhx_ss_parent_scd_p_rec", "demo_fam_exp2_v2_rec", "demo_fam_exp3_v2_rec", "demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec", "demo_fam_exp6_v2_rec", "demo_fam_exp7_v2_rec")
-      )
-summary(efa_household_f1, fit.measures = TRUE)
-# NaNs producedError in eigen(A, symmetric = TRUE, only.values = TRUE) : 
-#  infinite or missing values in 'x'
-
-efa_household_f1_mlr <- 
-  cfa(model = household_f1,
-      data = MB_subsample1,
-      rotation = "oblimin",
-      estimator = "MLR",
-      missing = "ML",
-      mimic = "Mplus",
-      )
-summary(efa_household_f1_mlr, fit.measures = TRUE)
 
 # ----- NEGLECT -----
 # Emotional neglect: "crpbi_y_ss_parent_rev_z", "crpbi_y_ss_caregiver_rev_z"
@@ -1050,27 +1003,9 @@ efa_neglect_f1_mlr <-
       missing = "ML",
       mimic = "Mplus",
       )
-summary(efa_neglect_f1_mlr, fit.measures = TRUE)
-# 1 factor ran but chi-sq is significant.
+summary(efa_neglect_f1_mlr, fit.measures = TRUE, standardized = TRUE)
+# 1 factor ran but chi-sq is significant. (bc only 3 indicators)
 
-neglect_f2 <- '
-efa("efa")*neglect_f1 +
-efa("efa")*neglect_f2 =~ 
-crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z
-'
-efa_neglect_f2_mlr <- 
-  cfa(model = neglect_f2,
-      data = MB_subsample1,
-      rotation = "oblimin",
-      estimator = "MLR",
-      missing = "ML",
-      mimic = "Mplus",
-      )
-summary(efa_neglect_f2_mlr, fit.measures = TRUE)
-# The variance-covariance matrix of the estimated parameters (vcov)
-#    does not appear to be positive definite! The smallest eigenvalue
-#    (= -1.004072e-04) is smaller than zero. This may be a symptom that
-#    the model is not identified.
 
 
 
@@ -1089,20 +1024,68 @@ efa_stress_f1 <-
       mimic = "Mplus",
       ordered = c("ple_died_y_bad", "ple_injured_y_bad", "ple_crime_y_bad", "ple_friend_y_bad", "ple_friend_injur_y_bad", "ple_financial_y_bad", "ple_sud_y_bad", "ple_ill_y_bad", "ple_injur_y_bad", "ple_argue_y_bad", "ple_job_y_bad", "ple_away_y_bad", "ple_arrest_y_bad", "ple_friend_died_y_bad", "ple_mh_y_bad", "ple_sib_y_bad", "ple_victim_y_bad", "ple_separ_y_bad", "ple_law_y_bad", "ple_school_y_bad", "ple_move_y_bad", "ple_jail_y_bad", "ple_step_y_bad", "ple_new_job_y_bad", "ple_new_sib_y_bad")
       )
-summary(efa_stress_f1, fit.measures = TRUE)
+summary(efa_stress_f1, fit.measures = TRUE, standardized = TRUE)
+# Ran but chi sq NS
 
-# NaNs producedError in chol.default(tcrossprod(HEAD)) : 
-#  the leading minor of order 1 is not positive definite
 
-efa_stress_f1_mlr <- 
-  cfa(model = stress_f1,
+stress_f5 <- '
+efa("efa")*stress_f1 +
+efa("efa")*stress_f2 +
+efa("efa")*stress_f3 +
+efa("efa")*stress_f4 +
+efa("efa")*stress_f5 =~ 
+ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+'
+efa_stress_f5 <- 
+  cfa(model = stress_f5,
       data = MB_subsample1,
       rotation = "oblimin",
-      estimator = "MLR",
-      missing = "ML",
+      estimator = "WLSMV",
       mimic = "Mplus",
+      ordered = c("ple_died_y_bad", "ple_injured_y_bad", "ple_crime_y_bad", "ple_friend_y_bad", "ple_friend_injur_y_bad", "ple_financial_y_bad", "ple_sud_y_bad", "ple_ill_y_bad", "ple_injur_y_bad", "ple_argue_y_bad", "ple_job_y_bad", "ple_away_y_bad", "ple_arrest_y_bad", "ple_friend_died_y_bad", "ple_mh_y_bad", "ple_sib_y_bad", "ple_victim_y_bad", "ple_separ_y_bad", "ple_law_y_bad", "ple_school_y_bad", "ple_move_y_bad", "ple_jail_y_bad", "ple_step_y_bad", "ple_new_job_y_bad", "ple_new_sib_y_bad")
       )
-summary(efa_stress_f1_mlr, fit.measures = TRUE)
+summary(efa_stress_f5, fit.measures = TRUE, standardized = TRUE)
+
+# law items should be combined
+# Friend died on its own or removed (since low frequency)
+stress_law_f1 <- '
+efa("efa")*stress_law_f1 =~
+ple_arrest_y_bad + ple_law_y_bad + ple_jail_y_bad
+'
+efa_stress_law_f1 <-
+  cfa(model = stress_law_f1,
+      data = MB_subsample1,
+      rotation ="oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ple_arrest_y_bad","ple_law_y_bad","ple_jail_y_bad"))
+summary(efa_stress_law_f1, fit.measures = TRUE, standardized = TRUE)
+
+# Remove law + friend died items:
+stress_reduced_f3 <- '
+efa("efa")*stress_reduced_f1 +
+efa("efa")*stress_reduced_f2 +
+efa("efa")*stress_reduced_f3 =~ 
+ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_school_y_bad + ple_move_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+'
+efa_stress_reduced_f3 <- 
+  cfa(model = stress_reduced_f3,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ple_died_y_bad", "ple_injured_y_bad", "ple_crime_y_bad", "ple_friend_y_bad", "ple_friend_injur_y_bad", "ple_financial_y_bad", "ple_sud_y_bad", "ple_ill_y_bad", "ple_injur_y_bad", "ple_argue_y_bad", "ple_job_y_bad", "ple_away_y_bad", "ple_mh_y_bad", "ple_sib_y_bad", "ple_victim_y_bad", "ple_separ_y_bad", "ple_school_y_bad", "ple_move_y_bad",  "ple_step_y_bad", "ple_new_job_y_bad", "ple_new_sib_y_bad")
+      )
+summary(efa_stress_reduced_f3, fit.measures = TRUE, standardized = TRUE)
+
+# Highest loadings, 3 factor stressor model without law or friend dying items:
+#   1 - injury -- ple_injur_y_bad (0.603) "Child was seriously injured" - combine with "ple_injured_y_bad", "ple_crime_y_bad","ple_friend_injur_y_bad", "ple_ill_y_bad", "ple_mh_y_bad"
+#   2 - changes to home environ (separation) -- ple_separ_y_bad (0.677) "Parents separated or divorced?" - combine with "ple_argue_y_bad", "ple_sib_y_bad", "ple_step_y_bad",
+#   3 - moving / new job & school -- ple_move_y_bad (0.726) "Family moved?" - combine with "ple_school_y_bad","ple_new_job_y_bad"
+
+# What should we do about the items that don't have very high loadings on any of these 3 factors?
+#   "ple_died_y_bad", "ple_friend_y_bad", "ple_financial_y_bad", "ple_sud_y_bad", "ple_job_y_bad", "ple_away_y_bad", "ple_victim_y_bad", "ple_new_sib_y_bad"
+
 
 # ----- SOCIAL ENVIRONMENT -----
 # School environment: "srpf_y_ss_ses_rev_Z"
@@ -1120,23 +1103,345 @@ efa_social_f1_mlr <-
       missing = "ML",
       mimic = "Mplus",
       )
-summary(efa_social_f1_mlr, fit.measures = TRUE)
-# Ran fine but chi-sq NS
+summary(efa_social_f1_mlr, fit.measures = TRUE, standardized = TRUE)
+# Ran fine but chi-sq NS (bc only 3 indicators)
 
-social_f2 <- '
-efa("efa")*social_f1 +
-efa("efa")*social_f2 =~ 
-srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z
+# 3 factors model combining Abuse, Neglect, and Social items:
+AbNeSo_f3 <- '
+efa("efa")*AbNeSo_f1 +
+efa("efa")*AbNeSo_f2 +
+efa("efa")*AbNeSo_f3 =~ 
+ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z
 '
-efa_social_f2_mlr <- 
-  cfa(model = social_f2,
+efa_AbNeSo_f3 <- 
+  cfa(model = AbNeSo_f3,
       data = MB_subsample1,
       rotation = "oblimin",
-      estimator = "MLR",
-      missing = "ML",
+      estimator = "WLSMV",
       mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
       )
-summary(efa_social_f2_mlr, fit.measures = TRUE)
+summary(efa_AbNeSo_f3, fit.measures = TRUE, standardized = TRUE)
+
+# New stressor model best items from injury, home env, moving, law + friend died on its own
+stress_new_f1 <- '
+efa("efa")*new_f1 =~
+ple_injur_y_bad + ple_separ_y_bad + ple_move_y_bad + ple_friend_died_y_bad + ple_law_y_bad
+'
+efa_stress_new_f1 <- 
+  cfa(model = stress_new_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ple_injur_y_bad","ple_separ_y_bad","ple_move_y_bad","ple_friend_died_y_bad","ple_law_y_bad")
+      )
+summary(efa_stress_new_f1, fit.measures = TRUE, standardized = TRUE)
+# ple_friend_died_y_bad low - remove (esp if low frequency (NOTE: YES ONLY 42!))
+
+# Re estimate without friend died
+stress_new2_f1 <- '
+efa("efa")*new2_f1 =~
+ple_injur_y_bad + ple_separ_y_bad + ple_move_y_bad + ple_law_y_bad
+'
+efa_stress_new2_f1 <- 
+  cfa(model = stress_new2_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ple_injur_y_bad","ple_separ_y_bad","ple_move_y_bad","ple_law_y_bad")
+      )
+summary(efa_stress_new2_f1, fit.measures = TRUE, standardized = TRUE)
+
+# Estimate same model with abuse, neglect, social, new stress (4 factors) AbNeSoSt
+AbNeSoSt_f4 <- '
+efa("efa")*AbNeSoSt_f1 +
+efa("efa")*AbNeSoSt_f2 +
+efa("efa")*AbNeSoSt_f3 +
+efa("efa")*AbNeSoSt_f4 =~ 
+ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + ple_injur_y_bad + ple_separ_y_bad + ple_move_y_bad + ple_law_y_bad
+'
+efa_AbNeSoSt_f4 <- 
+  cfa(model = AbNeSoSt_f4,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p", "ple_injur_y_bad", "ple_separ_y_bad", "ple_move_y_bad", "ple_law_y_bad")
+      )
+summary(efa_AbNeSoSt_f4, fit.measures = TRUE, standardized = TRUE)
+
+# Some variances negative, some loadings weirdly placed.
+# Tried again but only one item per theoretical domain:
+
+# Physical abuse: ksads_ptsd_raw_763_p 
+# Sexual abuse: ksads_ptsd_raw_767_p
+# Peer sexual abuse: ksads_ptsd_raw_769_p
+# Neglect / lack of acceptance: crpbi_y_ss_parent_rev_z
+# Neighborhood safety: neighborhood_crime_y_rev_Z
+# Family injured: ple_injur_y_bad
+# Family structure change: ple_separ_y_bad
+# Moving: ple_move_y_bad
+# Family law trouble: ple_law_y_bad
+
+AbNeSoSt_reduced_f1 <- '
+efa("efa")*AbNeSoSt_reduced_f1 =~
+ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_769_p + crpbi_y_ss_parent_rev_z + neighborhood_crime_y_rev_Z + ple_injur_y_bad + ple_separ_y_bad + ple_move_y_bad + ple_law_y_bad
+'
+efa_AbNeSoSt_reduced_f1 <- 
+  cfa(model = AbNeSoSt_reduced_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_763_p", "ksads_ptsd_raw_767_p", "ksads_ptsd_raw_769_p", "crpbi_y_ss_parent_rev_z", "neighborhood_crime_y_rev_Z", "ple_injur_y_bad","ple_separ_y_bad","ple_move_y_bad","ple_law_y_bad")
+      )
+summary(efa_AbNeSoSt_reduced_f1, fit.measures = TRUE, standardized = TRUE)
+
+
+
+# ----- HOUSEHOLD CHALLENGES -----
+# Home violence exposure: "ksads_ptsd_raw_766_p"
+# Household substance abuse: "famhx_ss_parent_alc_p_rec", "famhx_ss_parent_dg_p_rec""
+# Parent Mental illness in household: "famhx_ss_parent_dprs_p_rec", "famhx_ss_parent_ma_p_rec", "famhx_ss_parent_vs_p_rec", "famhx_ss_parent_trb_p_rec", "famhx_ss_parent_nrv_p_rec", "famhx_ss_parent_prf_p_rec", "famhx_ss_parent_hspd_p_rec", "famhx_ss_parent_scd_p_rec", "asr_scr_totprob_t_z"
+# Family conflict: "fes_p_ss_fc_z", "fes_y_ss_fc_z"
+# Family income: "demo_comb_income_v2_rec_rev_Z"
+# Economic hardship: "demo_fam_exp2_v2_rec", "demo_fam_exp3_v2_rec", "demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec", "demo_fam_exp6_v2_rec", "demo_fam_exp7_v2_rec"
+
+MB_subsample1_ren <- rename(MB_subsample1, famhx_alc = famhx_ss_parent_alc_p_rec)
+MB_subsample1_ren <- rename(MB_subsample1_ren, famhx_dg = famhx_ss_parent_dg_p_rec)
+MB_subsample1_ren <- rename(MB_subsample1_ren, famhx_dprs = famhx_ss_parent_dprs_p_rec)
+MB_subsample1_ren <- rename(MB_subsample1_ren, famhx_ma = famhx_ss_parent_ma_p_rec)
+MB_subsample1_ren <- rename(MB_subsample1_ren, famhx_vs = famhx_ss_parent_vs_p_rec)
+MB_subsample1_ren <- rename(MB_subsample1_ren, famhx_trb = famhx_ss_parent_trb_p_rec)
+MB_subsample1_ren <- rename(MB_subsample1_ren, famhx_nrv = famhx_ss_parent_nrv_p_rec)
+MB_subsample1_ren <- rename(MB_subsample1_ren, famhx_prf = famhx_ss_parent_prf_p_rec)
+MB_subsample1_ren <- rename(MB_subsample1_ren, famhx_hspd = famhx_ss_parent_hspd_p_rec)
+MB_subsample1_ren <- rename(MB_subsample1_ren, famhx_scd = famhx_ss_parent_scd_p_rec)
+
+household_f1 <- '
+efa("efa")*household_f1 =~ 
+ksads_ptsd_raw_766_p + famhx_alc + famhx_dg + famhx_dprs + famhx_ma + famhx_vs + famhx_trb + famhx_nrv + famhx_prf + famhx_hspd + famhx_scd + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z + demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
+'
+efa_household_f1 <- 
+  cfa(model = household_f1,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_766_p", "famhx_alc", "famhx_dg", "famhx_dprs", "famhx_ma", "famhx_vs", "famhx_trb", "famhx_nrv", "famhx_prf", "famhx_hspd", "famhx_scd", "demo_fam_exp1_v2_rec", "demo_fam_exp2_v2_rec", "demo_fam_exp3_v2_rec", "demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec", "demo_fam_exp6_v2_rec", "demo_fam_exp7_v2_rec")
+      )
+summary(efa_household_f1, fit.measures = TRUE, standardized = TRUE)
+# Chi sq is sig but loadings are all pretty decent.
+
+household_f5 <- '
+efa("efa")*household_f1 +
+efa("efa")*household_f2 + 
+efa("efa")*household_f3 +
+efa("efa")*household_f4 +
+efa("efa")*household_f5 =~ 
+ksads_ptsd_raw_766_p + famhx_alc + famhx_dg + famhx_dprs + famhx_ma + famhx_vs + famhx_trb + famhx_nrv + famhx_prf + famhx_hspd + famhx_scd + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z + demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
+'
+efa_household_f5 <- 
+  cfa(model = household_f5,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_766_p", "famhx_alc", "famhx_dg", "famhx_dprs", "famhx_ma", "famhx_vs", "famhx_trb", "famhx_nrv", "famhx_prf", "famhx_hspd", "famhx_scd", "demo_fam_exp1_v2_rec", "demo_fam_exp2_v2_rec", "demo_fam_exp3_v2_rec", "demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec", "demo_fam_exp6_v2_rec", "demo_fam_exp7_v2_rec")
+      )
+summary(efa_household_f5, fit.measures = TRUE, standardized = TRUE)
+# 5 factor runs ok but chi-sq is sig. Try 6 factor.
+
+household_f6 <- '
+efa("efa")*household_f1 +
+efa("efa")*household_f2 + 
+efa("efa")*household_f3 +
+efa("efa")*household_f4 +
+efa("efa")*household_f5 +
+efa("efa")*household_f6 =~ 
+ksads_ptsd_raw_766_p + famhx_alc + famhx_dg + famhx_dprs + famhx_ma + famhx_vs + famhx_trb + famhx_nrv + famhx_prf + famhx_hspd + famhx_scd + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z + demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
+'
+efa_household_f6 <- 
+  cfa(model = household_f6,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_766_p", "famhx_alc", "famhx_dg", "famhx_dprs", "famhx_ma", "famhx_vs", "famhx_trb", "famhx_nrv", "famhx_prf", "famhx_hspd", "famhx_scd", "demo_fam_exp1_v2_rec", "demo_fam_exp2_v2_rec", "demo_fam_exp3_v2_rec", "demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec", "demo_fam_exp6_v2_rec", "demo_fam_exp7_v2_rec")
+      )
+summary(efa_household_f6, fit.measures = TRUE, standardized = TRUE)
+# 6 factor some variance are neg but chi-sq is NS
+
+# Trying economic hardship ones on their own:
+economic_f1 <- '
+efa("efa")*economic_f1 =~
+demo_comb_income_v2_rec_rev_Z + demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
+'
+efa_economic_f1 <-
+  cfa(model = economic_f1,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("demo_fam_exp1_v2_rec", "demo_fam_exp2_v2_rec", "demo_fam_exp3_v2_rec", "demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec", "demo_fam_exp6_v2_rec", "demo_fam_exp7_v2_rec")
+      )
+summary(efa_economic_f1, fit.measures = TRUE, standardized = TRUE)
+# Chi sq significant but loadings all high. 
+# Try 2 factor in case medical econ hardship is separate:
+economic_f2 <- '
+efa("efa")*economic_f1 +
+efa("efa")*economic_f2 =~
+demo_comb_income_v2_rec_rev_Z + demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
+'
+efa_economic_f2 <-
+  cfa(model = economic_f2,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("demo_fam_exp1_v2_rec", "demo_fam_exp2_v2_rec", "demo_fam_exp3_v2_rec", "demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec", "demo_fam_exp6_v2_rec", "demo_fam_exp7_v2_rec")
+      )
+summary(efa_economic_f2, fit.measures = TRUE, standardized = TRUE)
+# Could not compute standard errors! The information matrix could
+#    not be inverted. This may be a symptom that the model is not
+#   identified.
+# Item 7 seems to be causing problems
+# Anyway, highest economic hardship loading on the 1 factor (sig chi sq) is xp2, telephone cut off (0.884) but all in in .7 - .8
+
+# Now trying other household challenge items without economic hardship...
+household_reduced_f1 <- '
+efa("efa")*household_reduced_f1 =~ 
+ksads_ptsd_raw_766_p + famhx_alc + famhx_dg + famhx_dprs + famhx_ma + famhx_vs + famhx_trb + famhx_nrv + famhx_prf + famhx_hspd + famhx_scd + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z 
+'
+efa_household_reduced_f1 <- 
+  cfa(model = household_reduced_f1,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_766_p", "famhx_alc", "famhx_dg", "famhx_dprs", "famhx_ma", "famhx_vs", "famhx_trb", "famhx_nrv", "famhx_prf", "famhx_hspd", "famhx_scd")
+      )
+summary(efa_household_reduced_f1, fit.measures = TRUE, standardized = TRUE)
+# chi-sq sig
+
+household_reduced_f4 <- '
+efa("efa")*household_reduced_f1 +
+efa("efa")*household_reduced_f2 +
+efa("efa")*household_reduced_f3 +
+efa("efa")*household_reduced_f4 =~ 
+ksads_ptsd_raw_766_p + famhx_alc + famhx_dg + famhx_dprs + famhx_ma + famhx_vs + famhx_trb + famhx_nrv + famhx_prf + famhx_hspd + famhx_scd + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z 
+'
+efa_household_reduced_f4 <- 
+  cfa(model = household_reduced_f4,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_766_p", "famhx_alc", "famhx_dg", "famhx_dprs", "famhx_ma", "famhx_vs", "famhx_trb", "famhx_nrv", "famhx_prf", "famhx_hspd", "famhx_scd")
+      )
+summary(efa_household_reduced_f4, fit.measures = TRUE, standardized = TRUE)
+# chi sq-NS
+
+# Highest loadings, 4 factor household model without econ hardhip items:
+#   1 --- dprs (0.847) "" - combine with "ptsd766", "alc","ma","vs","trb"
+#   2 --- prf (0.937) "" - combine with "dg","nrv","hspd","scd",
+#   3 --- "asr" (0.714) "" - combine with "fes_p"
+#   4 --- "fes_y" (.665) on its own
+
+#Try those 4 alone:
+household_new_reduced_f1 <- '
+efa("efa")*household_new_reduced_f1 =~ 
+famhx_dprs + famhx_prf + asr_scr_totprob_t_z + fes_y_ss_fc_z  
+'
+efa_household_new_reduced_f1 <- 
+  cfa(model = household_new_reduced_f1,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("famhx_dprs", "famhx_prf")
+      )
+summary(efa_household_new_reduced_f1, fit.measures = TRUE, standardized = TRUE)
+# chi-sq sig
+
+# Try those 4 PLUS the telephone one from econ hardship:
+household_new_f1 <- '
+efa("efa")*household_new_f1 =~ 
+famhx_dprs + famhx_prf + asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_fam_exp2_v2_rec 
+'
+efa_household_new_f1 <- 
+  cfa(model = household_new_f1,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("famhx_dprs", "famhx_prf", "demo_fam_exp2_v2_rec")
+      )
+summary(efa_household_new_f1, fit.measures = TRUE, standardized = TRUE)
+#chi-sq sig
+
+#fes_y is causing problems. Try it removed
+household_new2_f1 <- '
+efa("efa")*household_new2_f1 =~ 
+famhx_dprs + famhx_prf + asr_scr_totprob_t_z + demo_fam_exp2_v2_rec 
+'
+efa_household_new2_f1 <- 
+  cfa(model = household_new2_f1,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("famhx_dprs", "famhx_prf", "demo_fam_exp2_v2_rec")
+      )
+summary(efa_household_new2_f1, fit.measures = TRUE, standardized = TRUE)
+# chi-sq still sig. Remove econ hardship again
+household_new2_reduced_f1 <- '
+efa("efa")*household_new2_reduced_f1 =~ 
+famhx_dprs + famhx_prf + asr_scr_totprob_t_z  
+'
+efa_household_new2_reduced_f1 <- 
+  cfa(model = household_new2_reduced_f1,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("famhx_dprs", "famhx_prf")
+      )
+summary(efa_household_new2_reduced_f1, fit.measures = TRUE, standardized = TRUE)
+#chi sq still sig but ok bc only 3 items
+# highest loading famhx_prf (0.748)
+
+# ----Try a full model
+
+# Physical abuse: ksads_ptsd_raw_763_p 
+# Sexual abuse: ksads_ptsd_raw_767_p
+# Peer sexual abuse: ksads_ptsd_raw_769_p
+# Neglect / lack of acceptance: crpbi_y_ss_parent_rev_z
+# Neighborhood safety: neighborhood_crime_y_rev_Z
+# Family injured: ple_injur_y_bad
+# Family structure change: ple_separ_y_bad
+# Moving: ple_move_y_bad
+# Family law trouble: ple_law_y_bad
+# Economic hardship: demo_fam_exp2_v2_rec
+# Household challenges (parent mental health): famhx_prf
+
+AbNeSoStHo_reduced_f1 <- '
+efa("efa")*AbNeSoStHo_reduced_f1 =~
+ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_769_p + crpbi_y_ss_parent_rev_z + neighborhood_crime_y_rev_Z + ple_injur_y_bad + ple_separ_y_bad + ple_move_y_bad + ple_law_y_bad + demo_fam_exp2_v2_rec + famhx_prf
+'
+efa_AbNeSoStHo_reduced_f1 <- 
+  cfa(model = AbNeSoStHo_reduced_f1,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_763_p", "ksads_ptsd_raw_767_p", "ksads_ptsd_raw_769_p", "crpbi_y_ss_parent_rev_z", "neighborhood_crime_y_rev_Z", "ple_injur_y_bad","ple_separ_y_bad","ple_move_y_bad","ple_law_y_bad", "demo_fam_exp2_v2_rec", "famhx_prf")
+      )
+summary(efa_AbNeSoStHo_reduced_f1, fit.measures = TRUE, standardized = TRUE)
 ```
 
 ## also do FA with psych package separately by domain:
