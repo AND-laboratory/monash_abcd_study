@@ -1200,7 +1200,7 @@ efa_AbNeSoSt_reduced_f1 <-
       ordered = c("ksads_ptsd_raw_763_p", "ksads_ptsd_raw_767_p", "ksads_ptsd_raw_769_p", "crpbi_y_ss_parent_rev_z", "neighborhood_crime_y_rev_Z", "ple_injur_y_bad","ple_separ_y_bad","ple_move_y_bad","ple_law_y_bad")
       )
 summary(efa_AbNeSoSt_reduced_f1, fit.measures = TRUE, standardized = TRUE)
-
+# Chi sq sig - Move item is now loading at 0.199 - should we remove or make 2 factors?
 
 
 # ----- HOUSEHOLD CHALLENGES -----
@@ -1234,6 +1234,7 @@ efa_household_f1 <-
       mimic = "Mplus",
       ordered = c("ksads_ptsd_raw_766_p", "famhx_alc", "famhx_dg", "famhx_dprs", "famhx_ma", "famhx_vs", "famhx_trb", "famhx_nrv", "famhx_prf", "famhx_hspd", "famhx_scd", "demo_fam_exp1_v2_rec", "demo_fam_exp2_v2_rec", "demo_fam_exp3_v2_rec", "demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec", "demo_fam_exp6_v2_rec", "demo_fam_exp7_v2_rec")
       )
+
 summary(efa_household_f1, fit.measures = TRUE, standardized = TRUE)
 # Chi sq is sig but loadings are all pretty decent.
 
@@ -1289,8 +1290,11 @@ efa_economic_f1 <-
       mimic = "Mplus",
       ordered = c("demo_fam_exp1_v2_rec", "demo_fam_exp2_v2_rec", "demo_fam_exp3_v2_rec", "demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec", "demo_fam_exp6_v2_rec", "demo_fam_exp7_v2_rec")
       )
+econf1 <- modindices(efa_economic_f1, sort = TRUE, maximum.number = 10)
 summary(efa_economic_f1, fit.measures = TRUE, standardized = TRUE)
 # Chi sq significant but loadings all high. 
+# item 2 (telephone cut off) is highest loading but income one might be the best because it's continuous
+
 # Try 2 factor in case medical econ hardship is separate:
 economic_f2 <- '
 efa("efa")*economic_f1 +
@@ -1368,10 +1372,10 @@ efa_household_new_reduced_f1 <-
 summary(efa_household_new_reduced_f1, fit.measures = TRUE, standardized = TRUE)
 # chi-sq sig
 
-# Try those 4 PLUS the telephone one from econ hardship:
+# Try those 4 PLUS the income one from econ hardship:
 household_new_f1 <- '
 efa("efa")*household_new_f1 =~ 
-famhx_dprs + famhx_prf + asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_fam_exp2_v2_rec 
+famhx_dprs + famhx_prf + asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z 
 '
 efa_household_new_f1 <- 
   cfa(model = household_new_f1,
@@ -1379,8 +1383,9 @@ efa_household_new_f1 <-
       rotation = "oblimin",
       estimator = "WLSMV",
       mimic = "Mplus",
-      ordered = c("famhx_dprs", "famhx_prf", "demo_fam_exp2_v2_rec")
+      ordered = c("famhx_dprs", "famhx_prf")
       )
+house_new_mods <- modindices(efa_household_new_f1, sort = TRUE, maximum.number = 5)
 summary(efa_household_new_f1, fit.measures = TRUE, standardized = TRUE)
 #chi-sq sig
 
@@ -1412,6 +1417,21 @@ efa_household_new2_reduced_f1 <-
       ordered = c("famhx_dprs", "famhx_prf")
       )
 summary(efa_household_new2_reduced_f1, fit.measures = TRUE, standardized = TRUE)
+
+# only use total symptoms for parent
+household_new3_f1 <- '
+efa("efa")*household_new3_f1 =~ 
+asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z 
+'
+efa_household_new3_f1 <- 
+  cfa(model = household_new3_f1,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "ML",
+      mimic = "Mplus"
+      )
+house_new3_mods <- modindices(efa_household_new3_f1, sort = TRUE, maximum.number = 5)
+summary(efa_household_new3_f1, fit.measures = TRUE, standardized = TRUE)
 #chi sq still sig but ok bc only 3 items
 # highest loading famhx_prf (0.748)
 
@@ -1427,11 +1447,12 @@ summary(efa_household_new2_reduced_f1, fit.measures = TRUE, standardized = TRUE)
 # Moving: ple_move_y_bad
 # Family law trouble: ple_law_y_bad
 # Economic hardship: demo_fam_exp2_v2_rec
-# Household challenges (parent mental health): famhx_prf
+# Household challenges (parent mental health): demo_comb_income_v2_rec_rev_Z
 
+# only one abuse item:
 AbNeSoStHo_reduced_f1 <- '
 efa("efa")*AbNeSoStHo_reduced_f1 =~
-ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_769_p + crpbi_y_ss_parent_rev_z + neighborhood_crime_y_rev_Z + ple_injur_y_bad + ple_separ_y_bad + ple_move_y_bad + ple_law_y_bad + demo_fam_exp2_v2_rec + famhx_prf
+ksads_ptsd_raw_763_p + crpbi_y_ss_parent_rev_z + neighborhood_crime_y_rev_Z + ple_injur_y_bad + ple_separ_y_bad + ple_move_y_bad + ple_law_y_bad + demo_comb_income_v2_rec_rev_Z + asr_scr_totprob_t_z
 '
 efa_AbNeSoStHo_reduced_f1 <- 
   cfa(model = AbNeSoStHo_reduced_f1,
@@ -1439,9 +1460,147 @@ efa_AbNeSoStHo_reduced_f1 <-
       rotation = "oblimin",
       estimator = "WLSMV",
       mimic = "Mplus",
-      ordered = c("ksads_ptsd_raw_763_p", "ksads_ptsd_raw_767_p", "ksads_ptsd_raw_769_p", "crpbi_y_ss_parent_rev_z", "neighborhood_crime_y_rev_Z", "ple_injur_y_bad","ple_separ_y_bad","ple_move_y_bad","ple_law_y_bad", "demo_fam_exp2_v2_rec", "famhx_prf")
+      ordered = c("ksads_ptsd_raw_763_p",  "crpbi_y_ss_parent_rev_z", "neighborhood_crime_y_rev_Z", "ple_injur_y_bad","ple_separ_y_bad","ple_move_y_bad","ple_law_y_bad")
       )
+stuff <- modindices(efa_AbNeSoStHo_reduced_f1, sort = TRUE, maximum.number = 5)
 summary(efa_AbNeSoStHo_reduced_f1, fit.measures = TRUE, standardized = TRUE)
+
+# try with at least 3 per domain
+# Abuse: ksads 763, 767, 768
+# Neglect: crpbi y, crpbi p, pmq
+# social: srpf, nsc, neighborhood crime
+# stressors: injur, separ, move, law
+# household: asr, fes, income
+
+AbNeSoStHo_reduced_f1 <- '
+efa("efa")*AbNeSoStHo_reduced_f1 =~
+ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + ple_injur_y_bad + ple_separ_y_bad + ple_move_y_bad + ple_law_y_bad + asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z
+'
+efa_AbNeSoStHo_reduced_f1 <- 
+  cfa(model = AbNeSoStHo_reduced_f1,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_763_p", "ksads_ptsd_raw_767_p", "ksads_ptsd_raw_768_p", "ple_injur_y_bad","ple_separ_y_bad","ple_move_y_bad","ple_law_y_bad")
+      )
+full_mi1 <- modindices(efa_AbNeSoStHo_reduced_f1, sort = TRUE, maximum.number = 10)
+summary(efa_AbNeSoStHo_reduced_f1, fit.measures = TRUE, standardized = TRUE)
+
+AbNeSoStHo_reduced_f2 <- '
+efa("efa")*AbNeSoStHo_reduced_f1 +
+efa("efa")*AbNeSoStHo_reduced_f2 =~
+ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + ple_injur_y_bad + ple_separ_y_bad + ple_move_y_bad + ple_law_y_bad + asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z
+'
+efa_AbNeSoStHo_reduced_f2 <- 
+  cfa(model = AbNeSoStHo_reduced_f2,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_763_p", "ksads_ptsd_raw_767_p", "ksads_ptsd_raw_768_p", "ple_injur_y_bad","ple_separ_y_bad","ple_move_y_bad","ple_law_y_bad")
+      )
+full_mi2 <- modindices(efa_AbNeSoStHo_reduced_f2, sort = TRUE, maximum.number = 10)
+summary(efa_AbNeSoStHo_reduced_f2, fit.measures = TRUE, standardized = TRUE)
+
+AbNeSoStHo_reduced_f3 <- '
+efa("efa")*AbNeSoStHo_reduced_f1 +
+efa("efa")*AbNeSoStHo_reduced_f2 +
+efa("efa")*AbNeSoStHo_reduced_f3 =~
+ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + ple_injur_y_bad + ple_separ_y_bad + ple_move_y_bad + ple_law_y_bad + asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z
+'
+efa_AbNeSoStHo_reduced_f3 <- 
+  cfa(model = AbNeSoStHo_reduced_f3,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_763_p", "ksads_ptsd_raw_767_p", "ksads_ptsd_raw_768_p", "ple_injur_y_bad","ple_separ_y_bad","ple_move_y_bad","ple_law_y_bad")
+      )
+full_mi3 <- modindices(efa_AbNeSoStHo_reduced_f3, sort = TRUE, maximum.number = 10)
+summary(efa_AbNeSoStHo_reduced_f3, fit.measures = TRUE, standardized = TRUE)
+# Some variances neg
+# X2(75)=96.475, p = 0.048
+
+AbNeSoStHo_reduced_f4 <- '
+efa("efa")*AbNeSoStHo_reduced_f1 +
+efa("efa")*AbNeSoStHo_reduced_f2 +
+efa("efa")*AbNeSoStHo_reduced_f3 +
+efa("efa")*AbNeSoStHo_reduced_f4 =~
+ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + ple_injur_y_bad + ple_separ_y_bad + ple_move_y_bad + ple_law_y_bad + asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z
+'
+efa_AbNeSoStHo_reduced_f4 <- 
+  cfa(model = AbNeSoStHo_reduced_f4,
+      data = MB_subsample1_ren,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_763_p", "ksads_ptsd_raw_767_p", "ksads_ptsd_raw_768_p", "ple_injur_y_bad","ple_separ_y_bad","ple_move_y_bad","ple_law_y_bad")
+      )
+full_mi4 <- modindices(efa_AbNeSoStHo_reduced_f4, sort = TRUE, maximum.number = 10)
+summary(efa_AbNeSoStHo_reduced_f4, fit.measures = TRUE, standardized = TRUE)
+# Some variances neg
+# X2(62)=72.133, p = 0.178
+
+
+# Try it with new stressor variable since the binary ones aren't loading onto anything
+MB_subsample1_new <- MB_subsample1
+attach(MB_subsample1_new)
+MB_subsample1_new$PLE_total <- ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+detach(MB_subsample1_new)
+
+AbNeSoStHo_reducedPLE_f3 <- '
+efa("efa")*AbNeSoStHo_reducedPLE_f1 +
+efa("efa")*AbNeSoStHo_reducedPLE_f2 +
+efa("efa")*AbNeSoStHo_reducedPLE_f3 =~
+ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + PLE_total + asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z
+'
+efa_AbNeSoStHo_reducedPLE_f3 <- 
+  cfa(model = AbNeSoStHo_reducedPLE_f3,
+      data = MB_subsample1_new,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_763_p", "ksads_ptsd_raw_767_p", "ksads_ptsd_raw_768_p")
+      )
+full_mi3_PLE <- modindices(efa_AbNeSoStHo_reducedPLE_f3, sort = TRUE, maximum.number = 10)
+summary(efa_AbNeSoStHo_reducedPLE_f3, fit.measures = TRUE, standardized = TRUE)
+# still neg variance, seems to be ksads 767 is the problem, maybe ok to remove since 768 also asks about sexual abuse
+
+AbNeSoStHo_reducedPLE2_f3 <- '
+efa("efa")*AbNeSoStHo_reducedPLE_f1 +
+efa("efa")*AbNeSoStHo_reducedPLE_f2 +
+efa("efa")*AbNeSoStHo_reducedPLE_f3 =~
+ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + PLE_total + asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z
+'
+efa_AbNeSoStHo_reducedPLE2_f3 <- 
+  cfa(model = AbNeSoStHo_reducedPLE2_f3,
+      data = MB_subsample1_new,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_763_p", "ksads_ptsd_raw_768_p")
+      )
+full_mi3_PLE2 <- modindices(efa_AbNeSoStHo_reducedPLE2_f3, sort = TRUE, maximum.number = 10)
+summary(efa_AbNeSoStHo_reducedPLE2_f3, fit.measures = TRUE, standardized = TRUE)
+#now ksads 763 var is negative. Maybe only 1 abuse item needed?
+
+AbNeSoStHo_reducedPLE3_f3 <- '
+efa("efa")*AbNeSoStHo_reducedPLE_f1 +
+efa("efa")*AbNeSoStHo_reducedPLE_f2 +
+efa("efa")*AbNeSoStHo_reducedPLE_f3 =~
+ksads_ptsd_raw_768_p + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + PLE_total + asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z
+'
+efa_AbNeSoStHo_reducedPLE3_f3 <- 
+  cfa(model = AbNeSoStHo_reducedPLE3_f3,
+      data = MB_subsample1_new,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_763_p", "ksads_ptsd_raw_768_p")
+      )
+full_mi3_PLE3 <- modindices(efa_AbNeSoStHo_reducedPLE3_f3, sort = TRUE, maximum.number = 10)
+summary(efa_AbNeSoStHo_reducedPLE3_f3, fit.measures = TRUE, standardized = TRUE)
 ```
 
 ## also do FA with psych package separately by domain:
