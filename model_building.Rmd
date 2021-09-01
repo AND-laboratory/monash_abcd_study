@@ -34,8 +34,12 @@ library(GPArotation)
 MB_subsample1 <- read_csv(file.path(workdir,"MB_subsample1.csv"))
 MB_subsample2 <- read_csv(file.path(workdir,"MB_subsample2.csv"))
 MB_subsample3 <- read_csv(file.path(workdir,"MB_subsample3.csv"))
-str(MB_subsample1) # might need to change the binary vars to factors? Check what lavaan needs
+# str(MB_subsample1) # might need to change the binary vars to factors? Check what lavaan needs
 ```
+## --------------------------------------------
+## ------------- SUBSAMPLE #1 EFAs ------------
+## --------------------------------------------
+
 
 ## Simple correlation matrix of all indices (by subsample)
 ```{r correlations}
@@ -710,238 +714,29 @@ MB_S1_trim <- select(MB_subsample1, -c("X1","src_subject_id","eventname","subsam
 
 fa_1 <- fa(MB_S1_trim, nfactors=1, rotate = "oblimin")
 fa_1
-
 fa_2 <- fa(MB_S1_trim, nfactors=2, rotate = "oblimin")
 fa_2
-
 fa_3 <- fa(MB_S1_trim, nfactors=3, rotate = "oblimin")
 fa_3
-
 fa_4 <- fa(MB_S1_trim, nfactors=4, rotate = "oblimin")
 fa_4
-
 fa_5 <- fa(MB_S1_trim, nfactors=5, rotate = "oblimin")
 fa_5
-
 fa_6 <- fa(MB_S1_trim, nfactors=6, rotate = "oblimin")
 fa_6
-
 fa_7 <- fa(MB_S1_trim, nfactors=7, rotate = "oblimin")
 fa_7
-
 fa_8 <- fa(MB_S1_trim, nfactors=8, rotate = "oblimin")
 fa_8
-
 fa_9 <- fa(MB_S1_trim, nfactors=9, rotate = "oblimin")
 fa_9
-
 fa_10 <- fa(MB_S1_trim, nfactors=10, rotate = "oblimin")
 fa_10
-
 fa_20 <- fa(MB_S1_trim, nfactors=20, rotate = "oblimin")
 fa_20
 write.csv(fa_20$loadings, file = "loadings_fa20_no_parentSLEs.csv")
 ```
 
-## Potential new model building datasets after combining the demo items based on FA to make binary econ harship and a binary medical econ hardship variables
-```{r econ hardship reduced variables}
-MB_subsample1_new <- read_csv(file.path(workdir,"MB_subsample1_new.csv"))
-MB_subsample2_new <- read_csv(file.path(workdir,"MB_subsample2_new.csv"))
-MB_subsample3_new <- read_csv(file.path(workdir,"MB_subsample3_new.csv"))
-str(MB_subsample1) # might need to change the binary vars to factors? Check what lavaan needs
-
-# "econ_hardship" is a variable that could replace "demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec" and
-# "med_econ_hardship" is a variable that could replace "demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec", but first check from previous EFA if these load together and could be reduced. (If so, datasets above are ready to go with these additional two variables) 
-
-#Update, if you look at loadings in "loadings_fa20_no_parentSLEs.xls", these items still load together. Went ahead and checked psych FA with those reduced:
-
-MB_S1_trim_2 <- select(MB_subsample1_new, -c("X1","src_subject_id","eventname","subsample","ple_died_p_bad","ple_injured_p_bad","ple_crime_p_bad",
-                                       "ple_friend_p_bad","ple_friend_injur_p_bad","ple_financial_p_bad","ple_sud_p_bad","ple_ill_p_bad",
-                                       "ple_injur_p_bad","ple_argue_p_bad","ple_job_p_bad","ple_away_p_bad","ple_arrest_p_bad",
-                                       "ple_friend_died_p_bad","ple_mh_p_bad","ple_sib_p_bad","ple_victim_p_bad","ple_separ_p_bad",
-                                       "ple_law_p_bad","ple_school_p_bad","ple_move_p_bad","ple_jail_p_bad","ple_step_p_bad",
-                                       "ple_new_job_p_bad","ple_new_sib_p_bad","demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec",
-                                       "demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec",
-                                       "demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec"))
-fa_20_reduced <- fa(MB_S1_trim_2, nfactors=20, rotate = "oblimin")
-fa_20_reduced
-# convergence not obtained in GPFoblq. 1000 iterations used.
-
-fa_10_reduced <- fa(MB_S1_trim_2, nfactors=10, rotate = "oblimin")
-fa_10_reduced
-write.csv(fa_10_reduced$loadings, file = "loadings_fa10_reduced.csv")
-```
-
-## 1 factor model with subsample 1 - CFA lavvan
-            
-
-```{r cfa}
-# Define model 1 - all indicators under one single adversity factor, no covariances. Do things load on nicely to one predefined factor?
-# First with WLSMV, missing pairwise:
-model1_nocov <- "
-#All adversity vars Model 1
-
-adversity =~ 
-demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + 	famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + 	fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
-"
-
-fit_model1_nocov <- cfa(model = model1_nocov, 
-                  data = MB_subsample1,
-                  estimator = "WLSMV",
-                  missing = "pairwise",
-                  mimic = "Mplus",
-                  ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
-                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
-                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
-                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
-                  "famhx_ss_parent_scd_p_rec","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
-                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
-                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
-                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
-                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
-                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
-                  )
-summary(fit_model1_nocov)
-
-# estimator = MLR, missing = FIML, mimic = Mplus
-fit_model1_nocov_MLR <- cfa(model = model1_nocov,
-                  data = MB_subsample1,
-                  missing = "FIML",
-                  estimator = "MLR",
-                  mimic = "Mplus"
-                  )
-summary(fit_model1_nocov_MLR)
-
-# estimator = "PML", missing = "available.cases" below (and verbose = T , maybe to get standardized output)
-# NOTE THIS MODEL BELOW FAILED WITH MESSAGE: 
-# NaNs producedError in pbivnorm::pbivnorm(x = upper.x, y = upper.y, rho = rho) : 
-#  'rho' must be a valid correlation (-1 <= rho <= 1)
-fit_model1_nocov_PML <- cfa(model = model1_nocov, 
-                  data = MB_subsample1,
-                  estimator = "PML",
-                  missing = "available.cases",
-                  verbose = T,
-                  ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
-                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
-                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
-                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
-                  "famhx_ss_parent_scd_p_rec","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
-                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
-                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
-                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
-                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
-                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
-                  )
-summary(fit_model1_nocov_PML)
-
-
-
-# Define model 1 - all indicators under one single adversity factor, WITH covariances. If nocov model didn't work, does adding measurement tool covariances fix it?
-model1_cov <- "
-#All adversity vars Model 1
-
-adversity =~ 
-demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + 	famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + 	ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + 	ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + 	ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + 	ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + 	fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
-
-#Covariances for questionnaires/measures
-ksads_ptsd_raw_761_p ~~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + ksads_ptsd_raw_766_p
-ksads_ptsd_raw_763_p ~~ ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p +  ksads_ptsd_raw_766_p
-ksads_ptsd_raw_767_p ~~ ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + ksads_ptsd_raw_766_p
-ksads_ptsd_raw_768_p ~~ ksads_ptsd_raw_769_p + ksads_ptsd_raw_766_p
-ksads_ptsd_raw_769_p ~~ ksads_ptsd_raw_766_p
-
-
-famhx_ss_parent_alc_p_rec ~~ famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec
-
-famhx_ss_parent_dg_p_rec ~~ famhx_ss_parent_dprs_p_rec + famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec
-
-famhx_ss_parent_dprs_p_rec ~~ famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec
-
-famhx_ss_parent_ma_p_rec ~~ famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec
-
-famhx_ss_parent_vs_p_rec ~~ famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec
-
-famhx_ss_parent_trb_p_rec ~~ famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec
-famhx_ss_parent_nrv_p_rec ~~ famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec
-famhx_ss_parent_prf_p_rec ~~ famhx_ss_parent_hspd_p_rec + famhx_ss_parent_scd_p_rec
-famhx_ss_parent_hspd_p_rec ~~ famhx_ss_parent_scd_p_rec
-
-
-fes_p_ss_fc_z ~~ fes_y_ss_fc_z
-
-
-crpbi_y_ss_parent_rev_z ~~ crpbi_y_ss_caregiver_rev_z
-
-
-ple_died_y_bad ~~ ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_injured_y_bad ~~ ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_crime_y_bad ~~ ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_friend_y_bad ~~ ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_friend_injur_y_bad ~~ ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_financial_y_bad ~~ ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_sud_y_bad ~~ ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_ill_y_bad ~~ ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_injur_y_bad ~~ ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_argue_y_bad ~~ ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_job_y_bad ~~ ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_away_y_bad ~~ ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_arrest_y_bad ~~ ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_friend_died_y_bad ~~ ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_mh_y_bad ~~ ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_sib_y_bad ~~ ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_victim_y_bad ~~ ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-
-ple_separ_y_bad ~~ ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-ple_law_y_bad ~~ ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-ple_school_y_bad ~~ ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-ple_move_y_bad ~~ ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-ple_jail_y_bad ~~ ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-ple_step_y_bad ~~ ple_new_job_y_bad + ple_new_sib_y_bad
-ple_new_job_y_bad ~~ ple_new_sib_y_bad
-
-
-demo_fam_exp1_v2_rec ~~ demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
-
-demo_fam_exp2_v2_rec ~~ demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
-demo_fam_exp3_v2_rec ~~ demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
-demo_fam_exp4_v2_rec ~~ demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
-demo_fam_exp5_v2_rec ~~ demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec
-demo_fam_exp6_v2_rec ~~ demo_fam_exp7_v2_rec
-"
-
-fit_model1_cov <- cfa(model = model1_cov, 
-                  data = MB_subsample1,
-                  estimator = "WLSMV",
-                  missing = "pairwise",
-                  ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
-                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
-                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
-                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
-                  "famhx_ss_parent_scd_p_rec","ple_died_y_bad","ple_injured_y_bad","ple_crime_y_bad",
-                  "ple_friend_y_bad","ple_friend_injur_y_bad","ple_financial_y_bad","ple_sud_y_bad","ple_ill_y_bad","ple_injur_y_bad",
-                  "ple_argue_y_bad","ple_job_y_bad","ple_away_y_bad","ple_arrest_y_bad","ple_friend_died_y_bad","ple_mh_y_bad",
-                  "ple_sib_y_bad","ple_victim_y_bad","ple_separ_y_bad","ple_law_y_bad","ple_school_y_bad","ple_move_y_bad",
-                  "ple_jail_y_bad","ple_step_y_bad","ple_new_job_y_bad","ple_new_sib_y_bad","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
-                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
-                  )
-summary(fit_model1_cov)
-```
 
 
 ## We can't seem to get all these indicators loaded onto one super (adversity) factor, so in this next part we will try five separate factor analyses, one for each domain of ACES: "Abuse", "Household challenges", "Neglect", "Stressful events", and "Social environment"
@@ -1601,74 +1396,178 @@ efa_AbNeSoStHo_reducedPLE3_f3 <-
       )
 full_mi3_PLE3 <- modindices(efa_AbNeSoStHo_reducedPLE3_f3, sort = TRUE, maximum.number = 10)
 summary(efa_AbNeSoStHo_reducedPLE3_f3, fit.measures = TRUE, standardized = TRUE)
+# This give us (barely) NS model, with three factors
+# 1: Abuse and ASR
+# 2: CRPBI Y, CRPBI P, PMQ, SRPF, FES
+# 3: NSC, Neighborhood, PLE total, income
+
+# Having only one abuse item is annoying but not sure what to do, maybe add up total abuse like the stressors:
+attach(MB_subsample1_new)
+MB_subsample1_new$abuse_total <- ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p
+detach(MB_subsample1_new)
+
+AbNeSoStHo_reducedfinal_f3 <- '
+efa("efa")*AbNeSoStHo_reducedPLE_f1 +
+efa("efa")*AbNeSoStHo_reducedPLE_f2 +
+efa("efa")*AbNeSoStHo_reducedPLE_f3 =~
+abuse_total + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + PLE_total + asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z
+'
+efa_AbNeSoStHo_reducedfinal_f3 <- 
+  cfa(model = AbNeSoStHo_reducedfinal_f3,
+      data = MB_subsample1_new,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus"
+      )
+full_mi3_reducedfinal <- modindices(efa_AbNeSoStHo_reducedfinal_f3, sort = TRUE, maximum.number = 10)
+summary(efa_AbNeSoStHo_reducedfinal_f3, fit.measures = TRUE, standardized = TRUE)
+# nah - abuse_total isn't on anything now
+
+# go back to three total abuse items but one (highest loading) from each subdomain - one phys abuse (763), one sexual abuse (768), one peer sexual abuse (769) - instead of just the three highest loadings on abuse, which doesn't make theoretical sense.
+AbNeSoStHo_reducedfinal2_f3 <- '
+efa("efa")*AbNeSoStHo_reducedPLE_f1 +
+efa("efa")*AbNeSoStHo_reducedPLE_f2 +
+efa("efa")*AbNeSoStHo_reducedPLE_f3 =~
+ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + PLE_total + asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z
+'
+efa_AbNeSoStHo_reducedfinal2_f3 <- 
+  cfa(model = AbNeSoStHo_reducedfinal2_f3,
+      data = MB_subsample1_new,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_763_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+full_mi3_reducedfinal2 <- modindices(efa_AbNeSoStHo_reducedfinal2_f3, sort = TRUE, maximum.number = 10)
+summary(efa_AbNeSoStHo_reducedfinal2_f3, fit.measures = TRUE, standardized = TRUE)
+# THIS IS THE ONE!
 ```
 
-## also do FA with psych package separately by domain:
-```{r efa psych FA domain factors}
-abuse_trim <- select(MB_subsample1, c("ksads_ptsd_raw_761_p", "ksads_ptsd_raw_763_p", "ksads_ptsd_raw_767_p", "ksads_ptsd_raw_768_p", "ksads_ptsd_raw_769_p")) 
-abuse_fa_1 <- fa(abuse_trim, nfactors=1, rotate = "oblimin")
-abuse_fa_1
-abuse_fa_2 <- fa(abuse_trim, nfactors=2, rotate = "oblimin")
-abuse_fa_2
-write.csv(abuse_fa_1$loadings, file = file.path(workdir,"/ABCD adversity paper analysis results/Model Building Subsample 1/domains/abuse_fa_1.csv"))
-write.csv(abuse_fa_2$loadings, file = file.path(workdir,"/ABCD adversity paper analysis results/Model Building Subsample 1/domains/abuse_fa_2.csv"))
+## --------------------------------------------
+## -------- SUBSAMPLE #2 - 3 FACTOR CFA -------
+## --------------------------------------------
 
-household_trim <- select(MB_subsample1, c("ksads_ptsd_raw_766_p", "famhx_ss_parent_alc_p_rec", "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec", "famhx_ss_parent_ma_p_rec", "famhx_ss_parent_vs_p_rec", "famhx_ss_parent_trb_p_rec", "famhx_ss_parent_nrv_p_rec", "famhx_ss_parent_prf_p_rec", "famhx_ss_parent_hspd_p_rec", "famhx_ss_parent_scd_p_rec", "asr_scr_totprob_t_z","fes_p_ss_fc_z", "fes_y_ss_fc_z","demo_comb_income_v2_rec_rev_Z","demo_fam_exp2_v2_rec", "demo_fam_exp3_v2_rec", "demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec", "demo_fam_exp6_v2_rec", "demo_fam_exp7_v2_rec")) 
-household_fa_1 <- fa(household_trim, nfactors=1, rotate = "oblimin")
-household_fa_1
-household_fa_2 <- fa(household_trim, nfactors=2, rotate = "oblimin")
-household_fa_2
-household_fa_3 <- fa(household_trim, nfactors=3, rotate = "oblimin")
-household_fa_3
-household_fa_4 <- fa(household_trim, nfactors=4, rotate = "oblimin")
-household_fa_4
-household_fa_5 <- fa(household_trim, nfactors=5, rotate = "oblimin")
-household_fa_5
-household_fa_6 <- fa(household_trim, nfactors=6, rotate = "oblimin")
-household_fa_6
-household_fa_7 <- fa(household_trim, nfactors=7, rotate = "oblimin")
-household_fa_7
-household_fa_8 <- fa(household_trim, nfactors=8, rotate = "oblimin")
-household_fa_8
-household_fa_9 <- fa(household_trim, nfactors=9, rotate = "oblimin")
-household_fa_9
-household_fa_10 <- fa(household_trim, nfactors=10, rotate = "oblimin")
-household_fa_10
-write.csv(household_fa_8$loadings, file = file.path(workdir,"/ABCD adversity paper analysis results/Model Building Subsample 1/domains/household_fa_8.csv"))
+```{r subsample2}
+# first make new stressfule life events count variable like we did in subsample 1
+MB_subsample2_new <- MB_subsample2
+attach(MB_subsample2_new)
+MB_subsample2_new$PLE_total <- ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+detach(MB_subsample2_new)
 
-neglect_trim <- select(MB_subsample1, c("crpbi_y_ss_parent_rev_z", "crpbi_y_ss_caregiver_rev_z", "pmq_y_ss_mean_rev_z")) 
-neglect_fa_1 <- fa(neglect_trim, nfactors=1, rotate = "oblimin")
-neglect_fa_1 # Note this is not identified, but loadings on all three are high.
-write.csv(neglect_fa_1$loadings, file = file.path(workdir,"/ABCD adversity paper analysis results/Model Building Subsample 1/domains/neglect_fa_1.csv"))
+# Define model for Subsample 2, based on the 3-factor model from the EFA building with Subsample 1:
 
-stress_trim <- select(MB_subsample1, c("ple_died_y_bad", "ple_injured_y_bad", "ple_crime_y_bad", "ple_friend_y_bad", "ple_friend_injur_y_bad", "ple_financial_y_bad", "ple_sud_y_bad", "ple_ill_y_bad", "ple_injur_y_bad", "ple_argue_y_bad", "ple_job_y_bad", "ple_away_y_bad", "ple_arrest_y_bad", "ple_friend_died_y_bad", "ple_mh_y_bad", "ple_sib_y_bad", "ple_victim_y_bad", "ple_separ_y_bad", "ple_law_y_bad", "ple_school_y_bad", "ple_move_y_bad", "ple_jail_y_bad", "ple_step_y_bad", "ple_new_job_y_bad", "ple_new_sib_y_bad")) 
-stress_fa_1 <- fa(stress_trim, nfactors=1, rotate = "oblimin")
-stress_fa_1
-stress_fa_2 <- fa(stress_trim, nfactors=2, rotate = "oblimin")
-stress_fa_2
-stress_fa_3 <- fa(stress_trim, nfactors=3, rotate = "oblimin")
-stress_fa_3
-stress_fa_4 <- fa(stress_trim, nfactors=4, rotate = "oblimin")
-stress_fa_4
-stress_fa_5 <- fa(stress_trim, nfactors=5, rotate = "oblimin")
-stress_fa_5
-stress_fa_6 <- fa(stress_trim, nfactors=6, rotate = "oblimin")
-stress_fa_6
-stress_fa_7 <- fa(stress_trim, nfactors=7, rotate = "oblimin")
-stress_fa_7
-stress_fa_8 <- fa(stress_trim, nfactors=8, rotate = "oblimin")
-stress_fa_8
-stress_fa_9 <- fa(stress_trim, nfactors=9, rotate = "oblimin")
-stress_fa_9
-stress_fa_10 <- fa(stress_trim, nfactors=10, rotate = "oblimin")
-stress_fa_10
-stress_fa_11 <- fa(stress_trim, nfactors=11, rotate = "oblimin")
-stress_fa_11
-write.csv(stress_fa_11$loadings, file = file.path(workdir,"/ABCD adversity paper analysis results/Model Building Subsample 1/domains/stress_fa_11.csv"))
+# Factor 1 (Physical/sexual abuse)
+# Factor 2 (Family & school connectedness)
+# Factor 3 (Stressors & hardship)
 
-social_trim <- select(MB_subsample1, c("srpf_y_ss_ses_rev_Z", "nsc_p_ss_mean_3_items_rev_Z", "neighborhood_crime_y_rev_Z")) 
-social_fa_1 <- fa(social_trim, nfactors=1, rotate = "oblimin")
-social_fa_1 # Note this is not identified, but loadings on all three are high.
-write.csv(social_fa_1$loadings, file = file.path(workdir,"/ABCD adversity paper analysis results/Model Building Subsample 1/domains/social_fa_1.csv"))
+ss2_f3_nocov <- "
+#3 factors model for subsample 2
+
+abuse =~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + asr_scr_totprob_t_z
+connectedness =~ crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + fes_y_ss_fc_z
+hardship =~ nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
+"
+
+fit_ss2_f3_nocov <- cfa(model = ss2_f3_nocov, 
+                  data = MB_subsample2_new,
+                  estimator = "WLSMV",
+                  missing = "pairwise",
+                  mimic = "Mplus",
+                  ordered = c("ksads_ptsd_raw_763_p","ksads_ptsd_raw_768_p",
+                              "ksads_ptsd_raw_769_p")
+                  )
+summary(fit_ss2_f3_nocov, fit.measures = TRUE, standardized = TRUE)
+ss2f3_mi <- modindices(fit_ss2_f3_nocov, sort = TRUE, maximum.number = 10)
+
+# Try with covariances for the same questionnaire
+ss2_f3_cov <- "
+#3 factors model for subsample 2
+
+abuse =~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + asr_scr_totprob_t_z
+connectedness =~ crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + fes_y_ss_fc_z
+hardship =~ nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
+
+#Covariances for questionnaires/measures
+ksads_ptsd_raw_763_p ~~ ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p
+ksads_ptsd_raw_768_p ~~ ksads_ptsd_raw_769_p
+crpbi_y_ss_parent_rev_z ~~ crpbi_y_ss_caregiver_rev_z
+"
+
+fit_ss2_f3_cov <- cfa(model = ss2_f3_cov, 
+                  data = MB_subsample2_new,
+                  estimator = "WLSMV",
+                  missing = "pairwise",
+                  mimic = "Mplus",
+                  ordered = c("ksads_ptsd_raw_763_p","ksads_ptsd_raw_768_p",
+                              "ksads_ptsd_raw_769_p")
+                  )
+summary(fit_ss2_f3_cov, fit.measures = TRUE, standardized = TRUE)
+ss2f3_mi_cov <- modindices(fit_ss2_f3_cov, sort = TRUE, maximum.number = 10)
+
 ```
 
+## --------------------------------------------
+## -------- SUBSAMPLE #3 - ?? FACTOR CFA -------
+## --------------------------------------------
+
+
+```{r subsample3}
+# NOTE: YET TO BE UPDATED WITH FINAL DECISIONS FROM SUBSAMPLE 2
+
+# first make new stressfule life events count variable like we did in subsample 1
+MB_subsample3_new <- MB_subsample3
+attach(MB_subsample3_new)
+MB_subsample3_new$PLE_total <- ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+detach(MB_subsample3_new)
+
+# Define model for Subsample 3, TBC, just holding a place here to replace final decisions with later:
+
+# Factor 1 (Physical/sexual abuse)
+# Factor 2 (Family & school connectedness)
+# Factor 3 (Stressors & hardship)
+
+ss3_f3_nocov <- "
+#3 factors model for subsample 2
+
+abuse =~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + asr_scr_totprob_t_z
+connectedness =~ crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + fes_y_ss_fc_z
+hardship =~ nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
+"
+
+fit_ss3_f3_nocov <- cfa(model = ss3_f3_nocov, 
+                  data = MB_subsample3_new,
+                  estimator = "WLSMV",
+                  missing = "pairwise",
+                  mimic = "Mplus",
+                  ordered = c("ksads_ptsd_raw_763_p","ksads_ptsd_raw_768_p",
+                              "ksads_ptsd_raw_769_p")
+                  )
+summary(fit_ss3_f3_nocov, fit.measures = TRUE, standardized = TRUE)
+ss3f3_mi <- modindices(fit_ss3_f3_nocov, sort = TRUE, maximum.number = 10)
+
+# Try with covariances for the same questionnaire
+ss3_f3_cov <- "
+#3 factors model for subsample 3
+
+abuse =~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + asr_scr_totprob_t_z
+connectedness =~ crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + fes_y_ss_fc_z
+hardship =~ nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
+
+#Covariances for questionnaires/measures
+ksads_ptsd_raw_763_p ~~ ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p
+ksads_ptsd_raw_768_p ~~ ksads_ptsd_raw_769_p
+crpbi_y_ss_parent_rev_z ~~ crpbi_y_ss_caregiver_rev_z
+"
+
+fit_ss3_f3_cov <- cfa(model = ss3_f3_cov, 
+                  data = MB_subsample3_new,
+                  estimator = "WLSMV",
+                  missing = "pairwise",
+                  mimic = "Mplus",
+                  ordered = c("ksads_ptsd_raw_763_p","ksads_ptsd_raw_768_p",
+                              "ksads_ptsd_raw_769_p")
+                  )
+summary(fit_ss3_f3_cov, fit.measures = TRUE, standardized = TRUE)
+ss3f3_mi_cov <- modindices(fit_ss3_f3_cov, sort = TRUE, maximum.number = 10)
+
+```
