@@ -1441,6 +1441,27 @@ efa_AbNeSoStHo_reducedfinal2_f3 <-
 full_mi3_reducedfinal2 <- modindices(efa_AbNeSoStHo_reducedfinal2_f3, sort = TRUE, maximum.number = 10)
 summary(efa_AbNeSoStHo_reducedfinal2_f3, fit.measures = TRUE, standardized = TRUE)
 # THIS IS THE ONE!
+
+# CFA subsample 1 - remove neighborhood crime bc just youth report and only one item nsc is probably fine
+ss1_f3_nocov <- "
+#3 factors model for subsample 1
+
+abuse =~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + asr_scr_totprob_t_z
+connectedness =~ crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + fes_y_ss_fc_z 
+hardship =~ nsc_p_ss_mean_3_items_rev_Z  + PLE_total + demo_comb_income_v2_rec_rev_Z
+"
+
+fit_ss1_f3_nocov <- cfa(model = ss1_f3_nocov, 
+                  data = MB_subsample1_new,
+                  estimator = "WLSMV",
+                  missing = "pairwise",
+                  mimic = "Mplus",
+                  ordered = c("ksads_ptsd_raw_763_p","ksads_ptsd_raw_768_p",
+                              "ksads_ptsd_raw_769_p")
+                  )
+summary(fit_ss1_f3_nocov, fit.measures = TRUE, standardized = TRUE)
+ss1f3_mi <- modindices(fit_ss1_f3_nocov, sort = TRUE, maximum.number = 10)
+
 ```
 
 ## --------------------------------------------
@@ -1465,7 +1486,8 @@ ss2_f3_nocov <- "
 
 abuse =~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + asr_scr_totprob_t_z
 connectedness =~ crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + fes_y_ss_fc_z
-hardship =~ nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
+hardship =~ nsc_p_ss_mean_3_items_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
+
 "
 
 fit_ss2_f3_nocov <- cfa(model = ss2_f3_nocov, 
@@ -1485,7 +1507,7 @@ ss2_f3_cov <- "
 
 abuse =~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + asr_scr_totprob_t_z
 connectedness =~ crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + fes_y_ss_fc_z
-hardship =~ nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
+hardship =~ nsc_p_ss_mean_3_items_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
 
 #Covariances for questionnaires/measures
 ksads_ptsd_raw_763_p ~~ ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p
@@ -1504,15 +1526,24 @@ fit_ss2_f3_cov <- cfa(model = ss2_f3_cov,
 summary(fit_ss2_f3_cov, fit.measures = TRUE, standardized = TRUE)
 ss2f3_mi_cov <- modindices(fit_ss2_f3_cov, sort = TRUE, maximum.number = 10)
 
+# Extract factor scores and correlate with an averaged score of all observed variables on that factor. Correlation should be in the correct direction
+
+fit_ss2f3cov_extract_vars <- lavPredict(fit_ss2_f3_cov, method = "EBM", type = "lv")
+ss2f3cov_lve <- as.data.frame(fit_ss2f3cov_extract_vars)
+ss2f3cov_lve <- select(ss2f3cov_lve, "abuse","connectedness","hardship")
+cor(ss2f3cov_lve$abuse ~ MB_subsample2_new$asr_scr_totprob_t_z)# this should be positively correlated
+# the factor scores should be normally distributed
+hist(ss2f3cov_lve$abuse)
+hist(ss2f3cov_lve$connectedness)
+hist(ss2f3cov_lve$hardship)
 ```
 
 ## --------------------------------------------
-## -------- SUBSAMPLE #3 - ?? FACTOR CFA -------
+## -------- SUBSAMPLE #3 - 3 FACTOR CFA -------
 ## --------------------------------------------
 
 
 ```{r subsample3}
-# NOTE: YET TO BE UPDATED WITH FINAL DECISIONS FROM SUBSAMPLE 2
 
 # first make new stressfule life events count variable like we did in subsample 1
 MB_subsample3_new <- MB_subsample3
@@ -1526,12 +1557,13 @@ detach(MB_subsample3_new)
 # Factor 2 (Family & school connectedness)
 # Factor 3 (Stressors & hardship)
 
+#Based on subsample 3, do NOT use covariances because the second one with covariances was maybe not identified
 ss3_f3_nocov <- "
 #3 factors model for subsample 2
 
 abuse =~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + asr_scr_totprob_t_z
 connectedness =~ crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + fes_y_ss_fc_z
-hardship =~ nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
+hardship =~ nsc_p_ss_mean_3_items_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
 "
 
 fit_ss3_f3_nocov <- cfa(model = ss3_f3_nocov, 
@@ -1545,13 +1577,32 @@ fit_ss3_f3_nocov <- cfa(model = ss3_f3_nocov,
 summary(fit_ss3_f3_nocov, fit.measures = TRUE, standardized = TRUE)
 ss3f3_mi <- modindices(fit_ss3_f3_nocov, sort = TRUE, maximum.number = 10)
 
-# Try with covariances for the same questionnaire
+
+# Extract factor scores and correlate with an averaged score of all observed variables on that factor. Correlation should be in the correct direction
+
+fit_ss3f3nocov_extract_vars <- lavPredict(fit_ss3_f3_nocov, method = "EBM", type = "lv")
+ss3f3nocov_lve <- as.data.frame(fit_ss3f3nocov_extract_vars)
+ss3f3nocov_lve <- select(ss3f3nocov_lve, "abuse","connectedness","hardship")
+
+ss3f3nocov_lve$asr_check <- MB_subsample3_new$asr_scr_totprob_t_z # we'll compare the lve's to a score in the latent var
+summary(lm(ss3f3nocov_lve$abuse ~ ss3f3nocov_lve$asr_check))# this should be positively correlated (yes)
+ss3f3nocov_lve$crpbi_par_check <- MB_subsample3_new$crpbi_y_ss_parent_rev_z
+summary(lm(ss3f3nocov_lve$connectedness ~ ss3f3nocov_lve$crpbi_par_check))
+ss3f3nocov_lve$nsc_check <- MB_subsample3_new$nsc_p_ss_mean_3_items_rev_Z
+summary(lm(ss3f3nocov_lve$hardship ~ ss3f3nocov_lve$nsc_check))
+
+# the factor scores should be normally distributed
+hist(ss3f3nocov_lve$abuse)
+hist(ss3f3nocov_lve$connectedness)
+hist(ss3f3nocov_lve$hardship)
+
+# Try with covariances for the same questionnaire - NO - see above
 ss3_f3_cov <- "
 #3 factors model for subsample 3
 
 abuse =~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + asr_scr_totprob_t_z
 connectedness =~ crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + fes_y_ss_fc_z
-hardship =~ nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
+hardship =~ nsc_p_ss_mean_3_items_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
 
 #Covariances for questionnaires/measures
 ksads_ptsd_raw_763_p ~~ ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p
