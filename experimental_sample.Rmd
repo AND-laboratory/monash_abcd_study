@@ -1,0 +1,105 @@
+---
+title: "Monash Adversity and Mental Health ABCD Project - Experimental Sample"
+author: "Michelle Byrne & Chrysa Tsiapas & Divyangana Rakesh"
+date: "9/17/2021"
+output: html_document
+---
+
+## Set Working Directory
+```{r Set Directory, message=FALSE, warning=FALSE, include=FALSE}
+getwd()
+
+#You should set this to wherever you keep the data for this project 
+workdir='C:/Users/michelle/Google Drive/Professional/Students/0_Monash Students/Chrysa Tsiapas/' 
+```
+
+## Loading Libraries
+
+```{r libraries, include = F}
+library(tidyverse)
+library(lavaan)
+library(semPlot)
+library(reshape2)
+library(dplyr)
+library(Hmisc)
+library(corrplot)
+library(lmtest)
+library(nlsem)
+library(psych)
+library(GPArotation)
+```
+
+## Load model building datasets (3)
+```{r load experimental sample}
+ES_long <- read_csv(file.path(workdir,"experimental_sample_final.csv"))
+ES_baseline <- ES_long[ES_long$eventname == "baseline_year_1_arm_1", ]
+
+attach(ES_baseline)
+ES_baseline$PLE_total <- ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+detach(ES_baseline)
+```
+
+```{r CFA exp sample}
+es_f3_nocov <- "
+#3 factors model for experimental sample
+
+abuse =~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + asr_scr_totprob_t_z
+connectedness =~ crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + fes_y_ss_fc_z
+hardship =~ nsc_p_ss_mean_3_items_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
+"
+
+fit_es_f3_nocov <- cfa(model = es_f3_nocov, 
+                  data = ES_baseline,
+                  estimator = "WLSMV",
+                  missing = "pairwise",
+                  mimic = "Mplus",
+                  ordered = c("ksads_ptsd_raw_763_p","ksads_ptsd_raw_768_p",
+                              "ksads_ptsd_raw_769_p")
+                  )
+summary(fit_es_f3_nocov, fit.measures = TRUE, standardized = TRUE)
+es_f3_mi <- modindices(fit_es_f3_nocov, sort = TRUE, maximum.number = 10)
+```
+
+```{r extract}
+# extract factor scores for abuse, connectedness, and hardship and check the direction and distribution
+
+# Extract factor scores and correlate with an averaged score of all observed variables on that factor. Correlation should be in the correct direction
+
+es_extract_vars <- lavPredict(fit_es_f3_nocov, method = "EBM", type = "lv")
+es_lve <- as.data.frame(es_extract_vars)
+es_lve <- select(es_lve, "abuse","connectedness","hardship")
+
+es_lve$asr_check <- ES_baseline$asr_scr_totprob_t_z # we'll compare the lve's to a score in the latent var
+summary(lm(es_lve$abuse ~ es_lve$asr_check))# this should be positively correlated (yes)
+es_lve$crpbi_par_check <- ES_baseline$crpbi_y_ss_parent_rev_z
+summary(lm(es_lve$connectedness ~ es_lve$crpbi_par_check))
+es_lve$nsc_check <- ES_baseline$nsc_p_ss_mean_3_items_rev_Z
+summary(lm(es_lve$hardship ~ es_lve$nsc_check))
+
+# the factor scores should be normally distributed
+hist(es_lve$abuse)
+hist(es_lve$connectedness)
+hist(es_lve$hardship)
+
+ES_baseline$abuse <- es_lve$abuse
+ES_baseline$connectedness <- es_lve$connectedness
+ES_baseline$hardship <- es_lve$hardship
+
+ES_long1 = merge(ES_long, ES_baseline[, c('src_subject_id','abuse', 'connectedness', 'hardship')], by='src_subject_id')
+
+```
+
+```{r LMM}
+ES_baseline$CBCL_A <- sum(ES_baseline$cbcl_q09_p_z, ES_baseline$cbcl_q11_p_z, ES_baseline$cbcl_q29_p_z, ES_baseline$cbcl_q30_p_z, ES_baseline$cbcl_q31_p_z, ES_baseline$cbcl_q32_p_z, ES_baseline$cbcl_q45_p_z, ES_baseline$cbcl_q46_p_z, ES_baseline$cbcl_q50_p_z, ES_baseline$cbcl_q56a_p_z, ES_baseline$cbcl_q56b_p_z, ES_baseline$cbcl_q56c_p_z, ES_baseline$cbcl_q56f_p_z, ES_baseline$cbcl_q71_p_z, ES_baseline$cbcl_q75_p_z, ES_baseline$cbcl_q112_p_z, na.rm = TRUE
+)
+
+model1_ab <- lm(CBCL_A ~ abuse, data = ES_baseline)
+model1_co <- lm(CBCL_A ~ connectedness, data = ES_baseline)
+model1_ha <- lm(CBCL_A ~ hardship, data = ES_baseline)
+
+ES_long$CBCL_A <- sum(ES_long$cbcl_q09_p_z, ES_long$cbcl_q11_p_z, ES_long$cbcl_q29_p_z, ES_long$cbcl_q30_p_z, ES_long$cbcl_q31_p_z, ES_long$cbcl_q32_p_z, ES_long$cbcl_q45_p_z, ES_long$cbcl_q46_p_z, ES_long$cbcl_q50_p_z, ES_long$cbcl_q56a_p_z, ES_long$cbcl_q56b_p_z, ES_long$cbcl_q56c_p_z, ES_long$cbcl_q56f_p_z, ES_long$cbcl_q71_p_z, ES_long$cbcl_q75_p_z, ES_long$cbcl_q112_p_z, na.rm = TRUE
+)
+
+
+```
+
