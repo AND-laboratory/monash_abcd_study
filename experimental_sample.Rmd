@@ -36,6 +36,9 @@ library(readr)
 anxiety_merged_cbcl_raw <- read_csv("C:/Users/michelle/Google Drive/Professional/Students/0_Monash Students/Chrysa Tsiapas/anxiety_merged_cbcl_raw.csv")
 View(anxiety_merged_cbcl_raw)
 
+ES_long <- read_csv("C:/Users/michelle/Google Drive/Professional/Students/0_Monash Students/Chrysa Tsiapas/experimental_sample_final.csv")
+View(ES_long)
+
 exp_all_long <- merge(
   x = anxiety_merged_cbcl_raw,
   y = ES_long,
@@ -46,7 +49,7 @@ attach(exp_all_long)
 exp_all_long$PLE_total <- ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
 detach(exp_all_long)
 
-ES_baseline1 <- ES_long[exp_all_long$eventname == "baseline_year_1_arm_1", ]
+ES_baseline1 <- exp_all_long[exp_all_long$eventname == "baseline_year_1_arm_1", ]
 
 attach(ES_baseline1)
 ES_baseline1$PLE_total <- ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
@@ -108,13 +111,16 @@ ES_long1 = merge(exp_all_long, ES_baseline1[, c('src_subject_id','abuse', 'conne
 ES_long1$CBCL_A <- sum(ES_long1$cbcl_q09_p, ES_long1$cbcl_q11_p, ES_long1$cbcl_q29_p, ES_long1$cbcl_q30_p, ES_long1$cbcl_q31_p, ES_long1$cbcl_q32_p, ES_long1$cbcl_q45_p, ES_long1$cbcl_q46_p, ES_long1$cbcl_q50_p, ES_long1$cbcl_q56a_p, ES_long1$cbcl_q56b_p, ES_long1$cbcl_q56c_p, ES_long1$cbcl_q56f_p, ES_long1$cbcl_q71_p, ES_long1$cbcl_q75_p, ES_long1$cbcl_q112_p, na.rm = TRUE
 )
 
-model1_ab <- lm(CBCL_A ~ abuse, data = ES_long1)
-model1_co <- lm(CBCL_A ~ connectedness, data = ES_long1)
-model1_ha <- lm(CBCL_A ~ hardship, data = ES_long1)
+ES_baseline1$CBCL_A <- sum(ES_baseline1$cbcl_q09_p, ES_baseline1$cbcl_q11_p, ES_baseline1$cbcl_q29_p, ES_baseline1$cbcl_q30_p, ES_baseline1$cbcl_q31_p, ES_baseline1$cbcl_q32_p, ES_baseline1$cbcl_q45_p, ES_baseline1$cbcl_q46_p, ES_baseline1$cbcl_q50_p, ES_baseline1$cbcl_q56a_p, ES_baseline1$cbcl_q56b_p, ES_baseline1$cbcl_q56c_p, ES_baseline1$cbcl_q56f_p, ES_baseline1$cbcl_q71_p, ES_baseline1$cbcl_q75_p, ES_baseline1$cbcl_q112_p, na.rm = TRUE
+)
 
-model2_ab <- lm(cbcl_scr_dsm5_anxdisord_t ~ abuse, data = ES_long1)
-model2_co <- lm(cbcl_scr_dsm5_anxdisord_t ~ connectedness, data = ES_long1)
-model2_ha <- lm(cbcl_scr_dsm5_anxdisord_t ~ hardship, data = ES_long1)
+model1_ab <- lm(CBCL_A ~ abuse, data = ES_baseline1)
+model1_co <- lm(CBCL_A ~ connectedness, data = ES_baseline1)
+model1_ha <- lm(CBCL_A ~ hardship, data = ES_baseline1)
+
+model2_ab <- lm(cbcl_scr_dsm5_anxdisord_t ~ abuse, data = ES_baseline1)
+model2_co <- lm(cbcl_scr_dsm5_anxdisord_t ~ connectedness, data = ES_baseline1)
+model2_ha <- lm(cbcl_scr_dsm5_anxdisord_t ~ hardship, data = ES_baseline1)
 
 ```
 
