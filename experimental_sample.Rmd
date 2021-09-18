@@ -108,9 +108,9 @@ ES_long1 = merge(exp_all_long, ES_baseline1[, c('src_subject_id','abuse', 'conne
 ES_long1$CBCL_A <- sum(ES_long1$cbcl_q09_p, ES_long1$cbcl_q11_p, ES_long1$cbcl_q29_p, ES_long1$cbcl_q30_p, ES_long1$cbcl_q31_p, ES_long1$cbcl_q32_p, ES_long1$cbcl_q45_p, ES_long1$cbcl_q46_p, ES_long1$cbcl_q50_p, ES_long1$cbcl_q56a_p, ES_long1$cbcl_q56b_p, ES_long1$cbcl_q56c_p, ES_long1$cbcl_q56f_p, ES_long1$cbcl_q71_p, ES_long1$cbcl_q75_p, ES_long1$cbcl_q112_p, na.rm = TRUE
 )
 
-model1_ab <- lm(cbcl_scr_dsm5_anxdisord_t ~ abuse, data = ES_long1)
-model1_co <- lm(cbcl_scr_dsm5_anxdisord_t ~ connectedness, data = ES_long1)
-model1_ha <- lm(cbcl_scr_dsm5_anxdisord_t ~ hardship, data = ES_long1)
+model1_ab <- lm(CBCL_A ~ abuse, data = ES_long1)
+model1_co <- lm(CBCL_A ~ connectedness, data = ES_long1)
+model1_ha <- lm(CBCL_A ~ hardship, data = ES_long1)
 
 model2_ab <- lm(cbcl_scr_dsm5_anxdisord_t ~ abuse, data = ES_long1)
 model2_co <- lm(cbcl_scr_dsm5_anxdisord_t ~ connectedness, data = ES_long1)
