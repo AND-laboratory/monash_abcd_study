@@ -29,14 +29,28 @@ library(psych)
 library(GPArotation)
 ```
 
-## Load model building datasets (3)
+## Load experimental sample dataset and anxiety dataset and merge
 ```{r load experimental sample}
-ES_long <- read_csv(file.path(workdir,"experimental_sample_final.csv"))
-ES_baseline <- ES_long[ES_long$eventname == "baseline_year_1_arm_1", ]
 
-attach(ES_baseline)
-ES_baseline$PLE_total <- ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
-detach(ES_baseline)
+library(readr)
+anxiety_merged_cbcl_raw <- read_csv("C:/Users/michelle/Google Drive/Professional/Students/0_Monash Students/Chrysa Tsiapas/anxiety_merged_cbcl_raw.csv")
+View(anxiety_merged_cbcl_raw)
+
+exp_all_long <- merge(
+  x = anxiety_merged_cbcl_raw,
+  y = ES_long,
+  by = c("src_subject_id", "eventname"),
+  all.y = TRUE)
+
+attach(exp_all_long)
+exp_all_long$PLE_total <- ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+detach(exp_all_long)
+
+ES_baseline1 <- ES_long[exp_all_long$eventname == "baseline_year_1_arm_1", ]
+
+attach(ES_baseline1)
+ES_baseline1$PLE_total <- ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+detach(ES_baseline1)
 ```
 
 ```{r CFA exp sample}
@@ -49,7 +63,7 @@ hardship =~ nsc_p_ss_mean_3_items_rev_Z + PLE_total + demo_comb_income_v2_rec_re
 "
 
 fit_es_f3_nocov <- cfa(model = es_f3_nocov, 
-                  data = ES_baseline,
+                  data = ES_baseline1,
                   estimator = "WLSMV",
                   missing = "pairwise",
                   mimic = "Mplus",
@@ -69,11 +83,11 @@ es_extract_vars <- lavPredict(fit_es_f3_nocov, method = "EBM", type = "lv")
 es_lve <- as.data.frame(es_extract_vars)
 es_lve <- select(es_lve, "abuse","connectedness","hardship")
 
-es_lve$asr_check <- ES_baseline$asr_scr_totprob_t_z # we'll compare the lve's to a score in the latent var
+es_lve$asr_check <- ES_baseline1$asr_scr_totprob_t_z # we'll compare the lve's to a score in the latent var
 summary(lm(es_lve$abuse ~ es_lve$asr_check))# this should be positively correlated (yes)
-es_lve$crpbi_par_check <- ES_baseline$crpbi_y_ss_parent_rev_z
+es_lve$crpbi_par_check <- ES_baseline1$crpbi_y_ss_parent_rev_z
 summary(lm(es_lve$connectedness ~ es_lve$crpbi_par_check))
-es_lve$nsc_check <- ES_baseline$nsc_p_ss_mean_3_items_rev_Z
+es_lve$nsc_check <- ES_baseline1$nsc_p_ss_mean_3_items_rev_Z
 summary(lm(es_lve$hardship ~ es_lve$nsc_check))
 
 # the factor scores should be normally distributed
@@ -81,25 +95,26 @@ hist(es_lve$abuse)
 hist(es_lve$connectedness)
 hist(es_lve$hardship)
 
-ES_baseline$abuse <- es_lve$abuse
-ES_baseline$connectedness <- es_lve$connectedness
-ES_baseline$hardship <- es_lve$hardship
+ES_baseline1$abuse <- es_lve$abuse
+ES_baseline1$connectedness <- es_lve$connectedness
+ES_baseline1$hardship <- es_lve$hardship
 
-ES_long1 = merge(ES_long, ES_baseline[, c('src_subject_id','abuse', 'connectedness', 'hardship')], by='src_subject_id')
+ES_long1 = merge(exp_all_long, ES_baseline1[, c('src_subject_id','abuse', 'connectedness', 'hardship')], by='src_subject_id')
 
 ```
 
 ```{r LMM}
-ES_baseline$CBCL_A <- sum(ES_baseline$cbcl_q09_p_z, ES_baseline$cbcl_q11_p_z, ES_baseline$cbcl_q29_p_z, ES_baseline$cbcl_q30_p_z, ES_baseline$cbcl_q31_p_z, ES_baseline$cbcl_q32_p_z, ES_baseline$cbcl_q45_p_z, ES_baseline$cbcl_q46_p_z, ES_baseline$cbcl_q50_p_z, ES_baseline$cbcl_q56a_p_z, ES_baseline$cbcl_q56b_p_z, ES_baseline$cbcl_q56c_p_z, ES_baseline$cbcl_q56f_p_z, ES_baseline$cbcl_q71_p_z, ES_baseline$cbcl_q75_p_z, ES_baseline$cbcl_q112_p_z, na.rm = TRUE
+
+ES_long1$CBCL_A <- sum(ES_long1$cbcl_q09_p, ES_long1$cbcl_q11_p, ES_long1$cbcl_q29_p, ES_long1$cbcl_q30_p, ES_long1$cbcl_q31_p, ES_long1$cbcl_q32_p, ES_long1$cbcl_q45_p, ES_long1$cbcl_q46_p, ES_long1$cbcl_q50_p, ES_long1$cbcl_q56a_p, ES_long1$cbcl_q56b_p, ES_long1$cbcl_q56c_p, ES_long1$cbcl_q56f_p, ES_long1$cbcl_q71_p, ES_long1$cbcl_q75_p, ES_long1$cbcl_q112_p, na.rm = TRUE
 )
 
-model1_ab <- lm(CBCL_A ~ abuse, data = ES_baseline)
-model1_co <- lm(CBCL_A ~ connectedness, data = ES_baseline)
-model1_ha <- lm(CBCL_A ~ hardship, data = ES_baseline)
+model1_ab <- lm(cbcl_scr_dsm5_anxdisord_t ~ abuse, data = ES_long1)
+model1_co <- lm(cbcl_scr_dsm5_anxdisord_t ~ connectedness, data = ES_long1)
+model1_ha <- lm(cbcl_scr_dsm5_anxdisord_t ~ hardship, data = ES_long1)
 
-ES_long$CBCL_A <- sum(ES_long$cbcl_q09_p_z, ES_long$cbcl_q11_p_z, ES_long$cbcl_q29_p_z, ES_long$cbcl_q30_p_z, ES_long$cbcl_q31_p_z, ES_long$cbcl_q32_p_z, ES_long$cbcl_q45_p_z, ES_long$cbcl_q46_p_z, ES_long$cbcl_q50_p_z, ES_long$cbcl_q56a_p_z, ES_long$cbcl_q56b_p_z, ES_long$cbcl_q56c_p_z, ES_long$cbcl_q56f_p_z, ES_long$cbcl_q71_p_z, ES_long$cbcl_q75_p_z, ES_long$cbcl_q112_p_z, na.rm = TRUE
-)
-
+model2_ab <- lm(cbcl_scr_dsm5_anxdisord_t ~ abuse, data = ES_long1)
+model2_co <- lm(cbcl_scr_dsm5_anxdisord_t ~ connectedness, data = ES_long1)
+model2_ha <- lm(cbcl_scr_dsm5_anxdisord_t ~ hardship, data = ES_long1)
 
 ```
 
