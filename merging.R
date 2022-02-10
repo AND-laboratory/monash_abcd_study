@@ -22,12 +22,12 @@ anxiety_full <- merge(IDs_full_table, anxiety_table, by = c("src_subject_id","ev
 
 #get rid of weird useless vars made by merge
 library(dplyr)
-anxiety_full2 <- select(anxiety_full, -c("X1.x","X.x","interview_date.x",
-                                   "interview_age.x","sex.x","X1.y","X.y"))
+# anxiety_full2 <- select(anxiety_full, -c("X1.x","X.x","interview_date.x",
+#                                   "interview_age.x","sex.x","X1.y","X.y"))
 
 # ----------------- Model Building Sample
 
-all_data <- merge(anxiety_full2, aces_table, by = c("src_subject_id","eventname"), 
+all_data <- merge(anxiety_full, aces_table, by = c("src_subject_id","eventname"), 
                   all = TRUE, sort = TRUE)
 
 # 'model_building' variable is TRUE if it's model building (and FALSE if it's experimental sample AND in a 2 year follow up row)
@@ -49,7 +49,7 @@ write.csv(model_building, file = "model_building_aces.csv")
 # Don't use the FALSE 'model_building' value because this will include baseline and 1 year follow up rows for model building IDs
 exp_sample_full <- all_data[ which(all_data$eventname==
                                      '2_year_follow_up_y_arm_1' &
-                                     !is.na(anxiety_full2$cbcl_scr_dsm5_anxdisord_t)), ]
+                                     !is.na(anxiety_full$cbcl_scr_dsm5_anxdisord_t)), ]
 exp_sample_IDs <- select(exp_sample_full, "src_subject_id")
 check_ES_IDs <- unique(exp_sample_IDs$src_subject_id)
 

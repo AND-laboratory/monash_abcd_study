@@ -10,7 +10,7 @@ output: html_document
 getwd()
 
 #You should set this to wherever you keep the data for this project 
-workdir='C:/Users/michelle/Google Drive/Professional/Students/0_Monash Students/Chrysa Tsiapas/' 
+workdir='C:/Users/michelle/Google Drive/Professional/Students/0_Monash Students/Chrysa Tsiapas/Paper/Datasets' 
 ```
 
 ## Loading Libraries

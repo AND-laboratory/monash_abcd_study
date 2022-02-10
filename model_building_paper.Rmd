@@ -1,0 +1,44 @@
+---
+title: "Model Building - Final paper version"
+author: "Michelle Byrne & Chrysa Tsiapas & Divyangana Rakesh"
+date: "2/11/2022"
+output: html_document
+---
+
+## Set Working Directory
+```{r Set Directory, message=FALSE, warning=FALSE, include=FALSE}
+getwd()
+
+#You should set this to wherever you keep the data for this project 
+workdir='C:/Users/michelle/Google Drive/Professional/Students/0_Monash Students/Chrysa Tsiapas/Paper/Datasets' 
+```
+
+## Loading Libraries
+
+```{r libraries, include = F}
+library(tidyverse)
+library(lavaan)
+library(semPlot)
+library(reshape2)
+library(dplyr)
+library(Hmisc)
+library(corrplot)
+library(lmtest)
+library(nlsem)
+library(psych)
+library(GPArotation)
+```
+
+## Load model building datasets (3)
+```{r load model building subsamples}
+MB_subsample1 <- read_csv(file.path(workdir,"MB_subsample1.csv"))
+MB_subsample2 <- read_csv(file.path(workdir,"MB_subsample2.csv"))
+MB_subsample3 <- read_csv(file.path(workdir,"MB_subsample3.csv"))
+
+# Then load the new PLE (adverse life events, scored by us: include if didn't happen in the last year, was mostly bad, and affected them)
+
+```
+
+## --------------------------------------------
+## ------------- SUBSAMPLE #1 EFAs ------------
+## --------------------------------------------
