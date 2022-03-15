@@ -114,14 +114,14 @@ efa_abuse_f1 <-
       )
 summary(efa_abuse_f1, fit.measures = TRUE, standardized = TRUE)
 
-efa_abuse_f1_mlr <- 
-  cfa(model = abuse_f1,
-      data = MB_subsample1,
-      rotation = "oblimin",
-      estimator = "MLR",
-      mimic = "Mplus",
-      )
-summary(efa_abuse_f1_mlr, fit.measures = TRUE)
+# efa_abuse_f1_mlr <- 
+#   cfa(model = abuse_f1,
+#       data = MB_subsample1,
+#       rotation = "oblimin",
+#       estimator = "MLR",
+#       mimic = "Mplus",
+#       )
+# summary(efa_abuse_f1_mlr, fit.measures = TRUE)
 # Both methods for f1 warning
 #    The variance-covariance matrix of the estimated parameters (vcov)
 #    does not appear to be positive definite! The smallest eigenvalue
@@ -292,6 +292,29 @@ efa_AbNeSoStHo_reducedfinal2_f4 <-
       )
 full_mi4_reducedfinal2 <- modindices(efa_AbNeSoStHo_reducedfinal2_f4, sort = TRUE, maximum.number = 10)
 summary(efa_AbNeSoStHo_reducedfinal2_f4, fit.measures = TRUE, standardized = TRUE)
+# Model above is not identified
+
+hist(MB_subsample1_new$PLE_total)
+# oh wow that's  real skewed
+MB_subsample1_new$log_PLE_total <- transformTukey(MB_subsample1_new$PLE_total)
+
+AbNeSoStHo_reducedfinal3_f3 <- '
+efa("efa")*AbNeSoStHo_reducedPLE_f1 +
+efa("efa")*AbNeSoStHo_reducedPLE_f2 +
+efa("efa")*AbNeSoStHo_reducedPLE_f3 +
+efa("efa")*AbNeSoStHo_reducedPLE_f4 =~
+ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + log_PLE_total + asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z
+'
+efa_AbNeSoStHo_reducedfinal3_f3 <- 
+  cfa(model = AbNeSoStHo_reducedfinal3_f3,
+      data = MB_subsample1_new,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_763_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+full_mi3_reducedfinal3 <- modindices(efa_AbNeSoStHo_reducedfinal3_f3, sort = TRUE, maximum.number = 10)
+summary(efa_AbNeSoStHo_reducedfinal3_f3, fit.measures = TRUE, standardized = TRUE)
 
 # CFA subsample 1 - remove neighborhood crime bc just youth report and only one item nsc is probably fine
 ss1_f3_nocov <- "
@@ -299,7 +322,7 @@ ss1_f3_nocov <- "
 
 abuse =~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + asr_scr_totprob_t_z
 connectedness =~ crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + fes_y_ss_fc_z 
-hardship =~ nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
+hardship =~ nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + log_PLE_total + demo_comb_income_v2_rec_rev_Z
 "
 
 fit_ss1_f3_nocov <- cfa(model = ss1_f3_nocov, 
@@ -312,6 +335,26 @@ fit_ss1_f3_nocov <- cfa(model = ss1_f3_nocov,
                   )
 summary(fit_ss1_f3_nocov, fit.measures = TRUE, standardized = TRUE)
 ss1f3_mi <- modindices(fit_ss1_f3_nocov, sort = TRUE, maximum.number = 10)
+
+# Another EFA without PLE_total
+AbNeSoStHo_reduced_noPLE_f3 <- '
+efa("efa")*AbNeSoStHo_reducedPLE_f1 +
+efa("efa")*AbNeSoStHo_reducedPLE_f2 +
+efa("efa")*AbNeSoStHo_reducedPLE_f3 =~
+ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z
+'
+efa_AbNeSoStHo_reduced_noPLE_f3 <- 
+  cfa(model = AbNeSoStHo_reduced_noPLE_f3,
+      data = MB_subsample1_new,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_763_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+full_mi3_reduced_noPLE <- modindices(efa_AbNeSoStHo_reduced_noPLE_f3, sort = TRUE, maximum.number = 10)
+summary(efa_AbNeSoStHo_reduced_noPLE_f3, fit.measures = TRUE, standardized = TRUE)
+# Warning in lav_object_post_check(object) :
+#  lavaan WARNING: some estimated ov variances are negative
 
 ```
 
