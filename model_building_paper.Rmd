@@ -10,7 +10,7 @@ output: html_document
 getwd()
 
 #You should set this to wherever you keep the data for this project 
-workdir='C:/Users/michelle/Google Drive/Professional/Students/0_Monash Students/Chrysa Tsiapas/Paper/Datasets' 
+workdir='C:/Users/michelle/Google Drive/Professional/Students/0_Monash Students/Chrysa Tsiapas/ABCD adversity paper analysis results/Paper/Datasets' 
 ```
 
 ## Loading Libraries
@@ -27,6 +27,7 @@ library(lmtest)
 library(nlsem)
 library(psych)
 library(GPArotation)
+library(dplyr)
 ```
 
 ## Load model building datasets (3)
@@ -35,10 +36,440 @@ MB_subsample1 <- read_csv(file.path(workdir,"MB_subsample1.csv"))
 MB_subsample2 <- read_csv(file.path(workdir,"MB_subsample2.csv"))
 MB_subsample3 <- read_csv(file.path(workdir,"MB_subsample3.csv"))
 
-# Then load the new PLE (adverse life events, scored by us: include if didn't happen in the last year, was mostly bad, and affected them)
-
+# Then load the new PLE (adverse life events, scored by us: include if didn't happen in the last year, was mostly bad, and affected them) - these are called e.g., "ple_died_y_count" to sum into PLE_total
+life_events_scored <- read_csv(file.path(workdir,"life_events_scored2.csv")) #version 2 simply has less variables so they don't get repeated during the join
+MB_subsample1 <- left_join(MB_subsample1, life_events_scored, by = "src_subject_id")
+MB_subsample2 <- left_join(MB_subsample2, life_events_scored, by = "src_subject_id")
+MB_subsample3 <- left_join(MB_subsample3, life_events_scored, by = "src_subject_id")
 ```
 
 ## --------------------------------------------
 ## ------------- SUBSAMPLE #1 EFAs ------------
 ## --------------------------------------------
+
+```{r efa lavaan single adversity factor}
+# First we set up an EFA to see really how many factors there should be. 
+# See: https://vankesteren.github.io/efast/efa_lavaan 
+# And: https://stats.stackexchange.com/questions/190190/can-lavaan-sem-cfa-be-used-to-do-factor-analysis-like-factanal-efa
+# And: https://solomonkurz.netlify.app/post/2021-05-11-yes-you-can-fit-an-exploratory-factor-analysis-with-lavaan/
+# OR possibly with the psych package first, just to do plain factor analysis (so don't constrain/pre-decide the number of factors?)
+
+# UPDATE: None of the lavaan EFAs below work with WLSMV because of something to do with missing values. They work with MLR and non-ordered but are not identified.
+
+# Here first is set up for EFA with just one factor
+f1 <- '
+efa("efa")*f1 =~ 
+demo_fam_exp1_v2_rec + demo_fam_exp2_v2_rec + demo_fam_exp3_v2_rec + demo_fam_exp4_v2_rec + demo_fam_exp5_v2_rec + demo_fam_exp6_v2_rec + demo_fam_exp7_v2_rec + 	famhx_ss_parent_alc_p_rec + famhx_ss_parent_dg_p_rec + famhx_ss_parent_dprs_p_rec + 	famhx_ss_parent_ma_p_rec + famhx_ss_parent_vs_p_rec + famhx_ss_parent_trb_p_rec + famhx_ss_parent_nrv_p_rec + famhx_ss_parent_prf_p_rec + famhx_ss_parent_hspd_p_rec + 	famhx_ss_parent_scd_p_rec + ple_died_y_count + ple_injured_y_count + ple_crime_y_count + ple_friend_y_count + ple_friend_injur_y_count + ple_financial_y_count + 	ple_sud_y_count + ple_ill_y_count + ple_injur_y_count + ple_argue_y_count + ple_job_y_count + 	ple_away_y_count + ple_arrest_y_count + ple_friend_died_y_count + ple_mh_y_count + ple_sib_y_count + 	ple_victim_y_count + ple_separ_y_count + ple_law_y_count + ple_school_y_count + ple_move_y_count + 	ple_jail_y_count + ple_step_y_count + ple_new_job_y_count + ple_new_sib_y_count + ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_766_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + asr_scr_totprob_t_z + fes_p_ss_fc_z + fes_y_ss_fc_z + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + 	demo_comb_income_v2_rec_rev_Z
+'
+
+efa_f1 <- 
+  cfa(model = f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("demo_fam_exp1_v2_rec","demo_fam_exp2_v2_rec","demo_fam_exp3_v2_rec","demo_fam_exp4_v2_rec",
+                  "demo_fam_exp5_v2_rec","demo_fam_exp6_v2_rec","demo_fam_exp7_v2_rec","famhx_ss_parent_alc_p_rec",
+                  "famhx_ss_parent_dg_p_rec","famhx_ss_parent_dprs_p_rec","famhx_ss_parent_ma_p_rec","famhx_ss_parent_vs_p_rec",
+                  "famhx_ss_parent_trb_p_rec","famhx_ss_parent_nrv_p_rec","famhx_ss_parent_prf_p_rec","famhx_ss_parent_hspd_p_rec",
+                  "famhx_ss_parent_scd_p_rec","ple_died_y_count","ple_injured_y_count","ple_crime_y_count",
+                  "ple_friend_y_count","ple_friend_injur_y_count","ple_financial_y_count","ple_sud_y_count","ple_ill_y_count","ple_injur_y_count",
+                  "ple_argue_y_count","ple_job_y_count","ple_away_y_count","ple_arrest_y_count","ple_friend_died_y_count","ple_mh_y_count",
+                  "ple_sib_y_count","ple_victim_y_count","ple_separ_y_count","ple_law_y_count","ple_school_y_count","ple_move_y_count",
+                  "ple_jail_y_count","ple_step_y_count","ple_new_job_y_count","ple_new_sib_y_count","ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_766_p","ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+
+summary(efa_f1, fit.measures = TRUE)
+
+# We were looking for NS chi-squared values and try to identify which model it is (and what are the obvious factors?)
+# The chi-square p values are too low, and even when we repeated with 2 factor, 3 factor, 4 factor etc EFA models
+# We checked the frequencies of each individual PLE item - most are very low frequencies.
+# We decided to 
+# 1. sum the PLE into a count variable, and 
+# 2. break down the ACEs into categories and run a series of individual models that identify which items within categories fit a data structure
+
+```   
+
+## We can't seem to get all these indicators loaded onto one super (adversity) factor, so in this next part we will try five separate factor analyses, one for each domain of ACES: "Abuse", "Household challenges", "Neglect", "Stressful events", and "Social environment"
+
+```{r efa lavaan domain factors}
+
+# ----- ABUSE -----
+# Physical abuse: "ksads_ptsd_raw_761_p", "ksads_ptsd_raw_763_p", 
+# Sexual abuse: "ksads_ptsd_raw_767_p", "ksads_ptsd_raw_768_p", "ksads_ptsd_raw_769_p"
+
+abuse_f1 <- '
+efa("efa")*abuse_f1 =~ 
+ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p 
+'
+efa_abuse_f1 <- 
+  cfa(model = abuse_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+summary(efa_abuse_f1, fit.measures = TRUE, standardized = TRUE)
+
+efa_abuse_f1_mlr <- 
+  cfa(model = abuse_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "MLR",
+      mimic = "Mplus",
+      )
+summary(efa_abuse_f1_mlr, fit.measures = TRUE)
+# Both methods for f1 warning
+#    The variance-covariance matrix of the estimated parameters (vcov)
+#    does not appear to be positive definite! The smallest eigenvalue
+#    (= -2.891172e-16) is smaller than zero. This may be a symptom that
+#    the model is not identified.
+
+# NS chi-sq 
+# option 1. loadings high enough to combine first 4 and keep 5th (769)
+# option 2. combine 2 phys abuse, 2 sexual abuse and 1 peer sexual abuse
+    
+
+
+# ----- NEGLECT -----
+# Emotional neglect: "crpbi_y_ss_parent_rev_z", "crpbi_y_ss_caregiver_rev_z"
+# Physical neglect: "pmq_y_ss_mean_rev_z"
+
+neglect_f1 <- '
+efa("efa")*neglect_f1 =~ 
+crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z
+'
+efa_neglect_f1_mlr <- 
+  cfa(model = neglect_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "MLR",
+      missing = "ML",
+      mimic = "Mplus",
+      )
+summary(efa_neglect_f1_mlr, fit.measures = TRUE, standardized = TRUE)
+# 1 factor ran but chi-sq is significant. (bc only 3 indicators)
+
+
+
+
+# ----- STRESSFUL EVENTS -----
+# Stressors: '"ple_died_y_bad", "ple_injured_y_bad", "ple_crime_y_bad", "ple_friend_y_bad", "ple_friend_injur_y_bad", "ple_financial_y_bad", "ple_sud_y_bad", "ple_ill_y_bad", "ple_injur_y_bad", "ple_argue_y_bad", "ple_job_y_bad", "ple_away_y_bad", "ple_arrest_y_bad", "ple_friend_died_y_bad", "ple_mh_y_bad", "ple_sib_y_bad", "ple_victim_y_bad", "ple_separ_y_bad", "ple_law_y_bad", "ple_school_y_bad", "ple_move_y_bad", "ple_jail_y_bad", "ple_step_y_bad", "ple_new_job_y_bad", "ple_new_sib_y_bad"
+
+stress_f1 <- '
+efa("efa")*stress_f1 =~ 
+ple_died_y_count + ple_injured_y_count + ple_crime_y_count + ple_friend_y_count + ple_friend_injur_y_count + ple_financial_y_count + ple_sud_y_count + ple_ill_y_count + ple_injur_y_count + ple_argue_y_count + ple_job_y_count + ple_away_y_count + ple_arrest_y_count + ple_friend_died_y_count + ple_mh_y_count + ple_sib_y_count + ple_victim_y_count + ple_separ_y_count + ple_law_y_count + ple_school_y_count + ple_move_y_count + ple_jail_y_count + ple_step_y_count + ple_new_job_y_count + ple_new_sib_y_count
+'
+efa_stress_f1 <- 
+  cfa(model = stress_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ple_died_y_count", "ple_injured_y_count", "ple_crime_y_count", "ple_friend_y_count", "ple_friend_injur_y_count", "ple_financial_y_count", "ple_sud_y_count", "ple_ill_y_count", "ple_injur_y_count", "ple_argue_y_count", "ple_job_y_count", "ple_away_y_count", "ple_arrest_y_count", "ple_friend_died_y_count", "ple_mh_y_count", "ple_sib_y_count", "ple_victim_y_count", "ple_separ_y_count", "ple_law_y_count", "ple_school_y_count", "ple_move_y_count", "ple_jail_y_count", "ple_step_y_count", "ple_new_job_y_count", "ple_new_sib_y_count")
+      )
+summary(efa_stress_f1, fit.measures = TRUE, standardized = TRUE)
+# Ran but chi sq NS
+# We attempted >1 factor models as well, but ultimately decided to sum the count of PLEs (see above)
+
+
+# ----- SOCIAL ENVIRONMENT -----
+# School environment: "srpf_y_ss_ses_rev_Z"
+# Neighbourhood: "nsc_p_ss_mean_3_items_rev_Z", "neighborhood_crime_y_rev_Z"
+
+social_f1 <- '
+efa("efa")*social_f1 =~ 
+srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z
+'
+efa_social_f1_mlr <- 
+  cfa(model = social_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "MLR",
+      missing = "ML",
+      mimic = "Mplus",
+      )
+summary(efa_social_f1_mlr, fit.measures = TRUE, standardized = TRUE)
+# Ran fine but chi-sq NS (bc only 3 indicators)
+
+# 3 factors model combining Abuse, Neglect, and Social items (X^2 = 32.212(25), p =0.152):
+AbNeSo_f3 <- '
+efa("efa")*AbNeSo_f1 +
+efa("efa")*AbNeSo_f2 +
+efa("efa")*AbNeSo_f3 =~ 
+ksads_ptsd_raw_761_p + ksads_ptsd_raw_763_p + ksads_ptsd_raw_767_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z
+'
+efa_AbNeSo_f3 <- 
+  cfa(model = AbNeSo_f3,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_761_p","ksads_ptsd_raw_763_p",
+                  "ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+summary(efa_AbNeSo_f3, fit.measures = TRUE, standardized = TRUE)
+
+
+# ----- HOUSEHOLD CHALLENGES -----
+# Home violence exposure: "ksads_ptsd_raw_766_p"
+# Household substance abuse: "famhx_ss_parent_alc_p_rec", "famhx_ss_parent_dg_p_rec""
+# Parent Mental illness in household: "famhx_ss_parent_dprs_p_rec", "famhx_ss_parent_ma_p_rec", "famhx_ss_parent_vs_p_rec", "famhx_ss_parent_trb_p_rec", "famhx_ss_parent_nrv_p_rec", "famhx_ss_parent_prf_p_rec", "famhx_ss_parent_hspd_p_rec", "famhx_ss_parent_scd_p_rec", "asr_scr_totprob_t_z"
+# Family conflict: "fes_p_ss_fc_z", "fes_y_ss_fc_z"
+# Family income: "demo_comb_income_v2_rec_rev_Z"
+# Economic hardship: "demo_fam_exp2_v2_rec", "demo_fam_exp3_v2_rec", "demo_fam_exp4_v2_rec", "demo_fam_exp5_v2_rec", "demo_fam_exp6_v2_rec", "demo_fam_exp7_v2_rec"
+
+# We tried including the famhx variables above, but they would not fit and, like, PLE, the frequencies on any one item are too low
+# Instead, it makes sense to only use total symptoms for parent
+
+household_new3_f1 <- '
+efa("efa")*household_new3_f1 =~ 
+asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z 
+'
+efa_household_new3_f1 <- 
+  cfa(model = household_new3_f1,
+      data = MB_subsample1,
+      rotation = "oblimin",
+      estimator = "ML",
+      mimic = "Mplus"
+      )
+house_new3_mods <- modindices(efa_household_new3_f1, sort = TRUE, maximum.number = 5)
+summary(efa_household_new3_f1, fit.measures = TRUE, standardized = TRUE)
+#chi sq still sig but ok bc only 3 items
+
+
+# ----Try a full model
+
+# try with at least 3 per domain (except stressors)
+# Abuse: ksads 763, 768, 769
+# Neglect: crpbi y, crpbi p, pmq
+# social: srpf, nsc, neighborhood crime
+# household: asr, fes, income
+# And with new count stressor variable since the binary ones aren't loading onto anything
+
+MB_subsample1_new <- MB_subsample1
+attach(MB_subsample1_new)
+MB_subsample1_new$PLE_total <- ple_died_y_count + ple_injured_y_count + ple_crime_y_count + ple_friend_y_count + ple_friend_injur_y_count + ple_financial_y_count + ple_sud_y_count + ple_ill_y_count + ple_injur_y_count + ple_argue_y_count + ple_job_y_count + ple_away_y_count + ple_arrest_y_count + ple_friend_died_y_count + ple_mh_y_count + ple_sib_y_count + ple_victim_y_count + ple_separ_y_count + ple_law_y_count + ple_school_y_count + ple_move_y_count + ple_jail_y_count + ple_step_y_count + ple_new_job_y_count + ple_new_sib_y_count
+detach(MB_subsample1_new)
+
+# For abuse, there are three total abuse items but we will take one (highest loading) from each subdomain - one phys abuse (763), one sexual abuse (768), one peer sexual abuse (769) - instead of just the three highest loadings on abuse, which doesn't make theoretical sense.
+
+AbNeSoStHo_reducedfinal2_f3 <- '
+efa("efa")*AbNeSoStHo_reducedPLE_f1 +
+efa("efa")*AbNeSoStHo_reducedPLE_f2 +
+efa("efa")*AbNeSoStHo_reducedPLE_f3 =~
+ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + PLE_total + asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z
+'
+efa_AbNeSoStHo_reducedfinal2_f3 <- 
+  cfa(model = AbNeSoStHo_reducedfinal2_f3,
+      data = MB_subsample1_new,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_763_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+full_mi3_reducedfinal2 <- modindices(efa_AbNeSoStHo_reducedfinal2_f3, sort = TRUE, maximum.number = 10)
+summary(efa_AbNeSoStHo_reducedfinal2_f3, fit.measures = TRUE, standardized = TRUE)
+# X^2(42) = 70.371, p = 0.004. Still significant, PLE total doesn't load onto anything
+
+AbNeSoStHo_reducedfinal2_f4 <- '
+efa("efa")*AbNeSoStHo_reducedPLE_f1 +
+efa("efa")*AbNeSoStHo_reducedPLE_f2 +
+efa("efa")*AbNeSoStHo_reducedPLE_f3 +
+efa("efa")*AbNeSoStHo_reducedPLE_f4 =~
+ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p + ksads_ptsd_raw_769_p + crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + nsc_p_ss_mean_3_items_rev_Z + PLE_total + asr_scr_totprob_t_z + fes_y_ss_fc_z + demo_comb_income_v2_rec_rev_Z
+'
+efa_AbNeSoStHo_reducedfinal2_f4 <- 
+  cfa(model = AbNeSoStHo_reducedfinal2_f4,
+      data = MB_subsample1_new,
+      rotation = "oblimin",
+      estimator = "WLSMV",
+      mimic = "Mplus",
+      ordered = c("ksads_ptsd_raw_763_p","ksads_ptsd_raw_768_p","ksads_ptsd_raw_769_p")
+      )
+full_mi4_reducedfinal2 <- modindices(efa_AbNeSoStHo_reducedfinal2_f4, sort = TRUE, maximum.number = 10)
+summary(efa_AbNeSoStHo_reducedfinal2_f4, fit.measures = TRUE, standardized = TRUE)
+
+# CFA subsample 1 - remove neighborhood crime bc just youth report and only one item nsc is probably fine
+ss1_f3_nocov <- "
+#3 factors model for subsample 1
+
+abuse =~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + asr_scr_totprob_t_z
+connectedness =~ crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + fes_y_ss_fc_z 
+hardship =~ nsc_p_ss_mean_3_items_rev_Z + neighborhood_crime_y_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
+"
+
+fit_ss1_f3_nocov <- cfa(model = ss1_f3_nocov, 
+                  data = MB_subsample1_new,
+                  estimator = "WLSMV",
+                  missing = "pairwise",
+                  mimic = "Mplus",
+                  ordered = c("ksads_ptsd_raw_763_p","ksads_ptsd_raw_768_p",
+                              "ksads_ptsd_raw_769_p")
+                  )
+summary(fit_ss1_f3_nocov, fit.measures = TRUE, standardized = TRUE)
+ss1f3_mi <- modindices(fit_ss1_f3_nocov, sort = TRUE, maximum.number = 10)
+
+```
+
+## --------------------------------------------
+## -------- SUBSAMPLE #2 - 3 FACTOR CFA -------
+## --------------------------------------------
+
+```{r subsample2}
+# first make new stressfule life events count variable like we did in subsample 1
+MB_subsample2_new <- MB_subsample2
+attach(MB_subsample2_new)
+MB_subsample2_new$PLE_total <- ple_died_y_count + ple_injured_y_count + ple_crime_y_count + ple_friend_y_count + ple_friend_injur_y_count + ple_financial_y_count + ple_sud_y_count + ple_ill_y_count + ple_injur_y_count + ple_argue_y_count + ple_job_y_count + ple_away_y_count + ple_arrest_y_count + ple_friend_died_y_count + ple_mh_y_count + ple_sib_y_count + ple_victim_y_count + ple_separ_y_count + ple_law_y_count + ple_school_y_count + ple_move_y_count + ple_jail_y_count + ple_step_y_count + ple_new_job_y_count + ple_new_sib_y_count
+detach(MB_subsample2_new)
+
+# Define model for Subsample 2, based on the 3-factor model from the EFA building with Subsample 1:
+
+# Factor 1 (Physical/sexual abuse)
+# Factor 2 (Family & school connectedness)
+# Factor 3 (Stressors & hardship)
+
+ss2_f3_nocov <- "
+#3 factors model for subsample 2
+
+abuse =~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + asr_scr_totprob_t_z
+connectedness =~ crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + fes_y_ss_fc_z
+hardship =~ nsc_p_ss_mean_3_items_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
+
+"
+
+fit_ss2_f3_nocov <- cfa(model = ss2_f3_nocov, 
+                  data = MB_subsample2_new,
+                  estimator = "WLSMV",
+                  missing = "pairwise",
+                  mimic = "Mplus",
+                  ordered = c("ksads_ptsd_raw_763_p","ksads_ptsd_raw_768_p",
+                              "ksads_ptsd_raw_769_p")
+                  )
+summary(fit_ss2_f3_nocov, fit.measures = TRUE, standardized = TRUE)
+ss2f3_mi <- modindices(fit_ss2_f3_nocov, sort = TRUE, maximum.number = 10)
+
+# Try with covariances for the same questionnaire
+ss2_f3_cov <- "
+#3 factors model for subsample 2
+
+abuse =~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + asr_scr_totprob_t_z
+connectedness =~ crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + fes_y_ss_fc_z
+hardship =~ nsc_p_ss_mean_3_items_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
+
+#Covariances for questionnaires/measures
+ksads_ptsd_raw_763_p ~~ ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p
+ksads_ptsd_raw_768_p ~~ ksads_ptsd_raw_769_p
+crpbi_y_ss_parent_rev_z ~~ crpbi_y_ss_caregiver_rev_z
+"
+
+fit_ss2_f3_cov <- cfa(model = ss2_f3_cov, 
+                  data = MB_subsample2_new,
+                  estimator = "WLSMV",
+                  missing = "pairwise",
+                  mimic = "Mplus",
+                  ordered = c("ksads_ptsd_raw_763_p","ksads_ptsd_raw_768_p",
+                              "ksads_ptsd_raw_769_p")
+                  )
+summary(fit_ss2_f3_cov, fit.measures = TRUE, standardized = TRUE)
+ss2f3_mi_cov <- modindices(fit_ss2_f3_cov, sort = TRUE, maximum.number = 10)
+
+# Extract factor scores and correlate with an averaged score of all observed variables on that factor. Correlation should be in the correct direction
+
+fit_ss2f3cov_extract_vars <- lavPredict(fit_ss2_f3_cov, method = "EBM", type = "lv")
+ss2f3cov_lve <- as.data.frame(fit_ss2f3cov_extract_vars)
+ss2f3cov_lve <- select(ss2f3cov_lve, "abuse","connectedness","hardship")
+cor(ss2f3cov_lve$abuse ~ MB_subsample2_new$asr_scr_totprob_t_z)# this should be positively correlated
+# the factor scores should be normally distributed
+hist(ss2f3cov_lve$abuse)
+hist(ss2f3cov_lve$connectedness)
+hist(ss2f3cov_lve$hardship)
+```
+
+## --------------------------------------------
+## -------- SUBSAMPLE #3 - 3 FACTOR CFA -------
+## --------------------------------------------
+
+
+```{r subsample3}
+
+# first make new stressfule life events count variable like we did in subsample 1
+MB_subsample3_new <- MB_subsample3
+attach(MB_subsample3_new)
+MB_subsample3_new$PLE_total <- ple_died_y_bad + ple_injured_y_bad + ple_crime_y_bad + ple_friend_y_bad + ple_friend_injur_y_bad + ple_financial_y_bad + ple_sud_y_bad + ple_ill_y_bad + ple_injur_y_bad + ple_argue_y_bad + ple_job_y_bad + ple_away_y_bad + ple_arrest_y_bad + ple_friend_died_y_bad + ple_mh_y_bad + ple_sib_y_bad + ple_victim_y_bad + ple_separ_y_bad + ple_law_y_bad + ple_school_y_bad + ple_move_y_bad + ple_jail_y_bad + ple_step_y_bad + ple_new_job_y_bad + ple_new_sib_y_bad
+detach(MB_subsample3_new)
+
+# Define model for Subsample 3, TBC, just holding a place here to replace final decisions with later:
+
+# Factor 1 (Physical/sexual abuse)
+# Factor 2 (Family & school connectedness)
+# Factor 3 (Stressors & hardship)
+
+#Based on subsample 3, do NOT use covariances because the second one with covariances was maybe not identified
+ss3_f3_nocov <- "
+#3 factors model for subsample 2
+
+abuse =~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + asr_scr_totprob_t_z
+connectedness =~ crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + fes_y_ss_fc_z
+hardship =~ nsc_p_ss_mean_3_items_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
+"
+
+fit_ss3_f3_nocov <- cfa(model = ss3_f3_nocov, 
+                  data = MB_subsample3_new,
+                  estimator = "WLSMV",
+                  missing = "pairwise",
+                  mimic = "Mplus",
+                  ordered = c("ksads_ptsd_raw_763_p","ksads_ptsd_raw_768_p",
+                              "ksads_ptsd_raw_769_p")
+                  )
+summary(fit_ss3_f3_nocov, fit.measures = TRUE, standardized = TRUE)
+ss3f3_mi <- modindices(fit_ss3_f3_nocov, sort = TRUE, maximum.number = 10)
+
+
+# Extract factor scores and correlate with an averaged score of all observed variables on that factor. Correlation should be in the correct direction
+
+fit_ss3f3nocov_extract_vars <- lavPredict(fit_ss3_f3_nocov, method = "EBM", type = "lv")
+ss3f3nocov_lve <- as.data.frame(fit_ss3f3nocov_extract_vars)
+ss3f3nocov_lve <- select(ss3f3nocov_lve, "abuse","connectedness","hardship")
+
+ss3f3nocov_lve$asr_check <- MB_subsample3_new$asr_scr_totprob_t_z # we'll compare the lve's to a score in the latent var
+summary(lm(ss3f3nocov_lve$abuse ~ ss3f3nocov_lve$asr_check))# this should be positively correlated (yes)
+ss3f3nocov_lve$crpbi_par_check <- MB_subsample3_new$crpbi_y_ss_parent_rev_z
+summary(lm(ss3f3nocov_lve$connectedness ~ ss3f3nocov_lve$crpbi_par_check))
+ss3f3nocov_lve$nsc_check <- MB_subsample3_new$nsc_p_ss_mean_3_items_rev_Z
+summary(lm(ss3f3nocov_lve$hardship ~ ss3f3nocov_lve$nsc_check))
+
+# the factor scores should be normally distributed
+hist(ss3f3nocov_lve$abuse)
+hist(ss3f3nocov_lve$connectedness)
+hist(ss3f3nocov_lve$hardship)
+
+# Try with covariances for the same questionnaire - NO - see above
+ss3_f3_cov <- "
+#3 factors model for subsample 3
+
+abuse =~ ksads_ptsd_raw_763_p + ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p + asr_scr_totprob_t_z
+connectedness =~ crpbi_y_ss_parent_rev_z + crpbi_y_ss_caregiver_rev_z + pmq_y_ss_mean_rev_z + srpf_y_ss_ses_rev_Z + fes_y_ss_fc_z
+hardship =~ nsc_p_ss_mean_3_items_rev_Z + PLE_total + demo_comb_income_v2_rec_rev_Z
+
+#Covariances for questionnaires/measures
+ksads_ptsd_raw_763_p ~~ ksads_ptsd_raw_768_p +  ksads_ptsd_raw_769_p
+ksads_ptsd_raw_768_p ~~ ksads_ptsd_raw_769_p
+crpbi_y_ss_parent_rev_z ~~ crpbi_y_ss_caregiver_rev_z
+"
+
+fit_ss3_f3_cov <- cfa(model = ss3_f3_cov, 
+                  data = MB_subsample3_new,
+                  estimator = "WLSMV",
+                  missing = "pairwise",
+                  mimic = "Mplus",
+                  ordered = c("ksads_ptsd_raw_763_p","ksads_ptsd_raw_768_p",
+                              "ksads_ptsd_raw_769_p")
+                  )
+summary(fit_ss3_f3_cov, fit.measures = TRUE, standardized = TRUE)
+ss3f3_mi_cov <- modindices(fit_ss3_f3_cov, sort = TRUE, maximum.number = 10)
+
+```
