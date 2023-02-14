@@ -1,0 +1,1190 @@
+---
+title: "Publication"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+```{r}
+## loading in datasets 
+library(readr)
+Sleep <- read_delim("/Users/emmaberg/Documents/2022/Research Project/Data/Datasets/Excel_TotalScore1/Sleep/sleep.txt",
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+View(Sleep)
+
+library(readr)
+Demo <- read_delim("/Users/emmaberg/Documents/2022/Research Project/Data/Datasets/Excel_TotalScore1/Demographics/demo.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+View(Demo)
+
+library(readr)
+Screen <- read_delim("/Users/emmaberg/Documents/2022/Research Project/Data/Datasets/Excel_TotalScore1/ScreenTime/screen.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+View(Screen)
+
+library(readr)
+Cog <- read_delim("/Users/emmaberg/Documents/2022/Research Project/Data/Datasets/Excel_TotalScore1/Cognition/cognition.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+View(Cog)
+
+library(readr)
+BaselineActivity <- read_delim("/Users/emmaberg/Documents/2022/Research Project/Data/Datasets/Excel_TotalScore1/Activities/Baseline/abcd_saiq02.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+View(BaselineActivity)
+
+Fam <- read_delim("/Users/emmaberg/Documents/2022/Research Project/Data/Datasets/Excel_TotalScore1/Demographics/fam1.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+View(Fam)
+
+Site <- read_delim("/Users/emmaberg/Documents/2022/Research Project/Data/Datasets/Excel_TotalScore1/Demographics/site1.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+View(Site)
+
+BrainData <- read_delim("/Users/emmaberg/Documents/2022/Research Project/Data/Datasets/Excel_TotalScore1/braindata1.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+View(BrainData)
+
+length(unique(BaselineActivity$src_subject_id)) 
+#11876
+length(unique(Cog$src_subject_id)) 
+#11876
+length(unique(Screen$src_subject_id))
+#11876
+length(unique(Demo$src_subject_id))
+#11876
+length(unique(Sleep$src_subject_id))
+#11876
+length(unique(Fam$src_subject_id))
+#11876
+length(unique(Site$src_subject_id))
+#11876
+length(unique(Fam$src_subject_id))
+#11876
+length(unique(BrainData$src_subject_id))
+#11811
+```
+## loading in libraries
+```{r}
+library(haven)
+library(data.table)
+library(JWileymisc)
+library(ggplot2)
+library(ggpubr)
+library(visreg)
+library(tidyverse)
+library(psych)
+```
+# Convert to data tables
+```{r}
+library(data.table)
+BaselineActivityTable <- as.data.table(BaselineActivity)
+CogTable <- as.data.table(Cog)
+DemoTable <- as.data.table(Demo)
+ScreenTable <- as.data.table(Screen)
+SleepTable <- as.data.table(Sleep)
+FamTable <- as.data.table(Fam)
+SiteTable <- as.data.table(Site)
+BrainDataTable <- as.data.table(BrainData)
+
+## getting rid of the timepoints that aren't in any other dataset
+
+SiteReal <- SiteTable[eventname %in% c("1_year_follow_up_y_arm_1", "baseline_year_1_arm_1", "2_year_follow_up_y_arm_1", "3_year_follow_up_y_arm_1")]
+
+SiteRealTable <- as.data.table(SiteReal)
+```
+
+## Merging
+
+```{r}
+## merging datasets by ID and time point
+
+screensleep <- merge(
+  x = ScreenTable,
+  y = SleepTable,
+  by = c('src_subject_id', 'eventname'),
+  all = TRUE)
+
+screensleep <- select(screensleep, 
+                                       -c("collection_id.y",
+                                          "dataset_id.y", "subjectkey.y", 
+                                          "interview_date.y", "interview_age.y",
+                                          "sex.y"))
+
+screensleepcog <- merge(
+  x = screensleep,
+  y = CogTable,
+  by = c('src_subject_id', 'eventname'),
+  all = TRUE)
+
+screensleepcog <- select(screensleepcog, 
+                                       -c("collection_id",
+                                          "dataset_id", "subjectkey", 
+                                          "interview_date", "interview_age",
+                                          "sex"))
+
+
+screensleepcogdemo <- merge(
+  x = screensleepcog,
+  y = DemoTable,
+  by = c('src_subject_id', 'eventname'),
+  all = TRUE)
+
+screensleepcogdemo <- select(screensleepcogdemo, 
+                                       -c("collection_id",
+                                          "dataset_id", "subjectkey", 
+                                          "interview_date", "interview_age",
+                                          "sex"))
+
+screensleepcogdemoact <- merge(
+  x = screensleepcogdemo,
+  y = BaselineActivityTable,
+  by = c('src_subject_id', 'eventname'),
+  all = TRUE)
+
+screensleepcogdemoact<- select(screensleepcogdemoact, 
+                                       -c("collection_id",
+                                          "dataset_id", "subjectkey", 
+                                          "interview_date", "interview_age",
+                                          "sex"))
+
+
+sitefull <- merge(
+  x = screensleepcogdemoact,
+  y = SiteRealTable,
+  by = c('src_subject_id', 'eventname'),
+  all = TRUE)
+
+sitefull <- select(sitefull, 
+                                       -c("collection_id",
+                                          "dataset_id", "subjectkey", 
+                                          "interview_date", "interview_age",
+                                          "sex"))
+
+Sitefam <- merge(
+  x = sitefull,
+  y = FamTable,
+  by = c('src_subject_id', 'eventname'),
+  all = TRUE)
+
+
+Sitefam <- select(Sitefam, 
+                                       -c("collection_id",
+                                          "dataset_id", "subjectkey", 
+                                          "interview_date", "interview_age",
+                                          "sex"))
+
+Fulldata <-merge(
+  x = Sitefam,
+  y = BrainDataTable,
+  by = c('src_subject_id', 'eventname'),
+  all = TRUE)
+
+Fulldata <- select(Fulldata, 
+                                       -c("collection_id",
+                                          "dataset_id", "subjectkey", 
+                                          "interview_date", "interview_age",
+                                          "sex"))
+
+
+
+length(unique(Fulldata$src_subject_id))
+#11876
+as.data.table(Fulldata)
+```
+## Variable management 
+
+## Cognition
+```{r}
+## crystallised
+str(Fulldata$nihtbx_cryst_uncorrected)
+
+## total
+str(Fulldata$nihtbx_totalcomp_uncorrected)
+
+## fluid
+
+##flanker
+str(Fulldata$nihtbx_flanker_uncorrected)
+
+##picture
+str(Fulldata$nihtbx_picture_uncorrected)
+
+##pattern
+str(Fulldata$nihtbx_pattern_uncorrected)
+
+## baseline fluid
+str(Fulldata$nihtbx_fluidcomp_uncorrected)
+```
+
+## Sleep total scores
+```{r}
+
+## sleep initiation (in minutes)
+str(Fulldata$sleepdisturb1_p)
+
+## sleep maintenence (how many hours asleep)
+str(Fulldata$sleepdisturb2_p)
+
+## total sleep score
+str(Fulldata$sleep_total)
+```
+
+## Screen total scores
+```{r}
+
+## total weekday screen time
+str(Fulldata$total_weekday)
+
+## total weekend screen time
+str(Fulldata$total_weekend)
+
+## total screen time
+totalscreentime <- Fulldata$total_weekday + Fulldata$total_weekend
+
+Fulldata <- Fulldata %>%
+  add_column(Column_After = totalscreentime,
+             .after = "total_weekend") 
+
+names(Fulldata)[names(Fulldata) == 'Column_After'] <- "total_screen"
+
+hist(Fulldata$total_screen)
+
+hist(log(Fulldata$total_screen))
+
+## how often play mature-rated video games
+str(Fulldata$screen13_y)
+
+## how often watch r-rated movies
+str(Fulldata$screen14_y)
+```
+
+## Activities total scores
+
+```{r}
+
+## how many sports activities in past 12 months
+str(Fulldata$TotalSport)
+
+## how many arts activities in past 12 months
+str(Fulldata$TotalArt)
+
+## how many sports+arts activities in past 12 months
+str(Fulldata$TotalParticipation)
+```
+
+## Distributions
+
+## Cognition
+```{r}
+hist(Fulldata$nihtbx_totalcomp_uncorrected)
+hist(Fulldata$nihtbx_fluidcomp_uncorrected,
+     main = "Histogram of FCF Composite Score",
+     xlab = "FCF Composite Score")
+
+
+describe(Fulldata$nihtbx_fluidcomp_uncorrected)
+
+hist(Fulldata$nihtbx_cryst_uncorrected,
+     main = "Histogram of CCF Composite Score",
+     xlab = "CCF Composite Score")
+## all appear normal
+
+describe(Fulldata$nihtbx_cryst_uncorrected)
+
+
+qqnorm(Fulldata$nihtbx_fluidcomp_uncorrected, pch = 1, frame = FALSE,
+       main = "QQ plot of FCF composite score")
+qqline(Fulldata$nihtbx_fluidcomp_uncorrected, col = "steelblue", lwd = 2)
+
+qqnorm(Fulldata$nihtbx_cryst_uncorrected, pch = 1, frame = FALSE,
+       main = "QQ plot of CCF composite score")
+qqline(Fulldata$nihtbx_cryst_uncorrected, col = "steelblue", lwd = 2)
+
+##flanker
+hist(Fulldata$nihtbx_flanker_uncorrected,
+     main = "Histogram of Flanker scores",
+     xlab = "Flanker scores")
+
+qqnorm(Fulldata$nihtbx_flanker_uncorrected, pch = 1, frame = FALSE,
+       main = "QQ plot of Flanker scores")
+qqline(Fulldata$nihtbx_flanker_uncorrected, col = "steelblue", lwd = 2)
+
+#appears slightly left skewed
+describe(Fulldata$nihtbx_flanker_uncorrected)
+# skew = -0.98, kurtosis = 1.68. no need to transform.
+
+##picture
+hist(Fulldata$nihtbx_picture_uncorrected,
+     main = "Histogram of Picture scores",
+     xlab = "Picture scores")
+#normal
+
+qqnorm(Fulldata$nihtbx_picture_uncorrected, pch = 1, frame = FALSE,
+       main = "QQ plot of Picture scores")
+qqline(Fulldata$nihtbx_picture_uncorrected, col = "steelblue", lwd = 2)
+
+describe(Fulldata$nihtbx_picture_uncorrected)
+
+
+##pattern
+hist(Fulldata$nihtbx_pattern_uncorrected,
+    main = "Histogram of Pattern scores",
+     xlab = "Pattern scores")
+#normal
+
+describe(Fulldata$nihtbx_pattern_uncorrected)
+
+
+qqnorm(Fulldata$nihtbx_pattern_uncorrected, pch = 1, frame = FALSE,
+       main = "QQ plot of Pattern scores")
+qqline(Fulldata$nihtbx_pattern_uncorrected, col = "steelblue", lwd = 2)
+```
+
+## Sleep
+```{r}
+
+## Sleep Total Variable
+hist(Fulldata$sleep_total)
+## appears to be right skewed. Checking kurtosis and skew.
+describe(Fulldata$sleep_total)
+## skew = 1.8, kurtosis = 5.8
+## applying transformation
+logsleep_total <- log(Fulldata$sleep_total)
+hist(logsleep_total)
+## normal now
+
+hist(Fulldata$sleepdisturb1_p,
+     main = "Histogram of sleep duration variable",
+     xlab = "Sleep duration (rated on Likert scale)")
+# appears slightly right skewed 
+# checking skew and kurtosis
+describe(Fulldata$sleepdisturb1_p)
+# skew = 0.82, kurtosis = 0.26. no need to transform.
+
+qqnorm(Fulldata$sleepdisturb1_p, pch = 1, frame = FALSE,
+       main = "QQ plot of sleep duration")
+qqline(Fulldata$sleepdisturb1_p, col = "steelblue", lwd = 2)
+
+qqnorm(Fulldata$sleepdisturb1_p, pch = 1, frame = FALSE)
+qqline(Fulldata$sleepdisturb1_p, col = "steelblue", lwd = 2)
+
+hist(Fulldata$sleepdisturb2_p,
+     main = "Histogram of sleep initiation variable",
+     xlab = "Sleep initiation (rated on Likert scale)")
+# appears slightly right skewed 
+# checking skew and kurtosis
+describe(Fulldata$sleepdisturb2_p)
+# skew = 1.08, kurtosis = 0.8. no need to transform.
+
+
+qqnorm(Fulldata$sleepdisturb2_p, pch = 1, frame = FALSE,
+       main = "QQ plot of sleep initiation variable")
+qqline(Fulldata$sleepdisturb2_p, col = "steelblue", lwd = 2)
+```
+
+## Screen Time
+```{r}
+hist(Fulldata$total_weekday, main= "Histogram of Weekday Screen Time", xlab= "Weekday Screen Time (Hours)",
+     xlim=c(0,25), ylim=c(0,10000))
+
+hist(Fulldata$total_weekday, xaxt = "n")
+axis(side=1, at=seq(0,24, 4))
+
+qqnorm(Fulldata$total_weekday, pch = 1, frame = FALSE,
+       main = "QQ plot of weekday screen time")
+qqline(Fulldata$total_weekday, col = "steelblue", lwd = 2)
+
+## appears right skewed
+## checking skew and kurtosis
+describe(Fulldata$total_weekday)
+# skew = 1.7, kurtosis = 3.77.
+
+## applying log transformation
+## adding constant
+total_weekday1 <- Fulldata$total_weekday + 1
+logtotal_weekday1 <- log(total_weekday1)
+hist(logtotal_weekday1, 
+     main = "Histogram of Log Weekday Screen Time",
+     xlab = "Log Weekday Screen Time")
+#normal now
+
+qqnorm(Fulldata$total_weekday, pch = 1, frame = FALSE)
+qqline(Fulldata$total_weekday, col = "steelblue", lwd = 2)
+
+library("car")
+qqPlot(Fulldata$total_weekday)
+
+hist(Fulldata$total_weekend,
+     main = "Histogram of Weekend Screen Time",
+     xlab= "Weekend Screen Time (Hours)",
+     xlim=c(0,25), ylim=c(0,8000))
+
+
+qqnorm(Fulldata$total_weekend, pch = 1, frame = FALSE,
+       main = "QQ plot of weekday screen time")
+qqline(Fulldata$total_weekend, col = "steelblue", lwd = 2)
+
+qqnorm(Fulldata$total_screen, pch = 1, frame = FALSE,
+       main = "QQ plot of total screen time")
+qqline(Fulldata$total_screen, col = "steelblue", lwd = 2)
+
+# appears right skewed
+# checking skew and kurtosis
+describe(Fulldata$total_weekend)
+# skew = 1.53, kurtosis = 3.06
+# transforming
+## adding constant
+total_weekend1 <- Fulldata$total_weekend + 1
+logtotal_weekend1 <- log(total_weekend1)
+hist(logtotal_weekend1,
+     main= "Histogram of Log Weekend Screen Time",
+     xlab= "Log Weekend Screen Time")
+## appears normal now
+
+qqnorm(logtotal_weekend1, pch = 1, frame = FALSE)
+qqline(logtotal_weekend1, col = "steelblue", lwd = 2)
+
+##adding log transformed values to fulldata dataset
+
+#totalweekend
+library(tibble)
+Fulldata <- Fulldata %>%
+  add_column(Column_After = log(total_weekend1),
+             .after = "total_weekend") 
+
+names(Fulldata)[names(Fulldata) == 'Column_After'] <- "logtotal_weekend1"
+
+#totalweekday
+library(tibble)
+Fulldata <- Fulldata %>%
+  add_column(Column_After = log(total_weekday1),
+             .after = "total_weekday") 
+
+names(Fulldata)[names(Fulldata) == 'Column_After'] <- "logtotal_weekday1"
+
+#totalscreentime
+hist(Fulldata$total_screen,
+     main= "Histogram of Total Screen Time",
+     xlab="Total Screen Time (Hours)",
+     xlim=c(0,50), ylim=c(0,10000))
+# transforming
+## adding constant
+total_screen1 <- Fulldata$total_screen + 1
+logtotal_screen1 <- log(total_screen1)
+hist(logtotal_screen1,
+     main ="Histogram of Log Total Screen Time",
+     xlab="Log Total Screen Time",
+     xlim=c(0,4), ylim=c(0,3000))
+## appears normal now
+
+describe(Fulldata$total_screen)
+# adding log total screen to dataset
+library(tibble)
+Fulldata <- Fulldata %>%
+  add_column(Column_After = log(total_screen1),
+             .after = "total_screen") 
+
+names(Fulldata)[names(Fulldata) == 'Column_After'] <- "logtotal_screen1"
+
+hist(Fulldata$screen13_y)
+## appears right skewed
+## checking skew and kurtosis
+describe(Fulldata$screen13_y)
+# skew = 1.45, kurtosis = 1.19. 
+# no need to transform
+
+hist(Fulldata$screen14_y)
+## appears right skewed
+## checking skew and kurtosis
+describe(Fulldata$screen14_y)
+# skew = 1.79, kurtosis = 3.47. 
+## applying log transformation
+logscreen14_y <- log(Fulldata$screen14_y)
+hist(logscreen14_y)
+sqrtlog14_y <- sqrt(Fulldata$screen14_y)
+hist(sqrtlog14_y)
+# not changing much. leaving as is.
+```
+## Activities
+```{r}
+hist(Fulldata$TotalSport,
+     main = "Histogram of sport activities",
+     xlab = "Number of sport activities")
+
+qqnorm(Fulldata$TotalSport, pch = 1, frame = FALSE,
+       main = "QQ plot of sport activities")
+qqline(Fulldata$TotalSport, col = "steelblue", lwd = 2)
+
+## appears right skewed
+# checking skew and kurtosis
+describe(Fulldata$TotalSport)
+# skew = 1.11, kurtosis = 1.76
+# no need to transform
+
+hist(Fulldata$TotalArt,
+      main = "Histogram of arts activities",
+     xlab = "Number of arts activities")
+# appears normal
+
+describe(Fulldata$TotalArt)
+
+qqnorm(Fulldata$TotalArt, pch = 1, frame = FALSE,
+       main = "QQ plot of arts activities")
+qqline(Fulldata$TotalArt, col = "steelblue", lwd = 2)
+
+hist(Fulldata$TotalParticipation,
+     main = "Histogram of total activities",
+     xlab = "Number of total activities")
+
+describe(Fulldata$TotalParticipation)
+
+qqnorm(Fulldata$TotalParticipation, pch = 1, frame = FALSE,
+       main = "QQ plot of total activities")
+qqline(Fulldata$TotalParticipation, col = "steelblue", lwd = 2)
+# appears normal
+```
+
+## Checking number of observations at each timepoint
+```{r}
+
+## seeing how many people have baseline.
+fdbl <- Fulldata[eventname == "baseline_year_1_arm_1"]
+summary (fdbl)
+
+## 11876 with baseline. what we expect which is good!
+
+## seeing how many people have the one year follow up.
+fdone <- Fulldata[eventname == "1_year_follow_up_y_arm_1"]
+summary (fdone)
+
+## 11225 have the one year follow up. 94.5%
+
+## seeing how many people have the two year follow up.
+fdtwo <- Fulldata[eventname == "2_year_follow_up_y_arm_1"]
+summary (fdtwo)
+
+## 10414 have the two year follow up. 87.7%
+
+## seeing how many people have the three year follow up.
+
+fdthree <- Fulldata[eventname == "3_year_follow_up_y_arm_1"]
+summary (fdthree)
+
+## 6251 people have three year follow up. 6251/11876 = 53% of participants have third timepoint.
+```
+## Randomly splitting data
+```{r}
+# Creating subset of data 
+
+fdsubset <- Fulldata[eventname == "baseline_year_1_arm_1"]
+
+as.data.table(fdsubset)
+write.csv(fdsubset, "fdsubset.csv")
+
+as.data.table(Fulldata)
+write.csv(Fulldata, "Fulldata.csv")
+
+
+# Split model dataset into 2 random subsamples:
+
+fdsubset$subsample <- sample(factor(rep(1:2, length.out=nrow(fdsubset)), 
+                                 labels=paste0("subsample", 1:2)))
+FD_subsample1 <- fdsubset[which(fdsubset$subsample=="subsample1"), ]
+FD_subsample2 <- fdsubset[which(fdsubset$subsample=="subsample2"), ]
+
+# if Fulldata$src_subject_id is in FD_subample1, mark is as TRUE for var s1, same for var 2 with subsample2:
+
+Fulldata$s1 <- Fulldata$src_subject_id %in% FD_subsample1$src_subject_id
+Fulldata$s2 <- Fulldata$src_subject_id %in% FD_subsample2$src_subject_id
+
+## below includes 3 year follow up so use for sensitivity analysis
+
+Fulldata_s1 <- Fulldata[which(Fulldata$s1 == TRUE),]
+Fulldata_s2 <- Fulldata[which(Fulldata$s2 == TRUE),]
+
+# delete 3 year follow up from fulldatas1 and s2. run models on these.
+
+Fulldata_s1_limited <- Fulldata_s1[!eventname == "3_year_follow_up_y_arm_1"]
+
+length(unique(Fulldata_s1_limited$src_subject_id))
+#5938
+Fulldata_s2_limited <- Fulldata_s2[!eventname == "3_year_follow_up_y_arm_1"]
+length(unique(Fulldata_s2_limited$src_subject_id))
+#5938
+```
+
+## Libraries
+```{r}
+library(tufte)
+library(haven)
+library(data.table)
+library(JWileymisc)
+library(psych)
+library(ggplot2)
+library(ggpubr)
+library(ggthemes)
+library(scales)
+library(ggExtra)
+```
+## Cronbach's alpha
+```{r}
+# Sleep
+psych::alpha(as.data.frame(Sleep[c("sleepdisturb1_p", "sleepdisturb2_p", "sleepdisturb3_p", "sleepdisturb4_p", "sleepdisturb5_p", "sleepdisturb6_p", "sleepdisturb7_p", "sleepdisturb8_p", "sleepdisturb9_p", "sleepdisturb10_p", "sleepdisturb11_p","sleepdisturb12_p","sleepdisturb13_p","sleepdisturb14_p","sleepdisturb15_p","sleepdisturb16_p","sleepdisturb17_p","sleepdisturb18_p","sleepdisturb19_p", "sleepdisturb20_p", "sleepdisturb21_p","sleepdisturb22_p","sleepdisturb23_p","sleepdisturb24_p","sleepdisturb25_p","sleepdisturb26_p")]), check.keys=TRUE)
+
+## Activities - sport
+psych::alpha(as.data.frame(BaselineActivity[c("sai_p_dance_p12", "sai_p_base_p12", "sai_p_basket_p12", "sai_p_climb_p12", "sai_p_fball_p12", "sai_p_gym_p12", "sai_p_ihock_p12", "sai_p_polo_p12", "sai_p_iskate_p12", "sai_p_m_arts_p12", "sai_p_lax_p12","sai_p_sboard_p12___0", "sai_p_wpolo_p12", "sai_p_run_p12", "sai_p_mma_p12", "sai_p_vball_p12", "sai_p_yoga_p12", "sai_p_music_p12", "sai_p_art_p12", "sai_p_drama_p12", "sai_p_crafts_p12", "sai_p_chess_p12", "sai_p_collect_p12", "sai_p_lmusic","sai_p_read")]), check.keys=TRUE)
+
+## Activites - art
+psych::alpha(as.data.frame(BaselineActivity[c("sai_p_music_p12", "sai_p_art_p12", "sai_p_drama_p12", "sai_p_crafts_p12", "sai_p_chess_p12", "sai_p_collect_p12", "sai_p_lmusic","sai_p_read")]), check.keys=TRUE)
+
+## Cognition - FCF
+psych::alpha(as.data.frame(Cog[c("nihtbx_flanker_uncorrected", "nihtbx_picture_uncorrected", "nihtbx_pattern_uncorrected", "nihtbx_list_uncorrected", "nihtbx_cardsort_uncorrected", "nihtbx_reading_uncorrected", "nihtbx_picvocab_uncorrected")]), check.keys=TRUE)
+
+## Screen
+psych::alpha(as.data.frame(Screen[c("screen1_wkdy_y", "screen2_wkdy_y", "screen3_wkdy_y", "screen4_wkdy_y", "screen5_wkdy_y", "screen_wkdy_y", "screen9_wknd_y", "screen10_wknd_y", "screen11_wknd_y", "screen12_wknd_y")]), check.keys=TRUE)
+
+```
+## FCF trajectories over time - is t2 significantly different from t1?
+```{r}
+widedata <- reshape(
+  data=Fulldata_s1_limited,
+  timevar = "eventname",
+  idvar = "src_subject_id",
+  direction = "wide")
+
+#Flanker
+t.test(widedata$nihtbx_flanker_uncorrected.baseline_year_1_arm_1, widedata$nihtbx_flanker_uncorrected.2_year_follow_up_y_arm_1, paired = TRUE)
+
+
+meanfbl <- mean(widedata$nihtbx_flanker_uncorrected.baseline_year_1_arm_1, na.rm = TRUE)
+meanfbl
+sd(widedata$nihtbx_flanker_uncorrected.baseline_year_1_arm_1, na.rm = TRUE)
+
+meanf2 <- mean(widedata$nihtbx_flanker_uncorrected.2_year_follow_up_y_arm_, na.rm = TRUE)
+sd(widedata$nihtbx_flanker_uncorrected.2_year_follow_up_y_arm_, na.rm = TRUE)
+
+#Pattern
+t.test(widedata$nihtbx_pattern_uncorrected.baseline_year_1_arm_1, widedata$nihtbx_pattern_uncorrected.2_year_follow_up_y_arm_1, paired = TRUE)
+
+mean(widedata$nihtbx_pattern_uncorrected.baseline_year_1_arm_1, na.rm = TRUE)
+sd(widedata$nihtbx_pattern_uncorrected.baseline_year_1_arm_1, na.rm = TRUE)
+
+mean(widedata$nihtbx_pattern_uncorrected.2_year_follow_up_y_arm_, na.rm = TRUE)
+sd(widedata$nihtbx_pattern_uncorrected.2_year_follow_up_y_arm_, na.rm = TRUE)
+
+
+#Picture
+t.test(widedata$nihtbx_picture_uncorrected.baseline_year_1_arm_1, widedata$nihtbx_picture_uncorrected.2_year_follow_up_y_arm_1, paired = TRUE)
+
+mean(widedata$nihtbx_picture_uncorrected.baseline_year_1_arm_1, na.rm = TRUE)
+sd(widedata$nihtbx_picture_uncorrected.baseline_year_1_arm_1, na.rm = TRUE)
+
+mean(widedata$nihtbx_picture_uncorrected.2_year_follow_up_y_arm_, na.rm = TRUE)
+sd(widedata$nihtbx_picture_uncorrected.2_year_follow_up_y_arm_, na.rm = TRUE)
+
+# cryst composite
+mean(widedata$nihtbx_cryst_uncorrected.baseline_year_1_arm_1, na.rm = TRUE)
+sd(widedata$nihtbx_cryst_uncorrected.baseline_year_1_arm_1, na.rm = TRUE)
+
+# fcf composite
+mean(widedata$nihtbx_fluidcomp_uncorrected.baseline_year_1_arm_1, na.rm = TRUE)
+sd(widedata$nihtbx_fluidcomp_uncorrected.baseline_year_1_arm_1, na.rm = TRUE)
+```
+
+## Descriptives
+```{r}
+
+BLsubset <- Fulldata[eventname == "baseline_year_1_arm_1"]
+
+twoyearsubset <- Fulldata[eventname == "2_year_follow_up_y_arm_1"]
+
+#mean number of sport activities
+mean(BaselineActivity$TotalSport, na.rm=TRUE)
+sd(BaselineActivity$TotalSport)
+
+#mean number of arts activities
+mean(BaselineActivity$TotalArt)
+sd(BaselineActivity$TotalArt)
+
+#mean sleep duration scores
+mean(BLsubset$sleepdisturb1_p, na.rm=TRUE)
+
+#mean sleep initiation scores
+mean(BLsubset$sleepdisturb2_p)
+
+#mean weekday screen time scores
+mean(BLsubset$total_weekday, na.rm=TRUE)
+
+sd(BLsubset$total_weekday, na.rm=TRUE)
+
+#mean weekend screen time scores
+mean(BLsubset$total_weekend, na.rm=TRUE)
+sd(BLsubset$total_weekend, na.rm=TRUE)
+
+```
+
+## Bivariate correlations b/w modifiable factors 
+```{r}
+
+## Sleep duration and Activities
+cor.test(Fulldata$sleepdisturb1_p, Fulldata$TotalParticipation, method="pearson")
+
+## Sleep initiation and activities
+cor.test(Fulldata$sleepdisturb2_p, Fulldata$TotalParticipation, method="pearson")
+
+##Sleep duration and weekday screen
+cor.test(Fulldata$sleepdisturb1_p,Fulldata$total_weekday, method="pearson")
+
+## Sleep duration and weekend screen
+cor.test(Fulldata$sleepdisturb1_p,Fulldata$total_weekend, method="pearson")
+
+## Sleep initiation and weekday screen
+cor.test(Fulldata$sleepdisturb2_p,Fulldata$total_weekday, method="pearson")
+
+## Sleep initiation and weekend screen
+cor.test(Fulldata$sleepdisturb2_p,Fulldata$total_weekend, method="pearson")
+
+##Activities and weekday screen
+cor.test(Fulldata$TotalParticipation,Fulldata$total_weekday, method="pearson")
+
+##Activities and weekend screen
+cor.test(Fulldata$TotalParticipation,Fulldata$total_weekend, method="pearson")
+
+```
+# Bivariate correlations using lm
+```{r}
+
+## Sleep duration
+cor.test(Fulldata$sleepdisturb1_p, Fulldata$sleepdisturb2_p, method="pearson")
+
+cor.test(Fulldata$sleepdisturb1_p, Fulldata$TotalArt, method="pearson")
+
+cor.test(Fulldata$sleepdisturb1_p, Fulldata$TotalSport, method="pearson")
+
+cor.test(Fulldata$sleepdisturb1_p, Fulldata$total_weekday, method="pearson")
+
+cor.test(Fulldata$sleepdisturb1_p, Fulldata$total_weekend, method="pearson")
+
+cor.test(Fulldata$sleepdisturb1_p, Fulldata$total_screen, method="pearson")
+
+## Sleep initiation
+cor.test(Fulldata$sleepdisturb2_p, Fulldata$sleepdisturb1_p, method="pearson")
+
+cor.test(Fulldata$sleepdisturb2_p, Fulldata$TotalArt, method="pearson")
+
+cor.test(Fulldata$sleepdisturb2_p, Fulldata$TotalSport, method="pearson")
+
+cor.test(Fulldata$sleepdisturb2_p, Fulldata$total_weekday, method="pearson")
+
+cor.test(Fulldata$sleepdisturb2_p, Fulldata$total_weekend, method="pearson")
+
+cor.test(Fulldata$sleepdisturb2_p, Fulldata$total_screen, method="pearson")
+
+## Art
+cor.test(Fulldata$TotalArt, Fulldata$sleepdisturb1_p, method="pearson")
+
+cor.test(Fulldata$TotalArt, Fulldata$sleepdisturb2_p, method="pearson")
+
+cor.test(Fulldata$TotalArt, Fulldata$TotalSport, method="pearson")
+
+cor.test(Fulldata$TotalArt, Fulldata$total_weekday, method="pearson")
+
+cor.test(Fulldata$TotalArt, Fulldata$total_weekend, method="pearson")
+
+cor.test(Fulldata$TotalArt, Fulldata$total_screen, method="pearson")
+
+## Sport
+cor.test(Fulldata$TotalSport, Fulldata$total_weekday, method="pearson")
+
+cor.test(Fulldata$TotalSport, Fulldata$total_weekend, method="pearson")
+
+cor.test(Fulldata$TotalSport, Fulldata$total_screen, method="pearson")
+
+## Weekday
+cor.test(Fulldata$total_weekday, Fulldata$total_weekend, method="pearson")
+
+cor.test(Fulldata$total_weekday, Fulldata$total_screen, method="pearson")
+
+## Weekend
+
+cor.test(Fulldata$total_weekend, Fulldata$total_screen, method="pearson")
+
+## total activiites
+cor.test(Fulldata$TotalParticipation, Fulldata$sleepdisturb1_p, method="pearson")
+cor.test(Fulldata$TotalParticipation, Fulldata$sleepdisturb2_p, method="pearson")
+cor.test(Fulldata$TotalParticipation, Fulldata$total_weekday, method="pearson")
+cor.test(Fulldata$TotalParticipation, Fulldata$total_weekend, method="pearson")
+cor.test(Fulldata$TotalParticipation, Fulldata$total_screen, method="pearson")
+```
+
+## Models
+
+
+#libraries
+```{r}
+library(lme4)
+library(lmerTest)
+library(lmtest)
+```
+# Hypothesis 1
+
+## reshaping from long to wide so that I can run models with different timepoints
+```{r}
+widedata <- reshape(
+  data=Fulldata_s1_limited,
+  timevar = "eventname",
+  idvar = "src_subject_id",
+  direction = "wide")
+```
+# Hypothesis 1A - residual change models
+## Model 4 - Sleep 
+lm(FCFwavethree ~ sleepbaseline + FCFbaseline)
+## Flanker
+```{r}
+## Model 4a - sleep duration and flanker
+m4a <- lm(nihtbx_flanker_uncorrected.2_year_follow_up_y_arm_1 ~ sleepdisturb1_p.baseline_year_1_arm_1 + nihtbx_flanker_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+library(lm.beta)
+summary(m4a)
+confint(m4a)
+lm.beta(m4a)
+
+
+md4a <- modelDiagnostics(m4a, ev.perc = .005)
+plot(md4a, ncol = 2, ask = FALSE)
+
+## Model 4b - sleep initiation and flanker
+m4b <- lm(nihtbx_flanker_uncorrected.2_year_follow_up_y_arm_1 ~ sleepdisturb2_p.baseline_year_1_arm_1 + nihtbx_flanker_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m4b)
+confint(m4b)
+lm.beta(m4b)
+
+md4b <- modelDiagnostics(m4b, ev.perc = .005)
+plot(md4b, ncol = 2, ask = FALSE)
+
+
+## Model 4c - both and flanker
+m4c <- lm(nihtbx_flanker_uncorrected.2_year_follow_up_y_arm_1 ~ sleepdisturb1_p.baseline_year_1_arm_1 + sleepdisturb2_p.baseline_year_1_arm_1 + nihtbx_flanker_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m4c)
+```
+## Pattern Comparison 
+```{r}
+## Model 4d - sleep duration and pattern
+
+m4d <- lm(nihtbx_pattern_uncorrected.2_year_follow_up_y_arm_1 ~ sleepdisturb1_p.baseline_year_1_arm_1 + nihtbx_pattern_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m4d)
+confint(m4d)
+lm.beta(m4d)
+
+md4d <- modelDiagnostics(m4d, ev.perc = .005)
+plot(md4d, ncol = 2, ask = FALSE)
+
+## Model 4e - sleep initiation and pattern
+
+m4e <- lm(nihtbx_pattern_uncorrected.2_year_follow_up_y_arm_1 ~ sleepdisturb2_p.baseline_year_1_arm_1 + nihtbx_pattern_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m4e)
+confint(m4e)
+lm.beta(m4e)
+
+md4e <- modelDiagnostics(m4e, ev.perc = .005)
+plot(md4e, ncol = 2, ask = FALSE)
+
+## Model 4f - both and pattern
+
+m4f <- lm(nihtbx_pattern_uncorrected.2_year_follow_up_y_arm_1 ~ sleepdisturb1_p.baseline_year_1_arm_1 + sleepdisturb2_p.baseline_year_1_arm_1 + nihtbx_pattern_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m4f)
+
+```
+## Picture Sequence
+```{r}
+## Model 4g - sleep duration and picture
+
+m4g <- lm(nihtbx_picture_uncorrected.2_year_follow_up_y_arm_1 ~ sleepdisturb1_p.baseline_year_1_arm_1 + nihtbx_picture_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m4g)
+confint(m4g)
+lm.beta(m4g)
+
+md4g <- modelDiagnostics(m4g, ev.perc = .005)
+plot(md4g, ncol = 2, ask = FALSE)
+
+## Model 4h - sleep initiation and picture
+
+m4h <- lm(nihtbx_picture_uncorrected.2_year_follow_up_y_arm_1 ~ sleepdisturb2_p.baseline_year_1_arm_1 + nihtbx_picture_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m4h)
+confint(m4h)
+lm.beta(m4h)
+
+md4h <- modelDiagnostics(m4h, ev.perc = .005)
+plot(md4h, ncol = 2, ask = FALSE)
+
+## Model 4i - both and picture
+
+m4i <- lm(nihtbx_picture_uncorrected.2_year_follow_up_y_arm_1 ~ sleepdisturb1_p.baseline_year_1_arm_1 + sleepdisturb2_p.baseline_year_1_arm_1 + nihtbx_picture_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m4i)
+```
+
+## Model 5 - activities
+lmer(FCFwavethree ~ activitiesbaseline + FCFbaseline)
+## Flanker
+```{r}
+## Model 5a - art and flanker
+
+m5a <- lm(nihtbx_flanker_uncorrected.2_year_follow_up_y_arm_1 ~ TotalArt.baseline_year_1_arm_1 + nihtbx_flanker_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m5a)
+confint(m5a)
+lm.beta(m5a)
+
+md5a <- modelDiagnostics(m5a, ev.perc = .005)
+plot(md5a, ncol = 2, ask = FALSE)
+
+## Model 5b - sport and flanker
+
+m5b <- lm(nihtbx_flanker_uncorrected.2_year_follow_up_y_arm_1 ~ TotalSport.baseline_year_1_arm_1 + nihtbx_flanker_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m5b)
+confint(m5b)
+lm.beta(m5b)
+
+
+## Model 5c - total and flanker
+
+m5c <- lm(nihtbx_flanker_uncorrected.2_year_follow_up_y_arm_1 ~ TotalParticipation.baseline_year_1_arm_1 + nihtbx_flanker_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m5c)
+confint(m5c)
+lm.beta(m5c)
+
+md5c <- modelDiagnostics(m5c, ev.perc = .005)
+plot(md5c, ncol = 2, ask = FALSE)
+```
+## Pattern Comparison 
+```{r}
+## Model 5d - art and pattern
+
+m5d <- lm(nihtbx_pattern_uncorrected.2_year_follow_up_y_arm_1 ~ TotalArt.baseline_year_1_arm_1 + nihtbx_pattern_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m5d)
+confint(m5d)
+lm.beta(m5d)
+
+## Model 5e - sport and pattern
+
+m5e <- lm(nihtbx_pattern_uncorrected.2_year_follow_up_y_arm_1 ~ TotalSport.baseline_year_1_arm_1 + nihtbx_pattern_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m5e)
+confint(m5e)
+lm.beta(m5e)
+
+## Model 5f - total and pattern
+
+m5f <- lm(nihtbx_pattern_uncorrected.2_year_follow_up_y_arm_1 ~ TotalParticipation.baseline_year_1_arm_1 + nihtbx_pattern_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m5f)
+confint(m5f)
+lm.beta(m5f)
+
+md5f <- modelDiagnostics(m5f, ev.perc = .005)
+plot(md5f, ncol = 2, ask = FALSE)
+
+```
+## Picture Sequence
+```{r}
+## Model 5g - art and picture
+
+m5g <- lm(nihtbx_picture_uncorrected.2_year_follow_up_y_arm_1 ~ TotalArt.baseline_year_1_arm_1 + nihtbx_picture_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m5g)
+confint(m5g)
+lm.beta(m5g)
+
+## Model 5h - sport and picture
+
+m5h <- lm(nihtbx_picture_uncorrected.2_year_follow_up_y_arm_1 ~ TotalSport.baseline_year_1_arm_1 + nihtbx_picture_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m5h)
+confint(m5h)
+lm.beta(m5h)
+
+## Model 5i - total and picture
+
+m5i <- lm(nihtbx_picture_uncorrected.2_year_follow_up_y_arm_1 ~ TotalParticipation.baseline_year_1_arm_1 + nihtbx_picture_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m5i)
+confint(m5i)
+lm.beta(m5i)
+
+md5i <- modelDiagnostics(m5i, ev.perc = .005)
+plot(md5i, ncol = 2, ask = FALSE)
+```
+## Model 6 - screen time
+lmer(FCFwavethree ~ screenbaseline + FCFbaseline)
+## Flanker
+```{r}
+## Model 6a - weekday and flanker
+
+m6a <- lm(nihtbx_flanker_uncorrected.2_year_follow_up_y_arm_1 ~ logtotal_weekday1.baseline_year_1_arm_1 + nihtbx_flanker_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m6a)
+confint(m6a)
+lm.beta(m6a)
+
+## Model 6b - weekend and flanker
+
+m6b <- lm(nihtbx_flanker_uncorrected.2_year_follow_up_y_arm_1 ~ logtotal_weekend1.baseline_year_1_arm_1 + nihtbx_flanker_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m6b)
+confint(m6b)
+lm.beta(m6b)
+
+
+## Model 6c - total and flanker
+
+m6c <- lm(nihtbx_flanker_uncorrected.2_year_follow_up_y_arm_1 ~ logtotal_screen1.baseline_year_1_arm_1 + nihtbx_flanker_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m6c)
+confint(m6c)
+lm.beta(m6c)
+
+md6c <- modelDiagnostics(m6c, ev.perc = .005)
+plot(md6c, ncol = 2, ask = FALSE)
+
+# all activities model
+
+mfball <- lm(nihtbx_flanker_uncorrected.2_year_follow_up_y_arm_1 ~ logtotal_screen1.baseline_year_1_arm_1 + TotalParticipation.baseline_year_1_arm_1 + sleepdisturb1_p.baseline_year_1_arm_1 +nihtbx_flanker_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(mfball)
+confint(mfball)
+lm.beta(mfball)
+
+mdfball <- modelDiagnostics(mfball, ev.perc = .005)
+plot(mdfball, ncol = 2, ask = FALSE)
+
+#adjusting for multiple comparisons. holm method
+pvflanker <- c(1.11e-12, 0.88, 1.87e-08, 0.000985, 2.53e-08, 1.25e-11, 4.74e-06, 8.13e-10, 6.21e-05, 0.00061, 1.54e-07, 0.0387)
+
+p.adjust(pvflanker, method = "holm")
+format(7.740e-02, scientific =FALSE)
+```
+## Pattern Comparison 
+```{r}
+## Model 6d - weekday and pattern
+
+m6d <- lm(nihtbx_pattern_uncorrected.2_year_follow_up_y_arm_1 ~ logtotal_weekday1.baseline_year_1_arm_1 + nihtbx_pattern_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m6d)
+confint(m6d)
+lm.beta(m6d)
+
+## Model 6e - weekend and pattern
+
+m6e <- lm(nihtbx_pattern_uncorrected.2_year_follow_up_y_arm_1 ~ logtotal_weekend1.baseline_year_1_arm_1 + nihtbx_pattern_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m6e)
+confint(m6e)
+lm.beta(m6e)
+
+## Model 6f - total and pattern
+
+m6f <- lm(nihtbx_pattern_uncorrected.2_year_follow_up_y_arm_1 ~ logtotal_screen1.baseline_year_1_arm_1 + nihtbx_pattern_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m6f)
+confint(m6f)
+lm.beta(m6f)
+
+md6f <- modelDiagnostics(m6f, ev.perc = .005)
+plot(md6f, ncol = 2, ask = FALSE)
+
+#model with all
+
+mpab <- lm(nihtbx_pattern_uncorrected.2_year_follow_up_y_arm_1 ~ logtotal_screen1.baseline_year_1_arm_1 + sleepdisturb1_p.baseline_year_1_arm_1 + TotalParticipation.baseline_year_1_arm_1 + nihtbx_pattern_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(mpab)
+confint(mpab)
+lm.beta(mpab)
+
+mdpab <- modelDiagnostics(mpab, ev.perc = .005)
+plot(mdpab, ncol = 2, ask = FALSE)
+
+#adjusting for multiple comparisons. holm method
+pvpattern <- c(0.00699, 0.754 , 9e-07,  0.0464, 1.86e-05, 8.41e-08, 1.09e-05, 1.07e-07, 2.34e-05 , 0.34077, 0.00271)
+
+p.adjust(pvpattern, method = "holm")
+```
+## Picture Sequence
+```{r}
+## Model 6g - weekday and picture
+
+m6g <- lm(nihtbx_picture_uncorrected.2_year_follow_up_y_arm_1 ~ logtotal_weekday1.baseline_year_1_arm_1 + nihtbx_picture_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m6g)
+confint(m6g)
+lm.beta(m6g)
+
+## Model 6h - weekend and picture
+
+m6h <- lm(nihtbx_picture_uncorrected.2_year_follow_up_y_arm_1 ~ logtotal_weekend1.baseline_year_1_arm_1 + nihtbx_picture_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m6h)
+confint(m6h)
+lm.beta(m6h)
+
+## Model 6i - total and picture
+
+m6i <- lm(nihtbx_picture_uncorrected.2_year_follow_up_y_arm_1 ~ logtotal_screen1.baseline_year_1_arm_1  + nihtbx_picture_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m6i)
+confint(m6i)
+lm.beta(m6i)
+
+md6i <- modelDiagnostics(m6i, ev.perc = .005)
+plot(md6i, ncol = 2, ask = FALSE)
+
+# model with all
+mpib <- lm(nihtbx_picture_uncorrected.2_year_follow_up_y_arm_1 ~ logtotal_screen1.baseline_year_1_arm_1 + sleepdisturb1_p.baseline_year_1_arm_1 + TotalParticipation.baseline_year_1_arm_1 + nihtbx_picture_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(mpib)
+confint(mpib)
+lm.beta(mpib)
+
+mdpib <- modelDiagnostics(mpib, ev.perc = .005)
+plot(mdpib, ncol = 2, ask = FALSE)
+
+#adjusting for multiple comparisons. holm method
+pvpicture <- c(3.24e-09, 0.429, 3.86e-14, 2e-09, 2e-16, 9.19e-11, 1.96e-06, 2e-09, 0.000328, 0.000232, 1.34e-11)
+
+p.adjust(pvpicture, method = "holm")
+
+```
+#Aim 2
+
+#Hypothesis 2A
+```{r}
+## Model 7a - sleep duration and CT
+m7a <- lm(nihtbx_flanker_uncorrected.2_year_follow_up_y_arm_1 ~ sleepdisturb1_p.baseline_year_1_arm_1 + nihtbx_flanker_uncorrected.baseline_year_1_arm_1, data = widedata)
+
+summary(m4a)
+confint(m4a)
+lm.beta(m4a)
+```
+# Aim 3
+
